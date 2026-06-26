@@ -1,0 +1,2454 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Categra · Change Sync Review</title>
+		<style>
+			:root {
+				--bg: #f9f8f8;
+				--card: #ffffff;
+				--card-alt: #f0f0f0;
+				--border: #f0f0f0;
+				--line: #e7e9ee;
+				--ink: #3d505c;
+				--muted: #737373;
+				--muted2: #93989a;
+				--icon: #9a8f88;
+				--primary: #c59a78;
+				--primary-fg: #f9f8f8;
+				--secondary: #3d505c;
+				--secondary-focus: #6c7880;
+				--success: #68bea1;
+				--alert: #e5b469;
+				--alert-bg: #fff4cf;
+				--destructive: #ec6052;
+				--destructive-dark: #b21a1a;
+				--ocean: #4a90e2;
+				--chip: #fafafc;
+				--input: #d0d5dd;
+				--shadow: 0 14px 38px rgba(61, 80, 92, 0.08);
+				--shadow-sm: 0 3px 12px rgba(61, 80, 92, 0.06);
+			}
+			* {
+				box-sizing: border-box;
+			}
+			html,
+			body {
+				height: 100%;
+			}
+			body {
+				margin: 0;
+				font-family: Inter, 'Segoe UI', Arial, sans-serif;
+				background: var(--bg);
+				color: var(--ink);
+				-webkit-font-smoothing: antialiased;
+				overflow: hidden;
+			}
+			.mono {
+				font-family: 'SF Mono', 'Cascadia Code', Consolas, monospace;
+			}
+			.page {
+				max-width: 1400px;
+				width: 100%;
+				height: 100vh;
+				margin: 0 auto;
+				padding: 18px 28px 16px;
+				display: flex;
+				flex-direction: column;
+				overflow: hidden;
+			}
+			/* ---------- top bar ---------- */
+			.appbar {
+				display: flex;
+				justify-content: space-between;
+				align-items: flex-start;
+				gap: 20px;
+				margin-bottom: 16px;
+				flex: none;
+			}
+			.brand {
+				font-size: 21px;
+				font-weight: 850;
+				color: var(--secondary);
+				display: flex;
+				align-items: center;
+				gap: 8px;
+			}
+			.brand .pip {
+				width: 11px;
+				height: 11px;
+				border-radius: 3px;
+				background: var(--primary);
+			}
+			.sub {
+				font-size: 12.5px;
+				color: var(--muted);
+				margin-top: 6px;
+				max-width: 680px;
+				line-height: 1.55;
+			}
+			.actions {
+				display: flex;
+				gap: 9px;
+				flex: none;
+				flex-wrap: wrap;
+				justify-content: flex-end;
+			}
+			.btn {
+				border: 1px solid var(--line);
+				background: var(--card);
+				border-radius: 10px;
+				padding: 9px 13px;
+				font-weight: 750;
+				font-size: 12.5px;
+				cursor: pointer;
+				color: var(--ink);
+				transition: 0.12s;
+				white-space: nowrap;
+			}
+			.btn:hover {
+				border-color: var(--input);
+			}
+			.btn.primary {
+				background: var(--primary);
+				color: var(--primary-fg);
+				border-color: var(--primary);
+			}
+			.btn.primary:hover {
+				filter: brightness(0.96);
+			}
+			.btn.danger {
+				color: var(--destructive);
+				border-color: var(--line);
+			}
+			.btn.danger:hover {
+				color: var(--destructive-dark);
+				border-color: var(--destructive);
+				background: #fdf0ef;
+			}
+			.btn.small {
+				padding: 5px 9px;
+				font-size: 11px;
+				border-radius: 8px;
+			}
+			.btn.ghost {
+				background: transparent;
+				border-color: transparent;
+				color: var(--muted);
+			}
+			.btn.ghost:hover {
+				background: var(--card-alt);
+			}
+			/* ---------- metrics ---------- */
+			.cards {
+				display: grid;
+				grid-template-columns: repeat(4, minmax(0, 1fr));
+				gap: 13px;
+				margin-bottom: 16px;
+				flex: none;
+			}
+			.metric {
+				background: var(--card);
+				border: 1px solid var(--border);
+				border-radius: 14px;
+				padding: 15px 16px;
+				box-shadow: var(--shadow-sm);
+			}
+			.metric .n {
+				font-size: 24px;
+				font-weight: 850;
+				line-height: 1;
+			}
+			.metric .l {
+				font-size: 11.5px;
+				color: var(--muted);
+				margin-top: 6px;
+			}
+			.metric.accent {
+				background: var(--secondary);
+				border-color: var(--secondary);
+				color: #fff;
+			}
+			.metric.accent .l {
+				color: #c3ccd2;
+			}
+			/* ---------- workspace ---------- */
+			.workspace {
+				display: grid;
+				grid-template-columns: 330px 1fr;
+				gap: 18px;
+				flex: 1;
+				min-height: 0;
+			}
+			.panel {
+				background: var(--card);
+				border: 1px solid var(--border);
+				border-radius: 16px;
+				box-shadow: var(--shadow);
+				overflow: hidden;
+				height: 100%;
+				min-height: 0;
+				display: flex;
+				flex-direction: column;
+			}
+			.panelHead {
+				padding: 14px 16px;
+				border-bottom: 1px solid var(--line);
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				gap: 10px;
+				flex: none;
+			}
+			.panelHead .ttl {
+				font-weight: 850;
+				font-size: 14px;
+			}
+			.panelHead .cnt {
+				font-size: 11px;
+				font-weight: 800;
+				color: var(--muted);
+				background: var(--card-alt);
+				border-radius: 99px;
+				padding: 2px 9px;
+			}
+			/* product list */
+			.prodList {
+				padding: 12px;
+				flex: 1;
+				min-height: 0;
+				overflow-y: auto;
+				display: flex;
+				flex-direction: column;
+				gap: 9px;
+			}
+			.prodCard {
+				border: 1px solid var(--line);
+				border-radius: 12px;
+				padding: 12px;
+				cursor: pointer;
+				transition: 0.12s;
+				background: var(--card);
+			}
+			.prodCard:hover {
+				border-color: var(--input);
+			}
+			.prodCard.active {
+				border-color: var(--primary);
+				background: #fbf6f1;
+				box-shadow: inset 3px 0 0 var(--primary);
+			}
+			.prodCard .nm {
+				font-weight: 800;
+				font-size: 13.5px;
+			}
+			.prodCard .mt {
+				font-size: 11.5px;
+				color: var(--muted);
+				margin-top: 3px;
+				display: flex;
+				justify-content: space-between;
+				gap: 8px;
+			}
+			.prodCard .total {
+				color: var(--secondary);
+				font-weight: 800;
+			}
+			.gcounts {
+				display: flex;
+				gap: 5px;
+				flex-wrap: wrap;
+				margin-top: 9px;
+			}
+			.gcount {
+				display: inline-flex;
+				align-items: center;
+				gap: 5px;
+				font-size: 10.5px;
+				font-weight: 750;
+				color: var(--ink);
+				background: var(--chip);
+				border: 1px solid var(--secondary);
+				border-radius: 7px;
+				padding: 2px 7px;
+			}
+			.gnum {
+				font-size: 10.5px;
+				font-weight: 800;
+				color: var(--secondary);
+			}
+			/* detail */
+			.detailHead {
+				padding: 16px 18px;
+				border-bottom: 1px solid var(--line);
+				flex: none;
+			}
+			.detailHead .nm {
+				font-size: 17px;
+				font-weight: 850;
+			}
+			.detailHead .mt {
+				font-size: 12.5px;
+				color: var(--muted);
+				margin-top: 4px;
+			}
+			.bar {
+				padding: 12px 18px;
+				border-bottom: 1px solid var(--line);
+				background: var(--chip);
+				flex: none;
+			}
+			.barRow {
+				display: flex;
+				gap: 8px;
+				align-items: center;
+				flex-wrap: wrap;
+			}
+			.barRow + .barRow {
+				margin-top: 10px;
+			}
+			.barLbl {
+				font-size: 10.5px;
+				text-transform: uppercase;
+				letter-spacing: 0.6px;
+				color: var(--muted);
+				font-weight: 800;
+				width: 86px;
+				flex: none;
+			}
+			.chanTab {
+				border: 1px solid var(--line);
+				background: var(--card);
+				border-radius: 99px;
+				padding: 8px 16px;
+				font-weight: 800;
+				font-size: 12.5px;
+				cursor: pointer;
+				display: inline-flex;
+				gap: 8px;
+				align-items: center;
+				color: var(--ink);
+			}
+			.chanTab.active {
+				background: var(--primary);
+				border-color: var(--primary);
+				color: var(--primary-fg);
+			}
+			.chanTab .ct,
+			.mpChip .ct {
+				background: var(--card-alt);
+				color: var(--ink);
+				border-radius: 99px;
+				padding: 0 7px;
+				font-size: 11px;
+				font-weight: 800;
+			}
+			.chanTab.active .ct,
+			.mpChip.active .ct {
+				background: rgba(255, 255, 255, 0.25);
+				color: #fff;
+			}
+			.mpChip {
+				border: 1px solid var(--line);
+				background: var(--card);
+				border-radius: 99px;
+				padding: 6px 12px;
+				font-weight: 700;
+				font-size: 12px;
+				cursor: pointer;
+				display: inline-flex;
+				gap: 7px;
+				align-items: center;
+				color: var(--ink);
+			}
+			.mpChip.active {
+				background: var(--secondary);
+				border-color: var(--secondary);
+				color: #fff;
+			}
+			.detailBody {
+				padding: 16px 18px 20px;
+				flex: 1;
+				min-height: 0;
+				overflow-y: auto;
+			}
+			/* block (parent / variant) */
+			.block {
+				border: 1px solid var(--line);
+				border-radius: 14px;
+				margin-bottom: 15px;
+				overflow: hidden;
+			}
+			.blockHead {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				gap: 12px;
+				padding: 11px 15px;
+				border-bottom: 1px solid var(--line);
+				background: var(--chip);
+				border-left: 4px solid var(--line);
+				cursor: pointer;
+			}
+			.bcaret {
+				color: var(--muted2);
+				font-size: 11px;
+				transition: 0.2s;
+				display: inline-block;
+			}
+			.block.collapsed .blockHead {
+				border-bottom: 0;
+			}
+			.block.collapsed .bcaret {
+				transform: rotate(-90deg);
+			}
+			.block.collapsed .blockBody {
+				display: none;
+			}
+			.blockHead.parent {
+				border-left-color: var(--primary);
+			}
+			.blockHead.variant {
+				border-left-color: var(--primary);
+			}
+			.blockTitle {
+				display: flex;
+				align-items: baseline;
+				gap: 9px;
+				flex-wrap: wrap;
+			}
+			.blockTitle .kind {
+				font-size: 10px;
+				font-weight: 800;
+				text-transform: uppercase;
+				letter-spacing: 0.6px;
+				color: var(--muted);
+			}
+			.blockTitle .sku {
+				font-size: 15px;
+				font-weight: 850;
+			}
+			.blockTitle .desc {
+				font-size: 12px;
+				color: var(--muted);
+			}
+			.blockTitle .cnt {
+				background: var(--card-alt);
+				border-radius: 99px;
+				padding: 1px 8px;
+				font-size: 11px;
+				font-weight: 800;
+				color: var(--muted);
+			}
+			.wrapTag {
+				font-size: 10px;
+				font-weight: 800;
+				color: var(--secondary);
+				background: #eef1f4;
+				border: 1px solid #dfe5ea;
+				border-radius: 7px;
+				padding: 1px 7px;
+			}
+			.blockBody {
+				padding: 12px;
+				display: flex;
+				flex-direction: column;
+				gap: 11px;
+			}
+			.note {
+				color: var(--muted);
+				font-size: 12px;
+				font-style: italic;
+				padding: 4px 2px;
+			}
+			/* group accordion */
+			.group {
+				border: 1px solid var(--line);
+				border-radius: 12px;
+				overflow: hidden;
+			}
+			.groupHead {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				padding: 10px 13px;
+				cursor: pointer;
+				gap: 12px;
+				background: var(--card);
+			}
+			.groupHead .left {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+			}
+			.groupName {
+				font-weight: 800;
+				font-size: 13px;
+			}
+			.groupSub {
+				font-size: 11px;
+				color: var(--muted);
+				margin-top: 1px;
+			}
+			.groupHead .right,
+			.blockHead .right {
+				display: flex;
+				align-items: center;
+				gap: 6px;
+			}
+			.caret {
+				color: var(--muted2);
+				transition: 0.2s;
+				font-size: 11px;
+				margin-left: 2px;
+			}
+			.group.collapsed .caret {
+				transform: rotate(-90deg);
+			}
+			.group.collapsed .groupBody {
+				display: none;
+			}
+			.groupBody {
+				border-top: 1px solid var(--line);
+				padding: 11px;
+				display: flex;
+				flex-direction: column;
+				gap: 10px;
+				background: var(--chip);
+			}
+			/* change card */
+			.chg {
+				border: 1px solid var(--line);
+				border-radius: 11px;
+				background: var(--card);
+				overflow: hidden;
+			}
+			.chg.sel {
+				border-color: #e2cdb8;
+			}
+			.chgHead {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				gap: 10px;
+				padding: 9px 12px;
+				border-bottom: 1px solid var(--line);
+			}
+			.chgHead .l {
+				display: flex;
+				align-items: center;
+				gap: 9px;
+				min-width: 0;
+				flex-wrap: wrap;
+			}
+			.chk {
+				display: none;
+			}
+			.chkbox {
+				width: 22px;
+				height: 22px;
+				border-radius: 50%;
+				background: var(--card-alt);
+				border: 1px solid var(--line);
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				cursor: pointer;
+				flex: none;
+				transition: 0.12s;
+				color: var(--primary-fg);
+			}
+			.chkbox svg {
+				width: 12px;
+				height: 12px;
+				opacity: 0;
+				transition: 0.12s;
+			}
+			.chk:checked + .chkbox {
+				background: var(--primary);
+				border-color: var(--primary);
+			}
+			.chk:checked + .chkbox svg {
+				opacity: 1;
+			}
+			.chkbox.locked {
+				cursor: not-allowed;
+				background: #d9c4ab;
+				border-color: #d9c4ab;
+				opacity: 0.8;
+			}
+			.chkbox.locked svg {
+				opacity: 1;
+			}
+			.chgTitle {
+				font-weight: 800;
+				font-size: 12.5px;
+			}
+			.info {
+				width: 16px;
+				height: 16px;
+				border-radius: 50%;
+				border: 1px solid var(--line);
+				color: var(--muted2);
+				font-size: 10px;
+				font-weight: 800;
+				font-style: italic;
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				cursor: help;
+				flex: none;
+			}
+			.info:hover {
+				border-color: var(--primary);
+				color: var(--primary);
+			}
+			.chgBody {
+				padding: 11px 12px;
+			}
+			.cmp {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 11px;
+			}
+			.cmpCol strong {
+				display: block;
+				font-size: 9.5px;
+				color: var(--muted2);
+				text-transform: uppercase;
+				letter-spacing: 0.4px;
+				margin-bottom: 5px;
+			}
+			.cmpVal {
+				font-size: 12.5px;
+				border-radius: 9px;
+				padding: 8px 11px;
+				border: 1px solid var(--line);
+				background: var(--bg);
+				line-height: 1.5;
+				word-break: break-word;
+				min-height: 36px;
+			}
+			.cmpCol.c .cmpVal {
+				background: var(--card);
+				border-left: 2px solid var(--primary);
+			}
+			.ev {
+				color: var(--muted2);
+				font-style: italic;
+			}
+			.sep {
+				color: var(--muted2);
+				margin: 0 3px;
+			}
+			.tag {
+				font-size: 10px;
+				font-weight: 800;
+				letter-spacing: 0.3px;
+				padding: 2px 8px;
+				border-radius: 99px;
+				text-transform: uppercase;
+			}
+			.t-added {
+				background: #e7f5ef;
+				color: #2f8f73;
+			}
+			.t-removed {
+				background: #fdecea;
+				color: var(--destructive-dark);
+			}
+			/* badges */
+			.badge {
+				font-size: 9.5px;
+				font-weight: 800;
+				letter-spacing: 0.3px;
+				text-transform: uppercase;
+				padding: 2px 7px;
+				border-radius: 99px;
+				background: var(--card-alt);
+				color: var(--muted);
+				white-space: nowrap;
+			}
+			.badge.single {
+				background: #f0ece7;
+				color: #8a6f50;
+			}
+			.badge.channel {
+				background: #eef4fb;
+				color: #34597f;
+			}
+			.badge.auto {
+				background: #eef4fb;
+				color: #34597f;
+			}
+			.badge.locked {
+				background: #f3eadf;
+				color: #9a7b53;
+			}
+			.badge.hier {
+				background: #f0ece7;
+				color: #8a6f50;
+			}
+			/* note boxes */
+			.notebox {
+				display: flex;
+				gap: 8px;
+				align-items: flex-start;
+				background: var(--alert-bg);
+				border: 1px solid #f0d999;
+				color: #7a5b1e;
+				border-radius: 10px;
+				padding: 8px 11px;
+				font-size: 11.5px;
+				line-height: 1.5;
+				margin-bottom: 10px;
+			}
+			.notebox.info {
+				background: #eef4fb;
+				border-color: #cfe0f3;
+				color: #34597f;
+			}
+			.notebox .ni {
+				flex: none;
+				font-weight: 800;
+			}
+			/* read-only sub rows (composite hierarchy / variant attrs / pricing-owned) */
+			.subRows {
+				display: flex;
+				flex-direction: column;
+				gap: 8px;
+			}
+			.subRow {
+				border: 1px solid var(--line);
+				border-radius: 9px;
+				padding: 8px 10px;
+				background: var(--bg);
+			}
+			.subRow .sk {
+				font-size: 11px;
+				font-weight: 800;
+				color: var(--ink);
+				margin-bottom: 6px;
+				display: flex;
+				gap: 7px;
+				align-items: center;
+			}
+			.ownedHint {
+				font-size: 10.5px;
+				color: var(--muted);
+				font-weight: 700;
+				text-transform: uppercase;
+				letter-spacing: 0.4px;
+				margin: 4px 0 6px;
+			}
+			/* pricing table */
+			.ptable {
+				border: 1px solid var(--line);
+				border-radius: 10px;
+				overflow: hidden;
+				background: var(--card);
+			}
+			.phead,
+			.prow {
+				display: grid;
+				grid-template-columns: 1.3fr 1fr 1fr auto;
+				gap: 10px;
+				padding: 9px 13px;
+				align-items: start;
+			}
+			.prow .pa {
+				display: flex;
+				justify-content: flex-end;
+				align-items: center;
+			}
+			.phead {
+				background: var(--card-alt);
+				font-size: 10px;
+				text-transform: uppercase;
+				letter-spacing: 0.5px;
+				color: var(--muted);
+				font-weight: 800;
+			}
+			.prow {
+				border-top: 1px solid var(--line);
+				font-size: 12.5px;
+			}
+			.prow.diff {
+				background: var(--alert-bg);
+			}
+			.pl {
+				font-weight: 750;
+			}
+			.pmeta {
+				font-size: 10.5px;
+				color: var(--muted);
+				font-weight: 500;
+				margin-top: 2px;
+			}
+			.pv {
+				font-weight: 700;
+			}
+			.qd {
+				font-size: 11.5px;
+				line-height: 1.55;
+			}
+			/* media */
+			.mediaGrid {
+				display: grid;
+				grid-template-columns: repeat(4, 1fr);
+				gap: 7px;
+			}
+			.media {
+				aspect-ratio: 1;
+				border-radius: 9px;
+				border: 1px solid var(--line);
+				background: linear-gradient(135deg, #ece6df, #f3ead9);
+				position: relative;
+				overflow: hidden;
+				display: flex;
+				align-items: flex-end;
+				padding: 5px;
+			}
+			.media .fn {
+				font-size: 8.5px;
+				background: rgba(61, 80, 92, 0.62);
+				color: #fff;
+				padding: 1px 4px;
+				border-radius: 4px;
+				max-width: 100%;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+			.media.main:before {
+				content: '★';
+				position: absolute;
+				top: 4px;
+				left: 5px;
+				color: var(--primary);
+				font-size: 12px;
+				text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+			}
+			.media.removed {
+				opacity: 0.45;
+				filter: grayscale(0.5);
+			}
+			.media.gnew {
+				outline: 2px solid var(--success);
+				outline-offset: -2px;
+			}
+			.media .corner {
+				position: absolute;
+				top: 4px;
+				right: 4px;
+				font-size: 8px;
+				font-weight: 800;
+				color: #fff;
+				padding: 1px 5px;
+				border-radius: 99px;
+			}
+			.media.gnew .corner {
+				background: var(--success);
+			}
+			.media.removed .corner {
+				background: var(--destructive);
+			}
+			/* axes + wrapper */
+			.axisLine {
+				display: flex;
+				gap: 7px;
+				flex-wrap: wrap;
+				align-items: center;
+			}
+			.axis {
+				border: 1px solid var(--line);
+				border-radius: 8px;
+				padding: 5px 10px;
+				background: var(--card);
+				font-weight: 700;
+				font-size: 12px;
+			}
+			.axis.add {
+				background: #e7f5ef;
+				border-color: #b9e3d3;
+				color: #2f8f73;
+			}
+			.axis.rem {
+				background: #fdecea;
+				border-color: #f5c9c4;
+				color: var(--destructive-dark);
+				text-decoration: line-through;
+			}
+			.wrapBox {
+				margin-top: 11px;
+			}
+			.wrapBox > .wl {
+				font-size: 10px;
+				text-transform: uppercase;
+				letter-spacing: 0.5px;
+				color: var(--muted);
+				font-weight: 800;
+				margin-bottom: 6px;
+			}
+			.wrapTable {
+				font-size: 12px;
+			}
+			.wrapTable .wr {
+				display: grid;
+				grid-template-columns: 130px 1fr 1fr;
+				gap: 10px;
+				padding: 5px 0;
+				border-top: 1px solid var(--line);
+			}
+			.wrapTable .wr:first-child {
+				border-top: 0;
+			}
+			.wrapTable .wk {
+				color: var(--muted);
+				font-weight: 700;
+			}
+			.empty {
+				padding: 40px 24px;
+				text-align: center;
+				color: var(--muted);
+				border: 1px dashed var(--line);
+				border-radius: 14px;
+				background: var(--chip);
+			}
+			.empty .big {
+				font-size: 30px;
+				color: var(--success);
+			}
+			.toastWrap {
+				position: fixed;
+				bottom: 22px;
+				right: 22px;
+				display: flex;
+				flex-direction: column;
+				gap: 9px;
+				z-index: 50;
+			}
+			.toast {
+				background: var(--secondary);
+				color: #fff;
+				padding: 12px 16px;
+				border-radius: 12px;
+				font-size: 12.5px;
+				font-weight: 650;
+				box-shadow: var(--shadow);
+				display: flex;
+				gap: 9px;
+				align-items: center;
+				animation: slidein 0.22s ease;
+				max-width: 380px;
+			}
+			.toast .tdot {
+				width: 8px;
+				height: 8px;
+				border-radius: 50%;
+				background: var(--success);
+				flex: none;
+			}
+			.toast.warn .tdot {
+				background: var(--alert);
+			}
+			@keyframes slidein {
+				from {
+					transform: translateY(10px);
+					opacity: 0;
+				}
+			}
+			@media (max-width: 1080px) {
+				.cards {
+					grid-template-columns: repeat(2, 1fr);
+				}
+				.workspace {
+					grid-template-columns: 1fr;
+				}
+				.prodList {
+					max-height: none;
+				}
+				.cmp {
+					grid-template-columns: 1fr;
+				}
+				.mediaGrid {
+					grid-template-columns: repeat(3, 1fr);
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="page">
+			<!-- ===================== TOP BAR ===================== -->
+			<header class="appbar">
+				<div>
+					<div class="brand"><span class="pip"></span> Categra · Sync</div>
+					<div class="sub">
+						Review what changed since the last stable sync, then pick exactly what to push. Selection rules
+						differ by channel: Amazon attributes group by hierarchy; pricing, media &amp; variant attributes
+						are single-select; variant structure cascades to siblings; media is common to all marketplaces.
+					</div>
+				</div>
+				<div class="actions">
+					<button class="btn danger" id="btnRevertSel" onclick="revertSelected()">↺ Revert selected</button>
+					<button class="btn" onclick="revertProduct()">Revert whole product</button>
+					<button class="btn primary" id="btnSync" onclick="syncProduct()">Sync selected</button>
+				</div>
+			</header>
+
+			<!-- ===================== METRICS ===================== -->
+			<div class="cards">
+				<div class="metric">
+					<div class="n" id="mProducts">0</div>
+					<div class="l">Products with Changes</div>
+				</div>
+				<div class="metric">
+					<div class="n" id="mView">0</div>
+					<div class="l">Changes in Current View</div>
+				</div>
+				<div class="metric">
+					<div class="n" id="mVariants">0</div>
+					<div class="l">Variants in This View</div>
+				</div>
+				<div class="metric accent">
+					<div class="n" id="mApproved">0</div>
+					<div class="l">Selected for Sync</div>
+				</div>
+			</div>
+
+			<!-- ===================== WORKSPACE ===================== -->
+			<div class="workspace">
+				<!-- left: product list -->
+				<section class="panel">
+					<div class="panelHead">
+						<span class="ttl">Products</span><span class="cnt" id="prodCount">0</span>
+					</div>
+					<div class="prodList" id="productList"></div>
+				</section>
+
+				<!-- right: working area -->
+				<section class="panel">
+					<div class="detailHead">
+						<div class="nm" id="dName">—</div>
+						<div class="mt" id="dMeta">—</div>
+					</div>
+					<div class="bar" id="bar"></div>
+					<div class="detailBody" id="detailBody"></div>
+				</section>
+			</div>
+		</div>
+		<div class="toastWrap" id="toastWrap"></div>
+
+		<script>
+			/* ============================================================
+			 *  MOCK DATA
+			 *  Each change is one flat record. Amazon attribute records carry a
+			 *  `hierarchy` (root property) so they can be grouped/selected as a
+			 *  unit. Media records are CHANNEL-level (marketplace = null even on
+			 *  Amazon) — the same media shows in every marketplace view.
+			 *  Variant structure records carry the wrapper SKU (Amazon) so the UI
+			 *  can compute affected sibling variants.
+			 * ============================================================ */
+			let DID = 0;
+			const d = (o) => ({ id: ++DID, ...o });
+			const amzPrice = (lp, op, sp, spS, spE, bb, cs, qd) => ({
+				listPrice: { price: lp },
+				offerPrice: { price: op },
+				salePrice: { price: sp, startDate: spS, endDate: spE },
+				businessPrice: { baseBusinessPrice: bb, consumerSalePrice: cs, quantityDiscount: qd || [] },
+			});
+			const shpPrice = (lp, op) => ({ listPrice: { price: lp }, offerPrice: { price: op } });
+			// hierarchy helpers (Amazon root property + label)
+			const H = (key, label) => ({ key, label });
+
+			const products = [
+				{
+					id: 1,
+					name: 'Running Shoe Pro',
+					sku: 'RSP-PARENT',
+					channels: [{ type: 'AMAZON', marketplaces: ['US', 'CA', 'UK'] }, { type: 'SHOPIFY' }],
+					variants: [
+						{ sku: 'RSP-RED-42', desc: 'Size 42 · Red' },
+						{ sku: 'RSP-RED-43', desc: 'Size 43 · Red' },
+						{ sku: 'RSP-BLU-42', desc: 'Size 42 · Blue' },
+						{ sku: 'RSP-BLU-43', desc: 'Size 43 · Blue' },
+					],
+					deltas: [
+						/* ===== AMAZON · US ===== */
+						// DIRECT attributes (primary / rule-based) -> selected independently, like Shopify
+						d({
+							group: 'attributes',
+							level: 'product',
+							variantSku: null,
+							channel: 'AMAZON',
+							marketplace: 'US',
+							direct: true,
+							label: 'Brand',
+							name: 'brand',
+							changeType: 'updated',
+							original: 'Categra',
+							current: 'Categra Sport',
+						}),
+						d({
+							group: 'attributes',
+							level: 'product',
+							variantSku: null,
+							channel: 'AMAZON',
+							marketplace: 'US',
+							direct: true,
+							label: 'Material',
+							name: 'material',
+							changeType: 'updated',
+							original: 'Mesh',
+							current: 'Recycled knit',
+						}),
+						// COMPOSITE hierarchy: two children share item_package_dimensions -> one checkbox
+						d({
+							group: 'attributes',
+							level: 'product',
+							variantSku: null,
+							channel: 'AMAZON',
+							marketplace: 'US',
+							hierarchy: H('item_package_dimensions', 'Item package dimensions'),
+							label: 'Length',
+							name: 'length',
+							changeType: 'updated',
+							original: '30 cm',
+							current: '32 cm',
+						}),
+						d({
+							group: 'attributes',
+							level: 'product',
+							variantSku: null,
+							channel: 'AMAZON',
+							marketplace: 'US',
+							hierarchy: H('item_package_dimensions', 'Item package dimensions'),
+							label: 'Height',
+							name: 'height',
+							changeType: 'updated',
+							original: '11 cm',
+							current: '12 cm',
+						}),
+						// pricing-owned attribute (purchasable_offer) -> folded INTO pricing, hidden from Attributes
+						d({
+							group: 'attributes',
+							level: 'product',
+							variantSku: null,
+							channel: 'AMAZON',
+							marketplace: 'US',
+							hierarchy: H('purchasable_offer', 'Purchasable offer'),
+							label: 'Your price',
+							name: 'your_price',
+							changeType: 'updated',
+							original: '59.00',
+							current: '49.00',
+						}),
+						d({
+							group: 'pricing',
+							level: 'product',
+							variantSku: null,
+							channel: 'AMAZON',
+							marketplace: 'US',
+							original: amzPrice('59.00', '59.00', null, null, null, null, null, []),
+							current: amzPrice('59.00', '49.00', '45.00', '2026-06-01', '2026-06-30', '48.00', null, [
+								{ priceType: 'percent', quantity: 2, price: 15 },
+								{ priceType: 'fixed', quantity: 4, price: 150 },
+							]),
+						}),
+						d({
+							group: 'miscellaneous',
+							level: 'product',
+							variantSku: null,
+							channel: 'AMAZON',
+							marketplace: 'US',
+							baselineType: 'AMAZON_CATEGORY',
+							label: 'Category',
+							original: ['Shoes', 'Running'],
+							current: ['Shoes', 'Running', 'Trail'],
+						}),
+						d({
+							group: 'miscellaneous',
+							level: 'product',
+							variantSku: null,
+							channel: 'AMAZON',
+							marketplace: 'US',
+							baselineType: 'AMAZON_CONDITION_TYPE',
+							label: 'Condition type',
+							original: 'New',
+							current: 'New — Open box',
+						}),
+						// CHANNEL-LEVEL media (marketplace null) -> shown in US/CA/UK identically
+						d({
+							group: 'media',
+							level: 'product',
+							variantSku: null,
+							channel: 'AMAZON',
+							marketplace: null,
+							original: [
+								{ name: 'main_1.jpg', main: true },
+								{ name: 'side_a.jpg' },
+								{ name: 'old_life.jpg' },
+							],
+							current: [
+								{ name: 'main_2.jpg', main: true },
+								{ name: 'side_a.jpg' },
+								{ name: 'detail_new.jpg' },
+							],
+						}),
+						// STRUCTURE change affects the whole wrapper -> one record per sibling variant (US)
+						...['RSP-RED-42', 'RSP-RED-43', 'RSP-BLU-42', 'RSP-BLU-43'].map((sku) =>
+							d({
+								group: 'structure',
+								level: 'variant',
+								variantSku: sku,
+								channel: 'AMAZON',
+								marketplace: 'US',
+								original: {
+									axes: [
+										{ label: 'Size', name: 'size' },
+										{ label: 'Color', name: 'color' },
+									],
+									wrapper: { sku: 'RSP-PARENT', asin: 'B0PARENTUS', variationTheme: 'SIZE/COLOR' },
+								},
+								current: {
+									axes: [
+										{ label: 'Size', name: 'size' },
+										{ label: 'Color', name: 'color' },
+										{ label: 'Width', name: 'width' },
+									],
+									wrapper: {
+										sku: 'RSP-PARENT',
+										asin: 'B0PARENTUS',
+										variationTheme: 'SIZE/COLOR/WIDTH',
+									},
+								},
+							}),
+						),
+						// variant attributes (single flag) — RED-42 has TWO changed attrs -> one selection unit
+						d({
+							group: 'variantAttributes',
+							level: 'variant',
+							variantSku: 'RSP-RED-42',
+							channel: 'AMAZON',
+							marketplace: 'US',
+							label: 'Color',
+							name: 'color',
+							changeType: 'updated',
+							original: ['Red'],
+							current: ['Crimson'],
+						}),
+						d({
+							group: 'variantAttributes',
+							level: 'variant',
+							variantSku: 'RSP-RED-42',
+							channel: 'AMAZON',
+							marketplace: 'US',
+							label: 'Size',
+							name: 'size',
+							changeType: 'updated',
+							original: ['42'],
+							current: ['42.5'],
+						}),
+						// variant-level ATTRIBUTES (direct + hierarchy-grouped)
+						d({
+							group: 'attributes',
+							level: 'variant',
+							variantSku: 'RSP-RED-42',
+							channel: 'AMAZON',
+							marketplace: 'US',
+							direct: true,
+							label: 'Care instructions',
+							name: 'care_instructions',
+							changeType: 'updated',
+							original: 'Hand wash',
+							current: 'Machine wash cold',
+						}),
+						d({
+							group: 'attributes',
+							level: 'variant',
+							variantSku: 'RSP-RED-42',
+							channel: 'AMAZON',
+							marketplace: 'US',
+							hierarchy: H('item_dimensions', 'Item dimensions'),
+							label: 'Length',
+							name: 'v_length',
+							changeType: 'updated',
+							original: '24 cm',
+							current: '25 cm',
+						}),
+						d({
+							group: 'attributes',
+							level: 'variant',
+							variantSku: 'RSP-RED-42',
+							channel: 'AMAZON',
+							marketplace: 'US',
+							hierarchy: H('item_dimensions', 'Item dimensions'),
+							label: 'Width',
+							name: 'v_width',
+							changeType: 'updated',
+							original: '9 cm',
+							current: '9.5 cm',
+						}),
+
+						/* ===== AMAZON · CA (different change set) ===== */
+						d({
+							group: 'attributes',
+							level: 'product',
+							variantSku: null,
+							channel: 'AMAZON',
+							marketplace: 'CA',
+							direct: true,
+							label: 'Water resistance',
+							name: 'water_resistance',
+							changeType: 'added',
+							original: null,
+							current: 'Yes',
+						}),
+						d({
+							group: 'variantAttributes',
+							level: 'variant',
+							variantSku: 'RSP-BLU-42',
+							channel: 'AMAZON',
+							marketplace: 'CA',
+							label: 'Color',
+							name: 'color',
+							changeType: 'updated',
+							original: ['Blue'],
+							current: ['Navy'],
+						}),
+						d({
+							group: 'pricing',
+							level: 'variant',
+							variantSku: 'RSP-BLU-42',
+							channel: 'AMAZON',
+							marketplace: 'CA',
+							original: amzPrice('79.00', '79.00', null, null, null, null, null, []),
+							current: amzPrice('79.00', '69.00', null, null, null, null, null, []),
+						}),
+						d({
+							group: 'miscellaneous',
+							level: 'variant',
+							variantSku: 'RSP-BLU-42',
+							channel: 'AMAZON',
+							marketplace: 'CA',
+							baselineType: 'AMAZON_CONDITION_TYPE',
+							label: 'Condition type',
+							original: 'New',
+							current: 'Used — Like new',
+						}),
+
+						/* ===== AMAZON · UK ===== */
+						d({
+							group: 'variantAttributes',
+							level: 'variant',
+							variantSku: 'RSP-BLU-43',
+							channel: 'AMAZON',
+							marketplace: 'UK',
+							label: 'Size',
+							name: 'size',
+							changeType: 'updated',
+							original: ['43'],
+							current: ['43.5'],
+						}),
+
+						/* ===== SHOPIFY (no marketplace) — attributes are individual ===== */
+						d({
+							group: 'attributes',
+							level: 'product',
+							variantSku: null,
+							channel: 'SHOPIFY',
+							marketplace: null,
+							label: 'Marketing title',
+							name: 'seo_title',
+							changeType: 'updated',
+							original: 'Running Shoe Pro',
+							current: 'Running Shoe Pro — Marathon Edition',
+						}),
+						d({
+							group: 'attributes',
+							level: 'product',
+							variantSku: null,
+							channel: 'SHOPIFY',
+							marketplace: null,
+							label: 'Material',
+							name: 'material',
+							changeType: 'updated',
+							original: 'Mesh',
+							current: 'Recycled knit',
+						}),
+						d({
+							group: 'pricing',
+							level: 'product',
+							variantSku: null,
+							channel: 'SHOPIFY',
+							marketplace: null,
+							original: shpPrice('59.00', null),
+							current: shpPrice('59.00', '52.00'),
+						}),
+						d({
+							group: 'miscellaneous',
+							level: 'product',
+							variantSku: null,
+							channel: 'SHOPIFY',
+							marketplace: null,
+							baselineType: 'TAGS',
+							label: 'Tags',
+							original: ['running', 'mesh'],
+							current: ['running', 'recycled', 'marathon'],
+						}),
+						d({
+							group: 'media',
+							level: 'variant',
+							variantSku: 'RSP-RED-42',
+							channel: 'SHOPIFY',
+							marketplace: null,
+							original: [{ name: 'red42_a.jpg', main: true }],
+							current: [{ name: 'red42_a.jpg', main: true }, { name: 'red42_b.jpg' }],
+						}),
+						d({
+							group: 'variantAttributes',
+							level: 'variant',
+							variantSku: 'RSP-RED-42',
+							channel: 'SHOPIFY',
+							marketplace: null,
+							label: 'Color',
+							name: 'color',
+							changeType: 'updated',
+							original: ['Red'],
+							current: ['Ruby'],
+						}),
+					],
+				},
+				{
+					id: 2,
+					name: 'Coffee Machine Luxe',
+					sku: 'CML-BLK-EU',
+					channels: [{ type: 'AMAZON', marketplaces: ['DE'] }, { type: 'SHOPIFY' }],
+					variants: [],
+					deltas: [
+						d({
+							group: 'attributes',
+							level: 'product',
+							variantSku: null,
+							channel: 'AMAZON',
+							marketplace: 'DE',
+							direct: true,
+							label: 'Power',
+							name: 'wattage',
+							changeType: 'updated',
+							original: '1200W',
+							current: '1450W',
+						}),
+						d({
+							group: 'attributes',
+							level: 'product',
+							variantSku: null,
+							channel: 'AMAZON',
+							marketplace: 'DE',
+							direct: true,
+							label: 'Warranty',
+							name: 'warranty_period',
+							changeType: 'updated',
+							original: '12 months',
+							current: '24 months',
+						}),
+						d({
+							group: 'pricing',
+							level: 'product',
+							variantSku: null,
+							channel: 'AMAZON',
+							marketplace: 'DE',
+							original: amzPrice('279.00', '249.00', null, null, null, null, null, []),
+							current: amzPrice('279.00', '239.00', null, null, null, '235.00', null, [
+								{ priceType: 'percent', quantity: 3, price: 10 },
+							]),
+						}),
+						d({
+							group: 'media',
+							level: 'product',
+							variantSku: null,
+							channel: 'AMAZON',
+							marketplace: null,
+							original: [{ name: 'kitchen_old.jpg', main: true }, { name: 'box.jpg' }],
+							current: [
+								{ name: 'kitchen_premium.jpg', main: true },
+								{ name: 'box.jpg' },
+								{ name: 'closeup.jpg' },
+							],
+						}),
+						d({
+							group: 'miscellaneous',
+							level: 'product',
+							variantSku: null,
+							channel: 'AMAZON',
+							marketplace: 'DE',
+							baselineType: 'AMAZON_CONDITION_TYPE',
+							label: 'Condition type',
+							original: 'New',
+							current: 'Refurbished',
+						}),
+						d({
+							group: 'attributes',
+							level: 'product',
+							variantSku: null,
+							channel: 'SHOPIFY',
+							marketplace: null,
+							label: 'Marketing title',
+							name: 'seo_title',
+							changeType: 'updated',
+							original: 'Coffee Machine Luxe',
+							current: 'Coffee Machine Luxe — Barista Edition',
+						}),
+						d({
+							group: 'pricing',
+							level: 'product',
+							variantSku: null,
+							channel: 'SHOPIFY',
+							marketplace: null,
+							original: shpPrice('279.00', null),
+							current: shpPrice('279.00', '249.00'),
+						}),
+						d({
+							group: 'miscellaneous',
+							level: 'product',
+							variantSku: null,
+							channel: 'SHOPIFY',
+							marketplace: null,
+							baselineType: 'SHOPIFY_CATEGORY',
+							label: 'Shopify category',
+							original: ['Home', 'Kitchen'],
+							current: ['Home', 'Kitchen', 'Appliances'],
+						}),
+					],
+				},
+				{
+					id: 3,
+					name: 'Wireless Headphones Air',
+					sku: 'WHA-PARENT',
+					channels: [{ type: 'SHOPIFY' }],
+					variants: [
+						{ sku: 'WHA-WHT', desc: 'White' },
+						{ sku: 'WHA-BLK', desc: 'Black' },
+					],
+					deltas: [
+						d({
+							group: 'attributes',
+							level: 'product',
+							variantSku: null,
+							channel: 'SHOPIFY',
+							marketplace: null,
+							label: 'Battery life',
+							name: 'battery_life',
+							changeType: 'updated',
+							original: '30h',
+							current: '38h',
+						}),
+						// Shopify: structure shared by the product -> a record per variant; cascades to ALL
+						d({
+							group: 'structure',
+							level: 'variant',
+							variantSku: 'WHA-WHT',
+							channel: 'SHOPIFY',
+							marketplace: null,
+							original: { axes: [{ label: 'Color', name: 'color' }], wrapper: null },
+							current: { axes: [{ label: 'Finish', name: 'finish' }], wrapper: null },
+						}),
+						d({
+							group: 'structure',
+							level: 'variant',
+							variantSku: 'WHA-BLK',
+							channel: 'SHOPIFY',
+							marketplace: null,
+							original: { axes: [{ label: 'Color', name: 'color' }], wrapper: null },
+							current: { axes: [{ label: 'Finish', name: 'finish' }], wrapper: null },
+						}),
+						d({
+							group: 'variantAttributes',
+							level: 'variant',
+							variantSku: 'WHA-WHT',
+							channel: 'SHOPIFY',
+							marketplace: null,
+							label: 'Finish',
+							name: 'finish',
+							changeType: 'updated',
+							original: ['White'],
+							current: ['Pearl White'],
+						}),
+						d({
+							group: 'variantAttributes',
+							level: 'variant',
+							variantSku: 'WHA-BLK',
+							channel: 'SHOPIFY',
+							marketplace: null,
+							label: 'Finish',
+							name: 'finish',
+							changeType: 'updated',
+							original: ['Black'],
+							current: ['Matte Black'],
+						}),
+						d({
+							group: 'media',
+							level: 'variant',
+							variantSku: 'WHA-WHT',
+							channel: 'SHOPIFY',
+							marketplace: null,
+							original: [{ name: 'wht_a.jpg', main: true }],
+							current: [{ name: 'wht_a.jpg', main: true }, { name: 'wht_b.jpg' }],
+						}),
+					],
+				},
+			];
+
+			/* ============================================================
+			 *  GROUPS & CONSTANTS
+			 * ============================================================ */
+			const GROUPS = {
+				attributes: { name: 'Attributes' },
+				pricing: { name: 'Pricing' },
+				media: { name: 'Media' },
+				structure: { name: 'Variant Structure' },
+				variantAttributes: { name: 'Variant Attributes' },
+				miscellaneous: { name: 'Miscellaneous' },
+			};
+			const GROUP_ORDER = ['attributes', 'pricing', 'media', 'structure', 'variantAttributes', 'miscellaneous'];
+			// Amazon attribute hierarchies that logically belong to Pricing (folded in, hidden from Attributes)
+			const PRICING_HIERARCHIES = ['purchasable_offer', 'list_price'];
+
+			/* ============================================================
+			 *  STATE
+			 * ============================================================ */
+			let selectedId = products[0].id;
+			let channel = 'AMAZON';
+			let marketplace = 'US';
+			const reverted = new Set(); // delta ids
+			const revertedPriceFields = new Set(); // `${pricingDeltaId}|${priceFieldKey}` individually reverted
+			const deselectedUnits = new Set(); // unit keys NOT selected (default: everything selected)
+			const collapsed = new Set();
+			// rebuilt every render for the current view; used by toggle/cascade/metrics
+			let UNITS = { list: [], map: {} };
+
+			const cur = () => products.find((p) => p.id === selectedId);
+			const isAmazon = () => channel === 'AMAZON';
+			const mk = () => (isAmazon() ? marketplace : '-');
+			const live = (p) => p.deltas.filter((x) => !reverted.has(x.id));
+			const scopeLabel = () => (isAmazon() ? 'Amazon ' + marketplace : 'Shopify');
+			const viewKey = () => `${selectedId}|${channel}|${marketplace || ''}`;
+			const mpsList = () => {
+				const a = cur().channels.find((c) => c.type === 'AMAZON');
+				return a ? a.marketplaces.join(', ') : '';
+			};
+			const isPricingOwned = (x) =>
+				x.group === 'attributes' && x.hierarchy && PRICING_HIERARCHIES.includes(x.hierarchy.key);
+
+			// A change record is "in view" for the active channel + marketplace.
+			// Media is channel-level: it ignores the marketplace dimension.
+			function inView(x) {
+				if (reverted.has(x.id)) return false;
+				if (x.channel !== channel) return false;
+				if (isAmazon() && x.group !== 'media' && x.marketplace !== marketplace) return false;
+				return true;
+			}
+
+			function toggleCollapse(headEl, key) {
+				const el = headEl.parentNode;
+				if (collapsed.has(key)) {
+					collapsed.delete(key);
+					el.classList.remove('collapsed');
+				} else {
+					collapsed.add(key);
+					el.classList.add('collapsed');
+				}
+			}
+
+			/* ---------- helpers ---------- */
+			function esc(s) {
+				return String(s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]);
+			}
+			function val(v) {
+				if (v === null || v === undefined || v === '') return '<em class="ev">(empty)</em>';
+				if (Array.isArray(v)) return v.length ? v.map(esc).join(', ') : '<em class="ev">(empty)</em>';
+				return esc(v);
+			}
+			function humanize(s) {
+				return String(s)
+					.replace(/_/g, ' ')
+					.replace(/\b\w/g, (c) => c.toUpperCase());
+			}
+			function chipFor(x) {
+				if (x.changeType === 'added') return '<span class="tag t-added">Added</span>';
+				if (x.changeType === 'removed') return '<span class="tag t-removed">Removed</span>';
+				return '';
+			}
+
+			/* ============================================================
+			 *  UNIT MODEL — the selectable units for the current view.
+			 *  A "unit" is one checkbox. Its `members` are the underlying
+			 *  change records it controls.
+			 * ============================================================ */
+			function blockKeyFor(level, variantSku) {
+				return level === 'product' ? 'parent' : 'variant:' + variantSku;
+			}
+			function buildUnitsForBlock(blockDeltas, blockKey) {
+				const units = [];
+				const g = (name) => blockDeltas.filter((x) => x.group === name);
+
+				// ATTRIBUTES (exclude pricing-owned)
+				const attrs = g('attributes').filter((x) => !isPricingOwned(x));
+				if (isAmazon()) {
+					// Amazon attributes split into two: DIRECT (primary / rule-based -> independent,
+					// like Shopify) and HIERARCHY-grouped (the root is selected as a whole).
+					attrs
+						.filter((x) => x.direct || !x.hierarchy)
+						.forEach((x) =>
+							units.push({
+								key: `attr|${blockKey}|${x.id}`,
+								group: 'attributes',
+								blockKey,
+								members: [x],
+								title: x.label,
+								directAttr: true,
+							}),
+						);
+					const byH = {};
+					attrs
+						.filter((x) => !x.direct && x.hierarchy)
+						.forEach((x) => {
+							const k = x.hierarchy.key;
+							(byH[k] = byH[k] || []).push(x);
+						});
+					Object.keys(byH).forEach((hk) => {
+						const members = byH[hk];
+						units.push({
+							key: `attr|${blockKey}|H:${hk}|${mk()}`,
+							group: 'attributes',
+							blockKey,
+							members,
+							title: members[0].hierarchy.label,
+							grouped: true,
+							composite: members.length > 1,
+							hierKey: hk,
+						});
+					});
+				} else {
+					attrs.forEach((x) =>
+						units.push({
+							key: `attr|${blockKey}|${x.id}`,
+							group: 'attributes',
+							blockKey,
+							members: [x],
+							title: x.label,
+							directAttr: true,
+						}),
+					);
+				}
+
+				// PRICING (single) — Amazon folds the pricing-owned attributes in
+				const priceDeltas = g('pricing');
+				if (priceDeltas.length) {
+					const owned = isAmazon() ? g('attributes').filter(isPricingOwned) : [];
+					units.push({
+						key: `price|${blockKey}|${mk()}`,
+						group: 'pricing',
+						blockKey,
+						single: true,
+						title: 'Pricing',
+						members: [...priceDeltas, ...owned],
+						owned,
+					});
+				}
+
+				// MEDIA (single, channel-level key — shared across marketplaces)
+				g('media').forEach((x) =>
+					units.push({
+						key: `media|${channel}|${blockKey}`,
+						group: 'media',
+						blockKey,
+						single: true,
+						channelLevel: true,
+						title: 'Media',
+						members: [x],
+					}),
+				);
+
+				// STRUCTURE (single per variant) — carries wrapper for sibling cascade
+				g('structure').forEach((x) => {
+					const wrapper =
+						(x.current && x.current.wrapper && x.current.wrapper.sku) ||
+						(x.original && x.original.wrapper && x.original.wrapper.sku) ||
+						null;
+					units.push({
+						key: `struct|${blockKey}|${mk()}`,
+						group: 'structure',
+						blockKey,
+						single: true,
+						wrapper,
+						mk: mk(),
+						title: 'Variant structure',
+						members: [x],
+					});
+				});
+
+				// VARIANT ATTRIBUTES (single per variant — all changed attrs together)
+				const vattr = g('variantAttributes');
+				if (vattr.length)
+					units.push({
+						key: `vattr|${blockKey}|${mk()}`,
+						group: 'variantAttributes',
+						blockKey,
+						single: true,
+						title: 'Variant attributes',
+						members: vattr,
+					});
+
+				// MISC (per type)
+				g('miscellaneous').forEach((x) =>
+					units.push({
+						key: `misc|${blockKey}|${x.baselineType}|${mk()}`,
+						group: 'miscellaneous',
+						blockKey,
+						title: x.label || humanize(x.baselineType),
+						members: [x],
+					}),
+				);
+
+				return units;
+			}
+
+			/* ---------- selection / cascade ---------- */
+			function setSel(key, sel) {
+				sel ? deselectedUnits.delete(key) : deselectedUnits.add(key);
+			}
+			function rawSelected(u) {
+				return !deselectedUnits.has(u.key);
+			}
+			// structure units forced ON because a dependent variant-attribute unit is selected
+			function forcedStructureKeys() {
+				const forced = new Set();
+				const vSel = UNITS.list.filter((u) => u.group === 'variantAttributes' && rawSelected(u));
+				const sUnits = UNITS.list.filter((u) => u.group === 'structure');
+				if (isAmazon()) {
+					vSel.forEach((v) =>
+						sUnits.filter((s) => s.blockKey === v.blockKey).forEach((s) => forced.add(s.key)),
+					);
+					// propagate to wrapper siblings
+					sUnits.forEach((s) => {
+						if (forced.has(s.key)) siblingStructureKeys(s).forEach((k) => forced.add(k));
+					});
+				} else if (vSel.length) {
+					sUnits.forEach((s) => forced.add(s.key)); // Shopify: all variants
+				}
+				return forced;
+			}
+			function siblingStructureKeys(s) {
+				return UNITS.list
+					.filter(
+						(x) =>
+							x.group === 'structure' &&
+							x.key !== s.key &&
+							x.mk === s.mk &&
+							(isAmazon() ? x.wrapper === s.wrapper : true),
+					)
+					.map((x) => x.key);
+			}
+			function effectiveSelected(u, forced) {
+				if (u.group === 'structure' && forced && forced.has(u.key)) return true;
+				return rawSelected(u);
+			}
+			function siblingSkus(u) {
+				// labels of OTHER variants sharing this structure unit's wrapper/group
+				return UNITS.list
+					.filter(
+						(x) =>
+							x.group === 'structure' &&
+							x.key !== u.key &&
+							x.mk === u.mk &&
+							(isAmazon() ? x.wrapper === u.wrapper : true),
+					)
+					.map((x) => x.blockKey.replace('variant:', ''));
+			}
+
+			function toggleUnit(key) {
+				const u = UNITS.map[key];
+				if (!u) return;
+				const willSelect = deselectedUnits.has(key);
+				setSel(key, willSelect);
+
+				if (u.group === 'structure') {
+					// sibling cascade (Amazon: same wrapper; Shopify: all)
+					siblingStructureKeys(u).forEach((k) => setSel(k, willSelect));
+				}
+				if (u.group === 'variantAttributes' && willSelect) {
+					// selecting variant attributes pulls in structure if it changed
+					const myStruct = UNITS.list.filter(
+						(s) => s.group === 'structure' && (isAmazon() ? s.blockKey === u.blockKey : true),
+					);
+					myStruct.forEach((s) => {
+						setSel(s.key, true);
+						siblingStructureKeys(s).forEach((k) => setSel(k, true));
+					});
+					if (!isAmazon() && UNITS.list.some((s) => s.group === 'structure')) {
+						// Shopify: also pull ALL variants' variant attributes
+						UNITS.list.filter((x) => x.group === 'variantAttributes').forEach((x) => setSel(x.key, true));
+					}
+				}
+				renderAll();
+			}
+
+			/* ============================================================
+			 *  LEFT — product list
+			 * ============================================================ */
+			function groupCounts(p) {
+				const out = {};
+				live(p).forEach((x) => (out[x.group] = (out[x.group] || 0) + 1));
+				return out;
+			}
+			function renderProductList() {
+				prodCount.textContent = products.length;
+				productList.innerHTML = products
+					.map((p) => {
+						const total = live(p).length;
+						const gc = groupCounts(p);
+						const chips = GROUP_ORDER.filter((g) => gc[g])
+							.map(
+								(g) =>
+									`<span class="gcount">${GROUPS[g].name}<span class="gnum">${gc[g]}</span></span>`,
+							)
+							.join('');
+						return `<div class="prodCard ${p.id === selectedId ? 'active' : ''}" onclick="pickProduct(${p.id})">
+							<div class="nm">${esc(p.name)}</div>
+							<div class="mt"><span class="mono">${esc(p.sku)}</span><span class="total">${total} changes</span></div>
+							<div class="gcounts">${chips}</div>
+						</div>`;
+					})
+					.join('');
+			}
+
+			/* ============================================================
+			 *  RIGHT — channel / marketplace bar
+			 * ============================================================ */
+			function renderBar() {
+				const p = cur();
+				const chans = p.channels
+					.map((c) => {
+						const cnt = live(p).filter((x) => x.channel === c.type).length;
+						return `<button class="chanTab ${channel === c.type ? 'active' : ''}" onclick="setChannel('${c.type}')">
+							${c.type === 'AMAZON' ? 'Amazon' : 'Shopify'} <span class="ct">${cnt}</span></button>`;
+					})
+					.join('');
+				let html = `<div class="barRow"><span class="barLbl">Channel</span>${chans}</div>`;
+				// Marketplace chips render ONLY for Amazon
+				if (isAmazon()) {
+					const mps = p.channels.find((c) => c.type === 'AMAZON').marketplaces;
+					html += `<div class="barRow"><span class="barLbl">Marketplace</span>${mps
+						.map((m) => {
+							const cnt = live(p).filter(
+								(x) => x.channel === 'AMAZON' && x.group !== 'media' && x.marketplace === m,
+							).length;
+							return `<button class="mpChip ${marketplace === m ? 'active' : ''}" onclick="setMarketplace('${m}')">
+								${m} <span class="ct">${cnt}</span></button>`;
+						})
+						.join('')}</div>`;
+				}
+				bar.innerHTML = html;
+			}
+
+			/* ============================================================
+			 *  RIGHT — blocks (parent + per variant), grouped, with units
+			 * ============================================================ */
+			function renderDetail() {
+				const p = cur();
+				dName.textContent = p.name;
+				const recs = live(p).filter(inView);
+				const vc = new Set(recs.filter((x) => x.variantSku).map((x) => x.variantSku)).size;
+				dMeta.innerHTML = `<span class="mono">${esc(p.sku)}</span> · ${p.channels.map((c) => c.type).join(' + ')} · ${vc ? vc + ' variant(s) changed' : 'no variant changes'} · ${esc(scopeLabel())}`;
+
+				// rebuild unit index for this view
+				UNITS = { list: [], map: {} };
+
+				if (!recs.length) {
+					detailBody.innerHTML = `<div class="empty"><div class="big">✓</div>
+						<div style="margin-top:8px;font-weight:700">No changes for ${esc(scopeLabel())}.</div>
+						<div style="font-size:12px;margin-top:4px">Nothing changed for this product on ${esc(scopeLabel())} since the last sync.</div></div>`;
+					renderMetrics();
+					return;
+				}
+
+				// build all units first (so cascade/forced calc sees the full view)
+				const blocks = [];
+				const parent = recs.filter((x) => x.level === 'product');
+				if (parent.length)
+					blocks.push({
+						blockKey: 'parent',
+						kind: 'parent',
+						title: esc(p.sku),
+						sub: '',
+						units: buildUnitsForBlock(parent, 'parent'),
+					});
+				p.variants.forEach((v) => {
+					const vDeltas = recs.filter((x) => x.variantSku === v.sku);
+					if (vDeltas.length) {
+						const bk = 'variant:' + v.sku;
+						blocks.push({
+							blockKey: bk,
+							kind: 'variant',
+							title: esc(v.sku),
+							sub: esc(v.desc),
+							units: buildUnitsForBlock(vDeltas, bk),
+						});
+					}
+				});
+				blocks.forEach((b) =>
+					b.units.forEach((u) => {
+						UNITS.list.push(u);
+						UNITS.map[u.key] = u;
+					}),
+				);
+
+				const forced = forcedStructureKeys();
+
+				let html = '';
+				if (!parent.length)
+					html += `<div class="note">No parent-level changes for ${esc(scopeLabel())} — variant changes only.</div>`;
+				blocks.forEach((b) => (html += renderBlock(b, forced)));
+				detailBody.innerHTML = html;
+				renderMetrics();
+			}
+
+			function renderBlock(b, forced) {
+				const sel = b.units.filter((u) => effectiveSelected(u, forced)).length;
+				const ck = `${viewKey()}|${b.blockKey}`;
+				const isVar = b.kind === 'variant';
+				// wrapper tag for Amazon variant blocks
+				const sUnit = b.units.find((u) => u.group === 'structure');
+				const wrapTag =
+					isVar && isAmazon() && sUnit && sUnit.wrapper
+						? `<span class="wrapTag">wrapper ${esc(sUnit.wrapper)}</span>`
+						: '';
+
+				let body = '';
+				GROUP_ORDER.forEach((gKey) => {
+					const units = b.units.filter((u) => u.group === gKey);
+					if (units.length) body += renderGroup(b.blockKey, gKey, units, forced);
+				});
+
+				return `<div class="block ${collapsed.has(ck) ? 'collapsed' : ''}">
+					<div class="blockHead ${b.kind}" onclick="toggleCollapse(this,'${ck}')">
+						<div class="blockTitle">
+							<span class="bcaret">▼</span>
+							<span class="kind">${isVar ? 'Variant' : 'Parent'}</span>
+							<span class="sku mono">${b.title}</span>
+							${b.sub ? `<span class="desc">${b.sub}</span>` : ''}
+							${wrapTag}
+							<span class="cnt">${b.units.length} group${b.units.length > 1 ? 's' : ''} · ${sel} selected</span>
+						</div>
+						<div class="right" onclick="event.stopPropagation()">
+							<button class="btn small ghost" onclick="setBlock('${b.blockKey}',true)">Select all</button>
+							<button class="btn small ghost" onclick="setBlock('${b.blockKey}',false)">Deselect all</button>
+							<button class="btn small danger" onclick="revertBlock('${b.blockKey}')">↺ Revert ${isVar ? 'variant' : 'parent'}</button>
+						</div>
+					</div>
+					<div class="blockBody">${body}</div>
+				</div>`;
+			}
+
+			function renderGroup(blockKey, gKey, units, forced) {
+				const sel = units.filter((u) => effectiveSelected(u, forced)).length;
+				const ck = `${viewKey()}|${blockKey}::${gKey}`;
+				const noteHtml = groupNote(gKey, units);
+				return `<div class="group ${collapsed.has(ck) ? 'collapsed' : ''}">
+					<div class="groupHead" onclick="toggleCollapse(this,'${ck}')">
+						<div class="left">
+							<div>
+								<div class="groupName">${GROUPS[gKey].name}</div>
+								<div class="groupSub">${units.length} item${units.length > 1 ? 's' : ''} · ${sel} selected</div>
+							</div>
+						</div>
+						<div class="right"><span class="caret">▼</span></div>
+					</div>
+					<div class="groupBody">${noteHtml}${units.map((u) => renderUnit(u, forced)).join('')}</div>
+				</div>`;
+			}
+
+			// contextual notes per group (channel-aware)
+			function groupNote(gKey, units) {
+				const box = (cls, txt) =>
+					`<div class="notebox ${cls}"><span class="ni">ⓘ</span><span>${txt}</span></div>`;
+				if (gKey === 'structure')
+					return isAmazon()
+						? box(
+								'',
+								`Amazon: variant structure is shared by the parent wrapper. Selecting one variant also selects its <b>sibling variants in the same wrapper</b>.`,
+							)
+						: box(
+								'',
+								`Shopify: variant structure is shared across the product. Selecting it syncs structure for <b>all variants</b>.`,
+							);
+				if (gKey === 'variantAttributes')
+					return isAmazon()
+						? box(
+								'',
+								`All of a variant's attribute changes sync together. If this variant's structure also changed, selecting attributes will also select its <b>structure (and sibling variants)</b>.`,
+							)
+						: box(
+								'',
+								`All variant attribute changes sync together. If structure changed, selecting any variant's attributes selects <b>all variants' attributes and structure</b>.`,
+							);
+				if (gKey === 'pricing' && isAmazon())
+					return box(
+						'',
+						`Amazon requires the <b>whole pricing block</b> — offer & list price (purchasable_offer / list_price) are included; partial pricing can't be synced.`,
+					);
+				return '';
+			}
+
+			/* ---------- one selectable unit (one checkbox) ---------- */
+			function renderUnit(u, forced) {
+				const locked = u.group === 'structure' && forced.has(u.key) && !rawSelected(u);
+				const selected = effectiveSelected(u, forced);
+
+				// badges
+				const badges = [];
+				if (u.group === 'attributes' && u.grouped)
+					badges.push('<span class="badge hier">Hierarchy · all together</span>');
+				if (u.single) badges.push('<span class="badge single">Single select</span>');
+				if (u.channelLevel) badges.push('<span class="badge channel">Channel-wide</span>');
+				if (locked) badges.push('<span class="badge auto">Auto · from variant attributes</span>');
+
+				// title + info
+				let title = u.title;
+				let info = '';
+				if (u.group === 'attributes' && !u.grouped)
+					info = `<span class="info" title="internal name: ${esc(u.members[0].name)}">i</span>`;
+
+				// body
+				let body = '';
+				if (u.group === 'attributes') {
+					body = u.grouped
+						? subRows(u.members, 'Sub-property')
+						: cmp(u.members[0].original, u.members[0].current);
+				} else if (u.group === 'pricing') {
+					body = renderPrice(u.members.find((m) => m.group === 'pricing'));
+					if (u.owned && u.owned.length)
+						body +=
+							`<div class="ownedHint">Included with pricing (Amazon)</div>` +
+							subRows(u.owned, 'Pricing attribute');
+				} else if (u.group === 'media') {
+					body = renderMedia(u.members[0]);
+				} else if (u.group === 'structure') {
+					body = renderStructure(u.members[0]);
+					const sibs = siblingSkus(u);
+					if (sibs.length)
+						body += `<div class="ownedHint">Also affects: ${sibs.map((s) => `<span class="mono">${esc(s)}</span>`).join(', ')}</div>`;
+				} else if (u.group === 'variantAttributes') {
+					body = subRows(u.members, 'Attribute');
+				} else {
+					body = renderMisc(u.members[0]);
+				}
+
+				const lockAttr = locked ? 'disabled' : '';
+				const lockCls = locked ? 'locked' : '';
+				const onchange = locked ? '' : `onchange="toggleUnit('${u.key}')"`;
+
+				// Revert is per individual change (in the body) for grouped attributes,
+				// pricing and variant attributes. Single-change groups (media, variant
+				// structure, misc, direct attributes) keep ONE revert in the header.
+				const headerRevert =
+					u.group === 'media' ||
+					u.group === 'structure' ||
+					u.group === 'miscellaneous' ||
+					(u.group === 'attributes' && !u.grouped);
+
+				return `<div class="chg ${selected ? 'sel' : ''}">
+					<div class="chgHead">
+						<div class="l">
+							<input class="chk" id="u-${u.key}" type="checkbox" ${selected ? 'checked' : ''} ${lockAttr} ${onchange} />
+							<label class="chkbox ${lockCls}" for="u-${u.key}" title="${locked ? 'Locked — required by a selected variant-attribute change' : 'Select'}">
+								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+							</label>
+							<span class="chgTitle">${esc(title)}</span>${info}${badges.join('')}
+						</div>
+						${headerRevert ? `<button class="btn small danger" onclick="revertUnit('${u.key}')">↺ Revert</button>` : ''}
+					</div>
+					<div class="chgBody">${body}</div>
+				</div>`;
+			}
+
+			function cmp(o, c) {
+				return `<div class="cmp">
+					<div class="cmpCol o"><strong>Original</strong><div class="cmpVal">${val(o)}</div></div>
+					<div class="cmpCol c"><strong>Current</strong><div class="cmpVal">${val(c)}</div></div>
+				</div>`;
+			}
+			// read-only rows for composite hierarchy children / variant attributes / pricing-owned
+			function subRows(members, kind) {
+				return `<div class="subRows">${members
+					.map(
+						(m) => `<div class="subRow">
+							<div class="sk">
+								<span class="skl">${esc(m.label)} <span class="info" title="internal name: ${esc(m.name || '')}">i</span> ${chipFor(m)}</span>
+								<button class="btn small danger" style="margin-left:auto" onclick="revertChange(${m.id})">↺ Revert</button>
+							</div>
+							${cmp(m.original, m.current)}
+						</div>`,
+					)
+					.join('')}</div>`;
+			}
+
+			/* ---------- pricing — changed price-types only, per-type revert ---------- */
+			function renderPrice(x) {
+				if (!x) return '';
+				const amazon = x.channel === 'AMAZON';
+				const o = x.original || {},
+					c = x.current || {};
+				const dates = (sp) =>
+					sp && (sp.startDate || sp.endDate) ? `${sp.startDate || '…'} → ${sp.endDate || '…'}` : '';
+				const qd = (arr) =>
+					arr && arr.length
+						? `<span class="qd">${arr.map((q) => `Qty ≥${q.quantity}: ${q.price}${q.priceType === 'percent' ? '%' : ' (fixed)'}`).join('<br>')}</span>`
+						: '<em class="ev">(empty)</em>';
+
+				// Collect only price types that actually changed.
+				const fields = [];
+				const add = (key, label, ov, cv, meta, isHtml) => {
+					const a = isHtml ? ov : (ov ?? '');
+					const b = isHtml ? cv : (cv ?? '');
+					if (String(a) !== String(b)) fields.push({ key, label, ov, cv, meta, isHtml });
+				};
+				add('listPrice', 'List price', o.listPrice?.price, c.listPrice?.price);
+				add('offerPrice', 'Offer price', o.offerPrice?.price, c.offerPrice?.price);
+				if (amazon) {
+					const dm =
+						dates(o.salePrice) || dates(c.salePrice)
+							? `Original: ${dates(o.salePrice) || '—'} · Current: ${dates(c.salePrice) || '—'}`
+							: '';
+					add('salePrice', 'Sale price', o.salePrice?.price, c.salePrice?.price, dm);
+					add(
+						'businessBase',
+						'Business base price',
+						o.businessPrice?.baseBusinessPrice,
+						c.businessPrice?.baseBusinessPrice,
+					);
+					add(
+						'consumerSale',
+						'Consumer sale price',
+						o.businessPrice?.consumerSalePrice,
+						c.businessPrice?.consumerSalePrice,
+					);
+					add(
+						'quantityDiscounts',
+						'Quantity discounts',
+						qd(o.businessPrice?.quantityDiscount),
+						qd(c.businessPrice?.quantityDiscount),
+						'',
+						true,
+					);
+				}
+
+				const remaining = fields.filter((f) => !revertedPriceFields.has(`${x.id}|${f.key}`));
+				if (!remaining.length) return '<div class="note">No remaining pricing changes.</div>';
+
+				const rows = remaining
+					.map(
+						(f) => `<div class="prow">
+							<div class="pl">${f.label}${f.meta ? `<div class="pmeta">${f.meta}</div>` : ''}</div>
+							<div class="pv o">${f.isHtml ? f.ov : val(f.ov)}</div>
+							<div class="pv c">${f.isHtml ? f.cv : val(f.cv)}</div>
+							<div class="pa"><button class="btn small danger" onclick="revertPriceField(${x.id}, '${f.key}')">↺ Revert</button></div>
+						</div>`,
+					)
+					.join('');
+				return `<div class="ptable"><div class="phead"><span>Price type</span><span>Original</span><span>Current</span><span></span></div>${rows}</div>`;
+			}
+
+			/* ---------- media ---------- */
+			function renderMedia(x) {
+				const oN = x.original.map((m) => m.name),
+					cN = x.current.map((m) => m.name);
+				const cell = (m, cls) => {
+					const corner =
+						cls === 'gnew'
+							? '<span class="corner">NEW</span>'
+							: cls === 'removed'
+								? '<span class="corner">DEL</span>'
+								: '';
+					return `<div class="media ${m.main ? 'main' : ''} ${cls}">${corner}<span class="fn">${esc(m.name)}</span></div>`;
+				};
+				return `<div class="cmp">
+					<div class="cmpCol o"><strong>Original</strong><div class="mediaGrid">${x.original.map((m) => cell(m, cN.includes(m.name) ? '' : 'removed')).join('')}</div></div>
+					<div class="cmpCol c"><strong>Current</strong><div class="mediaGrid">${x.current.map((m) => cell(m, oN.includes(m.name) ? '' : 'gnew')).join('')}</div></div>
+				</div>`;
+			}
+
+			/* ---------- variant structure ---------- */
+			function renderStructure(x) {
+				const o = x.original,
+					c = x.current;
+				const oL = o.axes.map((a) => a.label),
+					cL = c.axes.map((a) => a.label);
+				const axisChips = (axes, otherLabels, addClass) =>
+					axes
+						.map(
+							(a) =>
+								`<span class="axis ${!otherLabels.includes(a.label) ? addClass : ''}" title="${esc(a.name)}">${esc(a.label)}</span>`,
+						)
+						.join('') || '<em class="ev">(empty)</em>';
+
+				let html = `<div class="cmp">
+					<div class="cmpCol o"><strong>Original axes</strong><div class="cmpVal"><div class="axisLine">${axisChips(o.axes, cL, 'rem')}</div></div></div>
+					<div class="cmpCol c"><strong>Current axes</strong><div class="cmpVal"><div class="axisLine">${axisChips(c.axes, oL, 'add')}</div></div></div>
+				</div>`;
+
+				if (x.channel === 'AMAZON') {
+					const wr = (k, ov, cv) =>
+						`<div class="wr"><span class="wk">${k}</span><span>${val(ov)}</span><span>${val(cv)}</span></div>`;
+					const ow = o.wrapper,
+						cw = c.wrapper;
+					html += `<div class="wrapBox"><div class="wl">Parent wrapper (Amazon)</div>
+						<div class="wrapTable">
+							<div class="wr"><span class="wk"></span><span class="wk">Original</span><span class="wk">Current</span></div>
+							${wr('Parent SKU', ow?.sku, cw?.sku)}
+							${wr('ASIN', ow?.asin, cw?.asin)}
+							${wr('Variation theme', ow?.variationTheme, cw?.variationTheme)}
+						</div></div>`;
+				}
+				return html;
+			}
+
+			/* ---------- miscellaneous ---------- */
+			function renderMisc(x) {
+				if (x.baselineType === 'AMAZON_CATEGORY' || x.baselineType === 'SHOPIFY_CATEGORY') {
+					const path = (a) =>
+						a && a.length ? a.map(esc).join('<span class="sep">›</span>') : '<em class="ev">(empty)</em>';
+					return `<div class="cmp">
+						<div class="cmpCol o"><strong>Original path</strong><div class="cmpVal">${path(x.original)}</div></div>
+						<div class="cmpCol c"><strong>Current path</strong><div class="cmpVal">${path(x.current)}</div></div>
+					</div>`;
+				}
+				return cmp(x.original, x.current);
+			}
+
+			/* ============================================================
+			 *  METRICS
+			 * ============================================================ */
+			function renderMetrics() {
+				const p = cur();
+				mProducts.textContent = products.filter((x) => live(x).length).length;
+				const view = live(p).filter(inView);
+				mView.textContent = view.length;
+				mVariants.textContent = new Set(view.filter((x) => x.variantSku).map((x) => x.variantSku)).size;
+				const forced = forcedStructureKeys();
+				let selCount = 0;
+				UNITS.list.forEach((u) => {
+					if (effectiveSelected(u, forced)) selCount += u.members.length;
+				});
+				mApproved.textContent = selCount;
+				const scope = scopeLabel();
+				btnSync.textContent = `Sync selected · ${scope} (${selCount})`;
+				btnRevertSel.textContent = `↺ Revert selected · ${scope} (${selCount})`;
+			}
+
+			/* ============================================================
+			 *  ACTIONS
+			 * ============================================================ */
+			function pickProduct(id) {
+				selectedId = id;
+				const p = cur();
+				channel = p.channels[0].type;
+				marketplace = channel === 'AMAZON' ? p.channels[0].marketplaces[0] : null;
+				renderAll();
+			}
+			function setChannel(c) {
+				channel = c;
+				const p = cur();
+				marketplace = c === 'AMAZON' ? p.channels.find((ch) => ch.type === 'AMAZON').marketplaces[0] : null;
+				renderAll();
+			}
+			function setMarketplace(m) {
+				marketplace = m;
+				renderAll();
+			}
+			function setBlock(blockKey, select) {
+				const forced = forcedStructureKeys();
+				UNITS.list
+					.filter((u) => u.blockKey === blockKey)
+					.forEach((u) => {
+						if (!select && u.group === 'structure' && forced.has(u.key) && !rawSelected(u)) return; // can't deselect locked
+						setSel(u.key, select);
+					});
+				renderAll();
+			}
+			function revertUnit(key) {
+				const u = UNITS.map[key];
+				if (!u) return;
+				u.members.forEach((m) => reverted.add(m.id));
+				deselectedUnits.delete(key);
+				toast(`Reverted "${u.title}" to its last synced value`, 'warn');
+				renderAll();
+			}
+			// Revert a single change record (direct/grouped attribute, variant attribute, pricing-owned attribute).
+			function revertChange(id) {
+				reverted.add(id);
+				toast('Reverted change to its last synced value', 'warn');
+				renderAll();
+			}
+			// Revert a single price-type change within the pricing group.
+			function revertPriceField(deltaId, key) {
+				revertedPriceFields.add(`${deltaId}|${key}`);
+				toast('Reverted pricing change to its last synced value', 'warn');
+				renderAll();
+			}
+			function revertBlock(blockKey) {
+				const hit = UNITS.list.filter((u) => u.blockKey === blockKey).flatMap((u) => u.members);
+				const label = blockKey === 'parent' ? 'parent' : blockKey.replace('variant:', '');
+				if (!confirm(`Revert all ${hit.length} change(s) for ${label} on ${scopeLabel()}?`)) return;
+				hit.forEach((m) => reverted.add(m.id));
+				toast(`Reverted ${hit.length} change(s) for ${label} (${scopeLabel()})`, 'warn');
+				renderAll();
+			}
+			function revertSelected() {
+				const forced = forcedStructureKeys();
+				const hit = UNITS.list.filter((u) => effectiveSelected(u, forced)).flatMap((u) => u.members);
+				if (!hit.length) return toast(`No selected changes to revert on ${scopeLabel()}`, 'warn');
+				if (!confirm(`Revert ${hit.length} selected change(s) for "${cur().name}" on ${scopeLabel()}?`)) return;
+				hit.forEach((m) => reverted.add(m.id));
+				toast(`Reverted ${hit.length} selected change(s) on ${scopeLabel()}`, 'warn');
+				renderAll();
+			}
+			function revertProduct() {
+				const p = cur();
+				const hit = live(p);
+				if (!hit.length) return toast('Nothing to revert', 'warn');
+				if (!confirm(`Revert ALL ${hit.length} changes for "${p.name}" across every channel & marketplace?`))
+					return;
+				hit.forEach((x) => reverted.add(x.id));
+				toast(`Whole product reverted (${hit.length} changes)`, 'warn');
+				renderAll();
+			}
+			function syncProduct() {
+				const forced = forcedStructureKeys();
+				const selUnits = UNITS.list.filter((u) => effectiveSelected(u, forced));
+				const changeCount = selUnits.reduce((n, u) => n + u.members.length, 0);
+				if (!changeCount) return toast(`No selected changes to sync on ${scopeLabel()}`, 'warn');
+				const mediaSel = selUnits.some((u) => u.group === 'media');
+				const extra = mediaSel && isAmazon() ? ` (media goes to all marketplaces: ${mpsList()})` : '';
+				toast(`Syncing ${changeCount} change(s) for "${cur().name}" on ${scopeLabel()}${extra}`);
+			}
+
+			function toast(msg, kind) {
+				const el = document.createElement('div');
+				el.className = 'toast ' + (kind || '');
+				el.innerHTML = `<span class="tdot"></span>${esc(msg)}`;
+				toastWrap.appendChild(el);
+				setTimeout(() => el.remove(), 3600);
+			}
+
+			function renderAll() {
+				renderProductList();
+				renderBar();
+				renderDetail();
+			}
+			pickProduct(products[0].id);
+		</script>
+	</body>
+</html>
