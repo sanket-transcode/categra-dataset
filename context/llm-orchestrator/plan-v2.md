@@ -122,7 +122,7 @@ Both `GeminiService` and `OllamaService` must populate all fields. `apiCallsCoun
 ### `types/llm-operation.types.ts`
 
 ```ts
-export type LlmOperationName = 'generation' | 'localization' | 'suggestion';
+export type LlmOperationName = 'GENERATION' | 'LOCALIZATION' | 'SUGGESTION';
 
 // Business-level input types
 export interface GenerationInput {
@@ -173,7 +173,7 @@ export interface SuggestionInput {
 ### `types/llm-config.types.ts`
 
 ```ts
-export type LlmProviderName = 'gemini' | 'ollama';
+export type LlmProviderName = 'GEMINI' | 'OLLAMA';
 
 export interface GenerationParams {
   temperature: number;
@@ -222,7 +222,7 @@ GEMINI_API_KEY=...
 GEMINI_PLAN=TIER_1                           # global default plan
 
 # ── Operation: generation ────────────────────────────────────────
-LLM_GENERATION_PROVIDER=ollama              # 'gemini' | 'ollama'
+LLM_GENERATION_PROVIDER=OLLAMA              # 'GEMINI' | 'OLLAMA'
 LLM_GENERATION_MODEL=llama3.2
 LLM_GENERATION_HOST=http://localhost:11434  # Ollama only
 LLM_GENERATION_TEMPERATURE=0
@@ -238,7 +238,7 @@ LLM_GENERATION_RETRY_BACKOFF_MS=1000
 LLM_GENERATION_GEMINI_PLAN=TIER_1           # Gemini only (overrides GEMINI_PLAN)
 
 # ── Operation: localization ──────────────────────────────────────
-LLM_LOCALIZATION_PROVIDER=gemini
+LLM_LOCALIZATION_PROVIDER=GEMINI
 LLM_LOCALIZATION_MODEL=gemini-3.1-flash-lite-preview
 LLM_LOCALIZATION_TEMPERATURE=0.5
 LLM_LOCALIZATION_TOP_P=0.95
@@ -426,11 +426,11 @@ export class LlmOrchestratorService implements OnApplicationBootstrap {
 
 ```ts
 async onApplicationBootstrap(): Promise<void> {
-  const ops: LlmOperationName[] = ['generation', 'localization', 'suggestion'];
+  const ops: LlmOperationName[] = ['GENERATION', 'LOCALIZATION', 'SUGGESTION'];
   const seen = new Set<string>();
   for (const op of ops) {
     const config = this.config.resolveOperation(op);
-    if (config.provider === 'ollama') {
+    if (config.provider === 'OLLAMA') {
       const key = `${config.host}::${config.model}`;
       if (!seen.has(key)) {
         seen.add(key);
@@ -565,8 +565,8 @@ export class LlmProviderFactory {
   ) {}
 
   resolve(name: LlmProviderName): ILlmProvider {
-    if (name === 'gemini') return this.gemini;
-    if (name === 'ollama') return this.ollama;
+    if (name === 'GEMINI') return this.gemini;
+    if (name === 'OLLAMA') return this.ollama;
     throw new Error(`Unknown LLM provider: ${name}`);
   }
 }
