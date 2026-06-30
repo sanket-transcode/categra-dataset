@@ -6,21 +6,21 @@
 
 ## Clarification Resolutions (applied throughout)
 
-| # | Decision |
-|---|---|
-| 1 | `@google/generative-ai` removed entirely; `@google/genai` only |
-| 2 | `GEMINI_PLAN` env-configurable, per-operation override supported, ignored by Ollama |
-| 3 | Exactly **3 operations**: `generation`, `localization`, `suggestion` |
-| 4 | Ollama warmup runs only for operations where provider = `ollama` |
-| 5 | `AI_FEATURE` is a universal gate at orchestrator; throws on disabled, all providers blocked |
-| 6 | Billing at orchestrator via atomic SQL; providers return `inputTokenCount + outputTokenCount + apiCallsCount` |
-| 7 | Debug cache writes (`AiPayloadForLabel`, `AiResponse`) removed |
-| 8 | Provider handles own transport retry; orchestrator retries on empty/failed response; business layer handles output validation; localization chunk logic simplified |
-| 9 | `think` flag as `LLM_<OPERATION>_THINK=true/false` env var, Ollama-only, ignored by Gemini |
-| 10 | `LlmController` kept, endpoint updated to call orchestrator |
-| 11 | All commented-out code in old `promptBuilder.ts` deleted, not preserved |
-| 12 | Old `LlmService` hard-deleted after all call sites migrated |
-| + | **`translation` renamed to `localization` everywhere** — method names, variable names, error codes, log keys, type names, env vars |
+| #   | Decision                                                                                                                                                           |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1   | `@google/generative-ai` removed entirely; `@google/genai` only                                                                                                     |
+| 2   | `GEMINI_PLAN` env-configurable, per-operation override supported, ignored by Ollama                                                                                |
+| 3   | Exactly **3 operations**: `generation`, `localization`, `suggestion`                                                                                               |
+| 4   | Ollama warmup runs only for operations where provider = `ollama`                                                                                                   |
+| 5   | `AI_FEATURE` is a universal gate at orchestrator; throws on disabled, all providers blocked                                                                        |
+| 6   | Billing at orchestrator via atomic SQL; providers return `inputTokenCount + outputTokenCount + apiCallsCount`                                                      |
+| 7   | Debug cache writes (`AiPayloadForLabel`, `AiResponse`) removed                                                                                                     |
+| 8   | Provider handles own transport retry; orchestrator retries on empty/failed response; business layer handles output validation; localization chunk logic simplified |
+| 9   | `think` flag as `LLM_<OPERATION>_THINK=true/false` env var, Ollama-only, ignored by Gemini                                                                         |
+| 10  | `LlmController` kept, endpoint updated to call orchestrator                                                                                                        |
+| 11  | All commented-out code in old `promptBuilder.ts` deleted, not preserved                                                                                            |
+| 12  | Old `LlmService` hard-deleted after all call sites migrated                                                                                                        |
+| +   | **`translation` renamed to `localization` everywhere** — method names, variable names, error codes, log keys, type names, env vars                                 |
 
 ---
 
@@ -28,11 +28,11 @@
 
 Each operation is an independent configuration unit (provider, model, all generation params). Business methods map onto them as follows:
 
-| Operation | Business methods that use it |
-|---|---|
-| `generation` | `generateProduct`, `suggestFamilyAttributes` |
-| `localization` | `localizeText` (was `translateText`), `localizeAttributes` (was `localizeAttributeValues`) |
-| `suggestion` | `suggestAmazonAttributes` |
+| Operation      | Business methods that use it                                                                    |
+| -------------- | ----------------------------------------------------------------------------------------------- |
+| `generation`   | `suggestProductContent`, `suggestFamilyAttributes`                                              |
+| `localization` | `localizeText` (was `translateText`), `localizeAttributeValues` (was `localizeAttributeValues`) |
+| `suggestion`   | `suggestAmazonAttributeValues`                                                                  |
 
 The orchestrator builds a different prompt per business method but uses the same provider/model/params for all methods within the same operation.
 
@@ -80,11 +80,11 @@ api/src/core/llm/
 
 ### Files Deleted After Migration
 
-| Deleted | Replaced by |
-|---|---|
-| `api/src/core/llm/llm.service.ts` | `ollama.service.ts` + `llm-orchestrator.service.ts` |
-| `api/src/core/llm/prompt-builder.ts` | `prompts/prompt-builder.service.ts` |
-| `api/src/core/llm/llm-errors.ts` | `errors/llm-errors.ts` (moved) |
+| Deleted                              | Replaced by                                                                     |
+| ------------------------------------ | ------------------------------------------------------------------------------- |
+| `api/src/core/llm/llm.service.ts`    | `ollama.service.ts` + `llm-orchestrator.service.ts`                             |
+| `api/src/core/llm/prompt-builder.ts` | `prompts/prompt-builder.service.ts`                                             |
+| `api/src/core/llm/llm-errors.ts`     | `errors/llm-errors.ts` (moved)                                                  |
 | `api/src/core/base/promptBuilder.ts` | `prompts/prompt-builder.service.ts` (all commented code deleted, not preserved) |
 
 ---
@@ -97,8 +97,8 @@ api/src/core/llm/
 export interface LlmPrompt {
   system: string;
   user: string;
-  format?: 'json' | 'text';   // defaults to 'json' for all current operations
-  think?: boolean;             // Ollama-only; set from OperationConfig, ignored by Gemini
+  format?: 'json' | 'text'; // defaults to 'json' for all current operations
+  think?: boolean; // Ollama-only; set from OperationConfig, ignored by Gemini
 }
 ```
 
@@ -110,7 +110,7 @@ export interface LlmGenerateResponse {
   inputTokenCount: number | null;
   outputTokenCount: number | null;
   totalContextCount: number | null;
-  apiCallsCount: number;         // always 1 per generate(); used for billing
+  apiCallsCount: number; // always 1 per generate(); used for billing
   provider: string;
   model: string;
   durationMs: number;
@@ -179,14 +179,14 @@ export interface GenerationParams {
   temperature: number;
   topP: number;
   topK: number;
-  maxOutputTokens?: number;   // Gemini
-  numPredict?: number;        // Ollama
-  numCtx?: number;            // Ollama
-  repeatPenalty?: number;     // Ollama
-  think?: boolean;            // Ollama extended thinking
-  thinkingBudget?: number;    // Gemini extended thinking (future)
+  maxOutputTokens?: number; // Gemini
+  numPredict?: number; // Ollama
+  numCtx?: number; // Ollama
+  repeatPenalty?: number; // Ollama
+  think?: boolean; // Ollama extended thinking
+  thinkingBudget?: number; // Gemini extended thinking (future)
   // Gemini quota
-  geminiPlan?: string;        // e.g. 'TIER_1'; ignored by Ollama
+  geminiPlan?: string; // e.g. 'TIER_1'; ignored by Ollama
 }
 
 export interface OperationConfig {
@@ -278,6 +278,7 @@ AI_TRANSLATE_TRANSLATION_RETRY_BACKOFF_MS → LLM_LOCALIZATION_RETRY_BACKOFF_MS
 ```
 
 Exposed API:
+
 ```ts
 resolveOperation(name: LlmOperationName): OperationConfig
 isAiFeatureEnabled(): boolean
@@ -292,7 +293,10 @@ isAiFeatureEnabled(): boolean
 ```ts
 export interface ILlmProvider {
   readonly providerName: string;
-  generate(prompt: LlmPrompt, config: OperationConfig): Promise<LlmGenerateResponse>;
+  generate(
+    prompt: LlmPrompt,
+    config: OperationConfig,
+  ): Promise<LlmGenerateResponse>;
   warmup?(config: OperationConfig): Promise<void>;
 }
 ```
@@ -315,6 +319,7 @@ export class GeminiModule {}
 ### `providers/gemini/gemini.service.ts`
 
 **Extracted from `ai.service.ts`:**
+
 - One `GoogleGenAI` client per API key (cached in `Map<apiKey, GoogleGenAI>`).
 - Uses `@google/genai` exclusively. `@google/generative-ai` removed.
 - System prompt passed as `config.systemInstruction` in the `@google/genai` request (native support).
@@ -326,6 +331,7 @@ export class GeminiModule {}
 - `think` flag from prompt is ignored (Gemini manages its own thinking config separately).
 
 **No longer in `ai.service.ts`:**
+
 - `genAI` / `genAiClient` fields.
 - `executeGeminiRequest` method.
 - `waitForGeminiQuota` / `trackGeminiTokenUsage` methods.
@@ -348,6 +354,7 @@ export class OllamaModule {}
 ### `providers/ollama/ollama.service.ts`
 
 **Ported and refactored from `llm.service.ts`:**
+
 - Client pool: `Map<host::requestTimeoutMs, Ollama>`.
 - Custom timeout-aware `fetch` wrapper (unchanged logic).
 - Does **not** query `LlmConfigService` directly (avoids circular dependency: `LlmModule` → `OllamaModule` → `LlmModule`). Warmup is instead triggered by `LlmOrchestratorService.onApplicationBootstrap` (see Orchestrator section). `OllamaService` exposes `warmup(config: OperationConfig): Promise<void>` which the orchestrator calls per relevant operation.
@@ -356,6 +363,7 @@ export class OllamaModule {}
 - `think` flag in `LlmPrompt` is passed directly to Ollama's `think` field.
 
 **What moves out vs stays:**
+
 - Retry for transport errors: stays in `OllamaService`.
 - Retry for empty/malformed LLM response: moves to orchestrator.
 - `generateTranslationResponseWithRetry` becomes generic `generateWithRetry` (not operation-specific).
@@ -383,7 +391,9 @@ export class PromptBuilderService {
 
   // localization operation
   buildLocalizationPrompt(input: LocalizationInput): LlmPrompt;
-  buildAttributeLocalizationPrompt(input: AttributeLocalizationInput): LlmPrompt;
+  buildAttributeLocalizationPrompt(
+    input: AttributeLocalizationInput,
+  ): LlmPrompt;
 
   // suggestion operation
   buildSuggestionPrompt(input: SuggestionInput): LlmPrompt;
@@ -394,11 +404,11 @@ Each method's content is identical to the current prompt content — only the re
 
 **Prompt files under `prompts/`:**
 
-| File | Contains |
-|---|---|
-| `generation.prompt.ts` | Product content prompt + family attributes prompt |
+| File                     | Contains                                                 |
+| ------------------------ | -------------------------------------------------------- |
+| `generation.prompt.ts`   | Product content prompt + family attributes prompt        |
 | `localization.prompt.ts` | Text localization prompt + attribute localization prompt |
-| `suggestion.prompt.ts` | Amazon attributes prompt + future suggestion prompts |
+| `suggestion.prompt.ts`   | Amazon attributes prompt + future suggestion prompts     |
 
 `PromptBuilderService` imports from these files. The old naming "translation" is replaced everywhere — method names, comments, example strings — with "localization".
 
@@ -547,11 +557,11 @@ private async recordUsage(
 All accept optional `accountId` for billing; all call the core `generate` method.
 
 ```ts
-async generateProduct(input: GenerationInput, accountId?: number): Promise<LlmGenerateResponse>;
+async suggestProductContent(input: GenerationInput, accountId?: number): Promise<LlmGenerateResponse>;
 async suggestFamilyAttributes(input: FamilyAttributesInput, accountId?: number): Promise<LlmGenerateResponse>;
 async localizeText(input: LocalizationInput, accountId?: number): Promise<LlmGenerateResponse>;
-async localizeAttributes(input: AttributeLocalizationInput, accountId?: number): Promise<LlmGenerateResponse>;
-async suggestAmazonAttributes(input: SuggestionInput, accountId?: number): Promise<LlmGenerateResponse>;
+async localizeAttributeValues(input: AttributeLocalizationInput, accountId?: number): Promise<LlmGenerateResponse>;
+async suggestAmazonAttributeValues(input: SuggestionInput, accountId?: number): Promise<LlmGenerateResponse>;
 ```
 
 ### `orchestrator/llm-provider-factory.service.ts`
@@ -582,7 +592,7 @@ export class LlmProviderFactory {
   imports: [
     GeminiModule,
     OllamaModule,
-    forwardRef(() => DatabaseModule),  // for Sequelize injection in orchestrator
+    forwardRef(() => DatabaseModule), // for Sequelize injection in orchestrator
   ],
   providers: [
     LlmConfigService,
@@ -605,9 +615,9 @@ export class LlmModule {}
 export class LlmController {
   constructor(private readonly orchestrator: LlmOrchestratorService) {}
 
-  @Post('generateProduct')
-  generateProduct(@Body() body: GenerationInput) {
-    return this.orchestrator.generateProduct(body);
+  @Post('suggestProductContent')
+  suggestProductContent(@Body() body: GenerationInput) {
+    return this.orchestrator.suggestProductContent(body);
   }
 }
 ```
@@ -620,16 +630,16 @@ No `accountId` on this endpoint (unauthenticated internal tool endpoint — bill
 
 ### Removed
 
-| Removed | Moved to |
-|---|---|
-| `genAI` / `genAiClient` fields | `GeminiService` |
-| `geminiModel`, `geminiPlan`, `googleApiKey`, `searchEngineId` | `LlmConfigService` / `GeminiService` |
-| `executeGeminiRequest` | `GeminiService.generate` |
-| `waitForGeminiQuota` / `trackGeminiTokenUsage` | `GeminiService` |
-| `translateTextWithUsageFallback` | replaced by `llmOrchestrator.localizeText` |
-| `aiFeatureEnabled` field + check | `LlmConfigService.isAiFeatureEnabled()` in orchestrator |
-| Account billing inline code | `LlmOrchestratorService.recordUsage` |
-| `setKey('AiPayloadForLabel')` + `setKey('AiResponse')` | deleted |
+| Removed                                                       | Moved to                                                |
+| ------------------------------------------------------------- | ------------------------------------------------------- |
+| `genAI` / `genAiClient` fields                                | `GeminiService`                                         |
+| `geminiModel`, `geminiPlan`, `googleApiKey`, `searchEngineId` | `LlmConfigService` / `GeminiService`                    |
+| `executeGeminiRequest`                                        | `GeminiService.generate`                                |
+| `waitForGeminiQuota` / `trackGeminiTokenUsage`                | `GeminiService`                                         |
+| `translateTextWithUsageFallback`                              | replaced by `llmOrchestrator.localizeText`              |
+| `aiFeatureEnabled` field + check                              | `LlmConfigService.isAiFeatureEnabled()` in orchestrator |
+| Account billing inline code                                   | `LlmOrchestratorService.recordUsage`                    |
+| `setKey('AiPayloadForLabel')` + `setKey('AiResponse')`        | deleted                                                 |
 
 ### Kept in `ai.service.ts`
 
@@ -696,6 +706,7 @@ async localizeText(
 ```
 
 Same shape but:
+
 - `__attempt` retry context removed (queued retry was using this; the orchestrator handles retry now).
 - `translateTextWithUsageFallback` call replaced with `runLocalizationChunk`.
 - Billing delegated to orchestrator (no explicit account config update after the call).
@@ -706,25 +717,25 @@ Same shape but:
 
 All occurrences of "translation" in the LLM layer and `ai.service.ts` become "localization". Applied to:
 
-| Before | After |
-|---|---|
-| `translateText` | `localizeText` |
-| `translateTextWithUsage` | `localizeTextWithUsage` |
-| `TranslationEntry` | `LocalizationEntry` |
-| `TranslationChunk` | `LocalizationChunk` |
-| `buildTranslationChunks` | `buildLocalizationChunks` |
-| `validateTranslationChunkOutput` | `validateLocalizationOutput` |
-| `mergeTranslationResults` | `mergeLocalizationResults` |
-| `logAiTranslationChunk` | `logAiLocalizationChunk` |
-| `getAiTranslationMaxAttempts` | removed (simplified) |
-| `getAiTranslationRetryBackoffMs` | removed (simplified) |
-| `AiTranslationValidationError` | `AiLocalizationValidationError` |
-| Error code `AI_TRANSLATION_FAILED` | `AI_LOCALIZATION_FAILED` |
-| Error code `AI_TRANSLATION_TIMEOUT` | `AI_LOCALIZATION_TIMEOUT` |
-| Log event `ollama_translation_failed` | `ollama_localization_failed` |
-| Env `AI_TRANSLATION_MAX_ATTEMPTS` | `LLM_LOCALIZATION_MAX_ATTEMPTS` (compat alias kept) |
-| `buildTranslateTextPrompt` | `buildLocalizationPrompt` |
-| Prompt method/file name `translation.prompt.ts` | `localization.prompt.ts` |
+| Before                                          | After                                               |
+| ----------------------------------------------- | --------------------------------------------------- |
+| `translateText`                                 | `localizeText`                                      |
+| `translateTextWithUsage`                        | `localizeTextWithUsage`                             |
+| `TranslationEntry`                              | `LocalizationEntry`                                 |
+| `TranslationChunk`                              | `LocalizationChunk`                                 |
+| `buildTranslationChunks`                        | `buildLocalizationChunks`                           |
+| `validateTranslationChunkOutput`                | `validateLocalizationOutput`                        |
+| `mergeTranslationResults`                       | `mergeLocalizationResults`                          |
+| `logAiTranslationChunk`                         | `logAiLocalizationChunk`                            |
+| `getAiTranslationMaxAttempts`                   | removed (simplified)                                |
+| `getAiTranslationRetryBackoffMs`                | removed (simplified)                                |
+| `AiTranslationValidationError`                  | `AiLocalizationValidationError`                     |
+| Error code `AI_TRANSLATION_FAILED`              | `AI_LOCALIZATION_FAILED`                            |
+| Error code `AI_TRANSLATION_TIMEOUT`             | `AI_LOCALIZATION_TIMEOUT`                           |
+| Log event `ollama_translation_failed`           | `ollama_localization_failed`                        |
+| Env `AI_TRANSLATION_MAX_ATTEMPTS`               | `LLM_LOCALIZATION_MAX_ATTEMPTS` (compat alias kept) |
+| `buildTranslateTextPrompt`                      | `buildLocalizationPrompt`                           |
+| Prompt method/file name `translation.prompt.ts` | `localization.prompt.ts`                            |
 
 **Scope**: `api/src/core/llm/` and `api/src/modules/app/ai/ai.service.ts`. External API response keys (e.g. `translation_success` response message keys) are outside this scope — only code internals are renamed.
 
@@ -732,12 +743,12 @@ All occurrences of "translation" in the LLM layer and `ai.service.ts` become "lo
 
 ## Retry Policy Summary
 
-| Layer | Handles | Mechanism |
-|---|---|---|
-| `OllamaService` | Transport: `ECONNRESET`, timeout, 5xx, `fetch failed` | `generateWithRetry`, bounded by `config.maxAttempts` + `retryBackoffMs` |
-| `GeminiService` | Quota: rate limit waits | `waitForQuota` blocks before each call |
-| `LlmOrchestratorService` | Retryable `LlmProviderError` that survived provider | `generateWithCommonRetry`, same attempt budget |
-| `ai.service.ts` | Localization output shape errors: parse fail, missing keys | 2-attempt fixed retry in `runLocalizationChunk` |
+| Layer                    | Handles                                                    | Mechanism                                                               |
+| ------------------------ | ---------------------------------------------------------- | ----------------------------------------------------------------------- |
+| `OllamaService`          | Transport: `ECONNRESET`, timeout, 5xx, `fetch failed`      | `generateWithRetry`, bounded by `config.maxAttempts` + `retryBackoffMs` |
+| `GeminiService`          | Quota: rate limit waits                                    | `waitForQuota` blocks before each call                                  |
+| `LlmOrchestratorService` | Retryable `LlmProviderError` that survived provider        | `generateWithCommonRetry`, same attempt budget                          |
+| `ai.service.ts`          | Localization output shape errors: parse fail, missing keys | 2-attempt fixed retry in `runLocalizationChunk`                         |
 
 No layer retries errors that belong to another layer.
 
@@ -801,14 +812,14 @@ No layer retries errors that belong to another layer.
 
 ## Design Principles Summary
 
-| Principle | Enforcement |
-|---|---|
-| Single entry point | All LLM calls go through `LlmOrchestratorService` |
-| Universal feature gate | Orchestrator throws `AI_FEATURE_DISABLED` if `AI_FEATURE != true` |
-| Provider agnostic | Business code never imports `GeminiService` or `OllamaService` |
-| Configuration driven | Provider + model + all params resolved from env; switch = one env var change |
-| One prompt per use case | Unified `prompts/` directory; no duplicate definitions |
-| Atomic billing | Single SQL statement per generate call; no read-modify-write race |
-| Retry isolation | Each layer retries only its own failure category |
-| No dead code | All commented-out prompts and debug writes removed |
-| Clean migration | Old `LlmService` hard-deleted after all call sites confirmed migrated |
+| Principle               | Enforcement                                                                  |
+| ----------------------- | ---------------------------------------------------------------------------- |
+| Single entry point      | All LLM calls go through `LlmOrchestratorService`                            |
+| Universal feature gate  | Orchestrator throws `AI_FEATURE_DISABLED` if `AI_FEATURE != true`            |
+| Provider agnostic       | Business code never imports `GeminiService` or `OllamaService`               |
+| Configuration driven    | Provider + model + all params resolved from env; switch = one env var change |
+| One prompt per use case | Unified `prompts/` directory; no duplicate definitions                       |
+| Atomic billing          | Single SQL statement per generate call; no read-modify-write race            |
+| Retry isolation         | Each layer retries only its own failure category                             |
+| No dead code            | All commented-out prompts and debug writes removed                           |
+| Clean migration         | Old `LlmService` hard-deleted after all call sites confirmed migrated        |
