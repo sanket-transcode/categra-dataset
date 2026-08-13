@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -85,7 +85,7 @@
 				font-size: 12.5px;
 				color: var(--muted);
 				margin-top: 6px;
-				max-width: 680px;
+				max-width: 640px;
 				line-height: 1.55;
 			}
 			.actions {
@@ -407,10 +407,10 @@
 				display: none;
 			}
 			.blockHead.parent {
-				border-left-color: var(--primary);
+				border-left-color: var(--secondary-focus);
 			}
 			.blockHead.variant {
-				border-left-color: var(--primary);
+				border-left-color: var(--secondary-focus);
 			}
 			.blockTitle {
 				display: flex;
@@ -440,15 +440,6 @@
 				font-size: 11px;
 				font-weight: 800;
 				color: var(--muted);
-			}
-			.wrapTag {
-				font-size: 10px;
-				font-weight: 800;
-				color: var(--secondary);
-				background: #eef1f4;
-				border: 1px solid #dfe5ea;
-				border-radius: 7px;
-				padding: 1px 7px;
 			}
 			.blockBody {
 				padding: 12px;
@@ -524,9 +515,6 @@
 				background: var(--card);
 				overflow: hidden;
 			}
-			.chg.sel {
-				border-color: #e2cdb8;
-			}
 			.chgHead {
 				display: flex;
 				align-items: center;
@@ -540,7 +528,6 @@
 				align-items: center;
 				gap: 9px;
 				min-width: 0;
-				flex-wrap: wrap;
 			}
 			.chk {
 				display: none;
@@ -570,15 +557,6 @@
 				border-color: var(--primary);
 			}
 			.chk:checked + .chkbox svg {
-				opacity: 1;
-			}
-			.chkbox.locked {
-				cursor: not-allowed;
-				background: #d9c4ab;
-				border-color: #d9c4ab;
-				opacity: 0.8;
-			}
-			.chkbox.locked svg {
 				opacity: 1;
 			}
 			.chgTitle {
@@ -658,90 +636,6 @@
 				background: #fdecea;
 				color: var(--destructive-dark);
 			}
-			/* badges */
-			.badge {
-				font-size: 9.5px;
-				font-weight: 800;
-				letter-spacing: 0.3px;
-				text-transform: uppercase;
-				padding: 2px 7px;
-				border-radius: 99px;
-				background: var(--card-alt);
-				color: var(--muted);
-				white-space: nowrap;
-			}
-			.badge.single {
-				background: #f0ece7;
-				color: #8a6f50;
-			}
-			.badge.channel {
-				background: #eef4fb;
-				color: #34597f;
-			}
-			.badge.auto {
-				background: #eef4fb;
-				color: #34597f;
-			}
-			.badge.locked {
-				background: #f3eadf;
-				color: #9a7b53;
-			}
-			.badge.hier {
-				background: #f0ece7;
-				color: #8a6f50;
-			}
-			/* note boxes */
-			.notebox {
-				display: flex;
-				gap: 8px;
-				align-items: flex-start;
-				background: var(--alert-bg);
-				border: 1px solid #f0d999;
-				color: #7a5b1e;
-				border-radius: 10px;
-				padding: 8px 11px;
-				font-size: 11.5px;
-				line-height: 1.5;
-				margin-bottom: 10px;
-			}
-			.notebox.info {
-				background: #eef4fb;
-				border-color: #cfe0f3;
-				color: #34597f;
-			}
-			.notebox .ni {
-				flex: none;
-				font-weight: 800;
-			}
-			/* read-only sub rows (composite hierarchy / variant attrs / pricing-owned) */
-			.subRows {
-				display: flex;
-				flex-direction: column;
-				gap: 8px;
-			}
-			.subRow {
-				border: 1px solid var(--line);
-				border-radius: 9px;
-				padding: 8px 10px;
-				background: var(--bg);
-			}
-			.subRow .sk {
-				font-size: 11px;
-				font-weight: 800;
-				color: var(--ink);
-				margin-bottom: 6px;
-				display: flex;
-				gap: 7px;
-				align-items: center;
-			}
-			.ownedHint {
-				font-size: 10.5px;
-				color: var(--muted);
-				font-weight: 700;
-				text-transform: uppercase;
-				letter-spacing: 0.4px;
-				margin: 4px 0 6px;
-			}
 			/* pricing table */
 			.ptable {
 				border: 1px solid var(--line);
@@ -752,15 +646,10 @@
 			.phead,
 			.prow {
 				display: grid;
-				grid-template-columns: 1.3fr 1fr 1fr auto;
+				grid-template-columns: 1.3fr 1fr 1fr;
 				gap: 10px;
 				padding: 9px 13px;
 				align-items: start;
-			}
-			.prow .pa {
-				display: flex;
-				justify-content: flex-end;
-				align-items: center;
 			}
 			.phead {
 				background: var(--card-alt);
@@ -941,7 +830,7 @@
 				gap: 9px;
 				align-items: center;
 				animation: slidein 0.22s ease;
-				max-width: 380px;
+				max-width: 360px;
 			}
 			.toast .tdot {
 				width: 8px;
@@ -985,9 +874,8 @@
 				<div>
 					<div class="brand"><span class="pip"></span> Categra · Sync</div>
 					<div class="sub">
-						Review what changed since the last stable sync, then pick exactly what to push. Selection rules
-						differ by channel: Amazon attributes group by hierarchy; pricing, media &amp; variant attributes
-						are single-select; variant structure cascades to siblings; media is common to all marketplaces.
+						Review what changed since the last stable sync. Pick a product, then a channel and (for Amazon)
+						a marketplace. Select the changes you want, then sync or revert them.
 					</div>
 				</div>
 				<div class="actions">
@@ -1042,13 +930,9 @@
 
 		<script>
 			/* ============================================================
-			 *  MOCK DATA
-			 *  Each change is one flat record. Amazon attribute records carry a
-			 *  `hierarchy` (root property) so they can be grouped/selected as a
-			 *  unit. Media records are CHANNEL-level (marketplace = null even on
-			 *  Amazon) — the same media shows in every marketplace view.
-			 *  Variant structure records carry the wrapper SKU (Amazon) so the UI
-			 *  can compute affected sibling variants.
+			 *  MOCK DATA — normalized to one flat change-record shape.
+			 *  Variants keyed by SKU. Variant-level changes vary per
+			 *  variant AND per marketplace. See delta-sync-review.md.
 			 * ============================================================ */
 			let DID = 0;
 			const d = (o) => ({ id: ++DID, ...o });
@@ -1059,8 +943,6 @@
 				businessPrice: { baseBusinessPrice: bb, consumerSalePrice: cs, quantityDiscount: qd || [] },
 			});
 			const shpPrice = (lp, op) => ({ listPrice: { price: lp }, offerPrice: { price: op } });
-			// hierarchy helpers (Amazon root property + label)
-			const H = (key, label) => ({ key, label });
 
 			const products = [
 				{
@@ -1076,73 +958,17 @@
 					],
 					deltas: [
 						/* ===== AMAZON · US ===== */
-						// DIRECT attributes (primary / rule-based) -> selected independently, like Shopify
 						d({
 							group: 'attributes',
 							level: 'product',
 							variantSku: null,
 							channel: 'AMAZON',
 							marketplace: 'US',
-							direct: true,
-							label: 'Brand',
-							name: 'brand',
-							changeType: 'updated',
-							original: 'Categra',
-							current: 'Categra Sport',
-						}),
-						d({
-							group: 'attributes',
-							level: 'product',
-							variantSku: null,
-							channel: 'AMAZON',
-							marketplace: 'US',
-							direct: true,
 							label: 'Material',
 							name: 'material',
 							changeType: 'updated',
 							original: 'Mesh',
 							current: 'Recycled knit',
-						}),
-						// COMPOSITE hierarchy: two children share item_package_dimensions -> one checkbox
-						d({
-							group: 'attributes',
-							level: 'product',
-							variantSku: null,
-							channel: 'AMAZON',
-							marketplace: 'US',
-							hierarchy: H('item_package_dimensions', 'Item package dimensions'),
-							label: 'Length',
-							name: 'length',
-							changeType: 'updated',
-							original: '30 cm',
-							current: '32 cm',
-						}),
-						d({
-							group: 'attributes',
-							level: 'product',
-							variantSku: null,
-							channel: 'AMAZON',
-							marketplace: 'US',
-							hierarchy: H('item_package_dimensions', 'Item package dimensions'),
-							label: 'Height',
-							name: 'height',
-							changeType: 'updated',
-							original: '11 cm',
-							current: '12 cm',
-						}),
-						// pricing-owned attribute (purchasable_offer) -> folded INTO pricing, hidden from Attributes
-						d({
-							group: 'attributes',
-							level: 'product',
-							variantSku: null,
-							channel: 'AMAZON',
-							marketplace: 'US',
-							hierarchy: H('purchasable_offer', 'Purchasable offer'),
-							label: 'Your price',
-							name: 'your_price',
-							changeType: 'updated',
-							original: '59.00',
-							current: '49.00',
 						}),
 						d({
 							group: 'pricing',
@@ -1162,7 +988,7 @@
 							variantSku: null,
 							channel: 'AMAZON',
 							marketplace: 'US',
-							baselineType: 'AMAZON_CATEGORY',
+							baselineType: 'category',
 							label: 'Category',
 							original: ['Shoes', 'Running'],
 							current: ['Shoes', 'Running', 'Trail'],
@@ -1173,59 +999,33 @@
 							variantSku: null,
 							channel: 'AMAZON',
 							marketplace: 'US',
-							baselineType: 'AMAZON_CONDITION_TYPE',
+							baselineType: 'condition_type',
 							label: 'Condition type',
 							original: 'New',
 							current: 'New — Open box',
 						}),
-						// CHANNEL-LEVEL media (marketplace null) -> shown in US/CA/UK identically
 						d({
-							group: 'media',
-							level: 'product',
-							variantSku: null,
+							group: 'structure',
+							level: 'variant',
+							variantSku: 'RSP-RED-43',
 							channel: 'AMAZON',
-							marketplace: null,
-							original: [
-								{ name: 'main_1.jpg', main: true },
-								{ name: 'side_a.jpg' },
-								{ name: 'old_life.jpg' },
-							],
-							current: [
-								{ name: 'main_2.jpg', main: true },
-								{ name: 'side_a.jpg' },
-								{ name: 'detail_new.jpg' },
-							],
+							marketplace: 'US',
+							original: {
+								axes: [
+									{ label: 'Size', name: 'size' },
+									{ label: 'Color', name: 'color' },
+								],
+								wrapper: { sku: 'RSP-PARENT', asin: 'B0PARENTUS', variationTheme: 'SIZE/COLOR' },
+							},
+							current: {
+								axes: [
+									{ label: 'Size', name: 'size' },
+									{ label: 'Color', name: 'color' },
+									{ label: 'Width', name: 'width' },
+								],
+								wrapper: { sku: 'RSP-PARENT', asin: 'B0PARENTUS', variationTheme: 'SIZE/COLOR/WIDTH' },
+							},
 						}),
-						// STRUCTURE change affects the whole wrapper -> one record per sibling variant (US)
-						...['RSP-RED-42', 'RSP-RED-43', 'RSP-BLU-42', 'RSP-BLU-43'].map((sku) =>
-							d({
-								group: 'structure',
-								level: 'variant',
-								variantSku: sku,
-								channel: 'AMAZON',
-								marketplace: 'US',
-								original: {
-									axes: [
-										{ label: 'Size', name: 'size' },
-										{ label: 'Color', name: 'color' },
-									],
-									wrapper: { sku: 'RSP-PARENT', asin: 'B0PARENTUS', variationTheme: 'SIZE/COLOR' },
-								},
-								current: {
-									axes: [
-										{ label: 'Size', name: 'size' },
-										{ label: 'Color', name: 'color' },
-										{ label: 'Width', name: 'width' },
-									],
-									wrapper: {
-										sku: 'RSP-PARENT',
-										asin: 'B0PARENTUS',
-										variationTheme: 'SIZE/COLOR/WIDTH',
-									},
-								},
-							}),
-						),
-						// variant attributes (single flag) — RED-42 has TWO changed attrs -> one selection unit
 						d({
 							group: 'variantAttributes',
 							level: 'variant',
@@ -1238,72 +1038,37 @@
 							original: ['Red'],
 							current: ['Crimson'],
 						}),
-						d({
-							group: 'variantAttributes',
-							level: 'variant',
-							variantSku: 'RSP-RED-42',
-							channel: 'AMAZON',
-							marketplace: 'US',
-							label: 'Size',
-							name: 'size',
-							changeType: 'updated',
-							original: ['42'],
-							current: ['42.5'],
-						}),
-						// variant-level ATTRIBUTES (direct + hierarchy-grouped)
-						d({
-							group: 'attributes',
-							level: 'variant',
-							variantSku: 'RSP-RED-42',
-							channel: 'AMAZON',
-							marketplace: 'US',
-							direct: true,
-							label: 'Care instructions',
-							name: 'care_instructions',
-							changeType: 'updated',
-							original: 'Hand wash',
-							current: 'Machine wash cold',
-						}),
-						d({
-							group: 'attributes',
-							level: 'variant',
-							variantSku: 'RSP-RED-42',
-							channel: 'AMAZON',
-							marketplace: 'US',
-							hierarchy: H('item_dimensions', 'Item dimensions'),
-							label: 'Length',
-							name: 'v_length',
-							changeType: 'updated',
-							original: '24 cm',
-							current: '25 cm',
-						}),
-						d({
-							group: 'attributes',
-							level: 'variant',
-							variantSku: 'RSP-RED-42',
-							channel: 'AMAZON',
-							marketplace: 'US',
-							hierarchy: H('item_dimensions', 'Item dimensions'),
-							label: 'Width',
-							name: 'v_width',
-							changeType: 'updated',
-							original: '9 cm',
-							current: '9.5 cm',
-						}),
 
-						/* ===== AMAZON · CA (different change set) ===== */
+						/* ===== AMAZON · CA (different variants) ===== */
 						d({
 							group: 'attributes',
 							level: 'product',
 							variantSku: null,
 							channel: 'AMAZON',
 							marketplace: 'CA',
-							direct: true,
 							label: 'Water resistance',
 							name: 'water_resistance',
 							changeType: 'added',
 							original: null,
 							current: 'Yes',
+						}),
+						d({
+							group: 'structure',
+							level: 'variant',
+							variantSku: 'RSP-RED-42',
+							channel: 'AMAZON',
+							marketplace: 'CA',
+							original: {
+								axes: [
+									{ label: 'Size', name: 'size' },
+									{ label: 'Color', name: 'color' },
+								],
+								wrapper: { sku: 'RSP-PARENT', asin: 'B0PARENTCA', variationTheme: 'SIZE/COLOR' },
+							},
+							current: {
+								axes: [{ label: 'Size', name: 'size' }],
+								wrapper: { sku: 'RSP-PARENT', asin: 'B0PARENTCA', variationTheme: 'SIZE' },
+							},
 						}),
 						d({
 							group: 'variantAttributes',
@@ -1332,13 +1097,30 @@
 							variantSku: 'RSP-BLU-42',
 							channel: 'AMAZON',
 							marketplace: 'CA',
-							baselineType: 'AMAZON_CONDITION_TYPE',
+							baselineType: 'condition_type',
 							label: 'Condition type',
 							original: 'New',
 							current: 'Used — Like new',
 						}),
 
 						/* ===== AMAZON · UK ===== */
+						d({
+							group: 'media',
+							level: 'product',
+							variantSku: null,
+							channel: 'AMAZON',
+							marketplace: 'UK',
+							original: [
+								{ name: 'main_uk_1.jpg', main: true },
+								{ name: 'side_a.jpg' },
+								{ name: 'old_life.jpg' },
+							],
+							current: [
+								{ name: 'main_uk_2.jpg', main: true },
+								{ name: 'side_a.jpg' },
+								{ name: 'detail_new.jpg' },
+							],
+						}),
 						d({
 							group: 'variantAttributes',
 							level: 'variant',
@@ -1352,7 +1134,7 @@
 							current: ['43.5'],
 						}),
 
-						/* ===== SHOPIFY (no marketplace) — attributes are individual ===== */
+						/* ===== SHOPIFY (no marketplace) ===== */
 						d({
 							group: 'attributes',
 							level: 'product',
@@ -1364,18 +1146,6 @@
 							changeType: 'updated',
 							original: 'Running Shoe Pro',
 							current: 'Running Shoe Pro — Marathon Edition',
-						}),
-						d({
-							group: 'attributes',
-							level: 'product',
-							variantSku: null,
-							channel: 'SHOPIFY',
-							marketplace: null,
-							label: 'Material',
-							name: 'material',
-							changeType: 'updated',
-							original: 'Mesh',
-							current: 'Recycled knit',
 						}),
 						d({
 							group: 'pricing',
@@ -1392,19 +1162,10 @@
 							variantSku: null,
 							channel: 'SHOPIFY',
 							marketplace: null,
-							baselineType: 'TAGS',
+							baselineType: 'tags',
 							label: 'Tags',
 							original: ['running', 'mesh'],
 							current: ['running', 'recycled', 'marathon'],
-						}),
-						d({
-							group: 'media',
-							level: 'variant',
-							variantSku: 'RSP-RED-42',
-							channel: 'SHOPIFY',
-							marketplace: null,
-							original: [{ name: 'red42_a.jpg', main: true }],
-							current: [{ name: 'red42_a.jpg', main: true }, { name: 'red42_b.jpg' }],
 						}),
 						d({
 							group: 'variantAttributes',
@@ -1417,6 +1178,15 @@
 							changeType: 'updated',
 							original: ['Red'],
 							current: ['Ruby'],
+						}),
+						d({
+							group: 'media',
+							level: 'variant',
+							variantSku: 'RSP-RED-42',
+							channel: 'SHOPIFY',
+							marketplace: null,
+							original: [{ name: 'red42_a.jpg', main: true }],
+							current: [{ name: 'red42_a.jpg', main: true }, { name: 'red42_b.jpg' }],
 						}),
 					],
 				},
@@ -1433,7 +1203,6 @@
 							variantSku: null,
 							channel: 'AMAZON',
 							marketplace: 'DE',
-							direct: true,
 							label: 'Power',
 							name: 'wattage',
 							changeType: 'updated',
@@ -1446,7 +1215,6 @@
 							variantSku: null,
 							channel: 'AMAZON',
 							marketplace: 'DE',
-							direct: true,
 							label: 'Warranty',
 							name: 'warranty_period',
 							changeType: 'updated',
@@ -1465,25 +1233,12 @@
 							]),
 						}),
 						d({
-							group: 'media',
-							level: 'product',
-							variantSku: null,
-							channel: 'AMAZON',
-							marketplace: null,
-							original: [{ name: 'kitchen_old.jpg', main: true }, { name: 'box.jpg' }],
-							current: [
-								{ name: 'kitchen_premium.jpg', main: true },
-								{ name: 'box.jpg' },
-								{ name: 'closeup.jpg' },
-							],
-						}),
-						d({
 							group: 'miscellaneous',
 							level: 'product',
 							variantSku: null,
 							channel: 'AMAZON',
 							marketplace: 'DE',
-							baselineType: 'AMAZON_CONDITION_TYPE',
+							baselineType: 'condition_type',
 							label: 'Condition type',
 							original: 'New',
 							current: 'Refurbished',
@@ -1510,12 +1265,25 @@
 							current: shpPrice('279.00', '249.00'),
 						}),
 						d({
+							group: 'media',
+							level: 'product',
+							variantSku: null,
+							channel: 'SHOPIFY',
+							marketplace: null,
+							original: [{ name: 'kitchen_old.jpg', main: true }, { name: 'box.jpg' }],
+							current: [
+								{ name: 'kitchen_premium.jpg', main: true },
+								{ name: 'box.jpg' },
+								{ name: 'closeup.jpg' },
+							],
+						}),
+						d({
 							group: 'miscellaneous',
 							level: 'product',
 							variantSku: null,
 							channel: 'SHOPIFY',
 							marketplace: null,
-							baselineType: 'SHOPIFY_CATEGORY',
+							baselineType: 'shopify_category',
 							label: 'Shopify category',
 							original: ['Home', 'Kitchen'],
 							current: ['Home', 'Kitchen', 'Appliances'],
@@ -1544,20 +1312,10 @@
 							original: '30h',
 							current: '38h',
 						}),
-						// Shopify: structure shared by the product -> a record per variant; cascades to ALL
 						d({
 							group: 'structure',
 							level: 'variant',
 							variantSku: 'WHA-WHT',
-							channel: 'SHOPIFY',
-							marketplace: null,
-							original: { axes: [{ label: 'Color', name: 'color' }], wrapper: null },
-							current: { axes: [{ label: 'Finish', name: 'finish' }], wrapper: null },
-						}),
-						d({
-							group: 'structure',
-							level: 'variant',
-							variantSku: 'WHA-BLK',
 							channel: 'SHOPIFY',
 							marketplace: null,
 							original: { axes: [{ label: 'Color', name: 'color' }], wrapper: null },
@@ -1576,18 +1334,6 @@
 							current: ['Pearl White'],
 						}),
 						d({
-							group: 'variantAttributes',
-							level: 'variant',
-							variantSku: 'WHA-BLK',
-							channel: 'SHOPIFY',
-							marketplace: null,
-							label: 'Finish',
-							name: 'finish',
-							changeType: 'updated',
-							original: ['Black'],
-							current: ['Matte Black'],
-						}),
-						d({
 							group: 'media',
 							level: 'variant',
 							variantSku: 'WHA-WHT',
@@ -1601,7 +1347,7 @@
 			];
 
 			/* ============================================================
-			 *  GROUPS & CONSTANTS
+			 *  LOGICAL GROUPS  (minimal palette — emoji differentiates)
 			 * ============================================================ */
 			const GROUPS = {
 				attributes: { name: 'Attributes' },
@@ -1611,9 +1357,15 @@
 				variantAttributes: { name: 'Variant Attributes' },
 				miscellaneous: { name: 'Miscellaneous' },
 			};
-			const GROUP_ORDER = ['attributes', 'pricing', 'media', 'structure', 'variantAttributes', 'miscellaneous'];
-			// Amazon attribute hierarchies that logically belong to Pricing (folded in, hidden from Attributes)
-			const PRICING_HIERARCHIES = ['purchasable_offer', 'list_price'];
+			const PARENT_GROUPS = ['attributes', 'pricing', 'media', 'miscellaneous'];
+			const VARIANT_GROUPS = [
+				'attributes',
+				'pricing',
+				'media',
+				'structure',
+				'variantAttributes',
+				'miscellaneous',
+			];
 
 			/* ============================================================
 			 *  STATE
@@ -1621,35 +1373,25 @@
 			let selectedId = products[0].id;
 			let channel = 'AMAZON';
 			let marketplace = 'US';
-			const reverted = new Set(); // delta ids
-			const revertedPriceFields = new Set(); // `${pricingDeltaId}|${priceFieldKey}` individually reverted
-			const deselectedUnits = new Set(); // unit keys NOT selected (default: everything selected)
-			const collapsed = new Set();
-			// rebuilt every render for the current view; used by toggle/cascade/metrics
-			let UNITS = { list: [], map: {} };
+			const reverted = new Set();
+			const deselected = new Set(); // ids NOT selected (default: everything selected)
+			const collapsed = new Set(); // collapse keys (block / group), persisted across re-renders
 
 			const cur = () => products.find((p) => p.id === selectedId);
-			const isAmazon = () => channel === 'AMAZON';
-			const mk = () => (isAmazon() ? marketplace : '-');
 			const live = (p) => p.deltas.filter((x) => !reverted.has(x.id));
-			const scopeLabel = () => (isAmazon() ? 'Amazon ' + marketplace : 'Shopify');
+			const isSelected = (x) => !deselected.has(x.id);
+			// changes in the active Channel + Marketplace that are currently selected
+			const viewSelected = (p) => p.deltas.filter((x) => inChannel(x) && isSelected(x));
+			const scopeLabel = () => (channel === 'AMAZON' ? 'Amazon ' + marketplace : 'Shopify');
+			// collapse keys are namespaced per view so state doesn't bleed across products/markets
 			const viewKey = () => `${selectedId}|${channel}|${marketplace || ''}`;
-			const mpsList = () => {
-				const a = cur().channels.find((c) => c.type === 'AMAZON');
-				return a ? a.marketplaces.join(', ') : '';
-			};
-			const isPricingOwned = (x) =>
-				x.group === 'attributes' && x.hierarchy && PRICING_HIERARCHIES.includes(x.hierarchy.key);
-
-			// A change record is "in view" for the active channel + marketplace.
-			// Media is channel-level: it ignores the marketplace dimension.
-			function inView(x) {
-				if (reverted.has(x.id)) return false;
-				if (x.channel !== channel) return false;
-				if (isAmazon() && x.group !== 'media' && x.marketplace !== marketplace) return false;
-				return true;
-			}
-
+			/**
+			 * Toggle collapse for a block/group, persisting it in `collapsed` so a later
+			 * re-render (e.g. selecting changes) keeps the open/closed state.
+			 * @param {HTMLElement} headEl - the clicked header element
+			 * @param {string} key - the collapse key
+			 * @returns {void}
+			 */
 			function toggleCollapse(headEl, key) {
 				const el = headEl.parentNode;
 				if (collapsed.has(key)) {
@@ -1659,6 +1401,18 @@
 					collapsed.add(key);
 					el.classList.add('collapsed');
 				}
+			}
+
+			function inChannel(x) {
+				if (reverted.has(x.id)) return false;
+				if (x.channel !== channel) return false;
+				if (channel === 'AMAZON' && x.marketplace !== marketplace) return false;
+				return true;
+			}
+			function inBlock(x, blockKey) {
+				if (!inChannel(x)) return false;
+				if (blockKey === 'parent') return x.level === 'product';
+				return x.variantSku === blockKey.slice(8);
 			}
 
 			/* ---------- helpers ---------- */
@@ -1675,228 +1429,9 @@
 					.replace(/_/g, ' ')
 					.replace(/\b\w/g, (c) => c.toUpperCase());
 			}
-			function chipFor(x) {
-				if (x.changeType === 'added') return '<span class="tag t-added">Added</span>';
-				if (x.changeType === 'removed') return '<span class="tag t-removed">Removed</span>';
-				return '';
-			}
 
 			/* ============================================================
-			 *  UNIT MODEL — the selectable units for the current view.
-			 *  A "unit" is one checkbox. Its `members` are the underlying
-			 *  change records it controls.
-			 * ============================================================ */
-			function blockKeyFor(level, variantSku) {
-				return level === 'product' ? 'parent' : 'variant:' + variantSku;
-			}
-			function buildUnitsForBlock(blockDeltas, blockKey) {
-				const units = [];
-				const g = (name) => blockDeltas.filter((x) => x.group === name);
-
-				// ATTRIBUTES (exclude pricing-owned)
-				const attrs = g('attributes').filter((x) => !isPricingOwned(x));
-				if (isAmazon()) {
-					// Amazon attributes split into two: DIRECT (primary / rule-based -> independent,
-					// like Shopify) and HIERARCHY-grouped (the root is selected as a whole).
-					attrs
-						.filter((x) => x.direct || !x.hierarchy)
-						.forEach((x) =>
-							units.push({
-								key: `attr|${blockKey}|${x.id}`,
-								group: 'attributes',
-								blockKey,
-								members: [x],
-								title: x.label,
-								directAttr: true,
-							}),
-						);
-					const byH = {};
-					attrs
-						.filter((x) => !x.direct && x.hierarchy)
-						.forEach((x) => {
-							const k = x.hierarchy.key;
-							(byH[k] = byH[k] || []).push(x);
-						});
-					Object.keys(byH).forEach((hk) => {
-						const members = byH[hk];
-						units.push({
-							key: `attr|${blockKey}|H:${hk}|${mk()}`,
-							group: 'attributes',
-							blockKey,
-							members,
-							title: members[0].hierarchy.label,
-							grouped: true,
-							composite: members.length > 1,
-							hierKey: hk,
-						});
-					});
-				} else {
-					attrs.forEach((x) =>
-						units.push({
-							key: `attr|${blockKey}|${x.id}`,
-							group: 'attributes',
-							blockKey,
-							members: [x],
-							title: x.label,
-							directAttr: true,
-						}),
-					);
-				}
-
-				// PRICING (single) — Amazon folds the pricing-owned attributes in
-				const priceDeltas = g('pricing');
-				if (priceDeltas.length) {
-					const owned = isAmazon() ? g('attributes').filter(isPricingOwned) : [];
-					units.push({
-						key: `price|${blockKey}|${mk()}`,
-						group: 'pricing',
-						blockKey,
-						single: true,
-						title: 'Pricing',
-						members: [...priceDeltas, ...owned],
-						owned,
-					});
-				}
-
-				// MEDIA (single, channel-level key — shared across marketplaces)
-				g('media').forEach((x) =>
-					units.push({
-						key: `media|${channel}|${blockKey}`,
-						group: 'media',
-						blockKey,
-						single: true,
-						channelLevel: true,
-						title: 'Media',
-						members: [x],
-					}),
-				);
-
-				// STRUCTURE (single per variant) — carries wrapper for sibling cascade
-				g('structure').forEach((x) => {
-					const wrapper =
-						(x.current && x.current.wrapper && x.current.wrapper.sku) ||
-						(x.original && x.original.wrapper && x.original.wrapper.sku) ||
-						null;
-					units.push({
-						key: `struct|${blockKey}|${mk()}`,
-						group: 'structure',
-						blockKey,
-						single: true,
-						wrapper,
-						mk: mk(),
-						title: 'Variant structure',
-						members: [x],
-					});
-				});
-
-				// VARIANT ATTRIBUTES (single per variant — all changed attrs together)
-				const vattr = g('variantAttributes');
-				if (vattr.length)
-					units.push({
-						key: `vattr|${blockKey}|${mk()}`,
-						group: 'variantAttributes',
-						blockKey,
-						single: true,
-						title: 'Variant attributes',
-						members: vattr,
-					});
-
-				// MISC (per type)
-				g('miscellaneous').forEach((x) =>
-					units.push({
-						key: `misc|${blockKey}|${x.baselineType}|${mk()}`,
-						group: 'miscellaneous',
-						blockKey,
-						title: x.label || humanize(x.baselineType),
-						members: [x],
-					}),
-				);
-
-				return units;
-			}
-
-			/* ---------- selection / cascade ---------- */
-			function setSel(key, sel) {
-				sel ? deselectedUnits.delete(key) : deselectedUnits.add(key);
-			}
-			function rawSelected(u) {
-				return !deselectedUnits.has(u.key);
-			}
-			// structure units forced ON because a dependent variant-attribute unit is selected
-			function forcedStructureKeys() {
-				const forced = new Set();
-				const vSel = UNITS.list.filter((u) => u.group === 'variantAttributes' && rawSelected(u));
-				const sUnits = UNITS.list.filter((u) => u.group === 'structure');
-				if (isAmazon()) {
-					vSel.forEach((v) =>
-						sUnits.filter((s) => s.blockKey === v.blockKey).forEach((s) => forced.add(s.key)),
-					);
-					// propagate to wrapper siblings
-					sUnits.forEach((s) => {
-						if (forced.has(s.key)) siblingStructureKeys(s).forEach((k) => forced.add(k));
-					});
-				} else if (vSel.length) {
-					sUnits.forEach((s) => forced.add(s.key)); // Shopify: all variants
-				}
-				return forced;
-			}
-			function siblingStructureKeys(s) {
-				return UNITS.list
-					.filter(
-						(x) =>
-							x.group === 'structure' &&
-							x.key !== s.key &&
-							x.mk === s.mk &&
-							(isAmazon() ? x.wrapper === s.wrapper : true),
-					)
-					.map((x) => x.key);
-			}
-			function effectiveSelected(u, forced) {
-				if (u.group === 'structure' && forced && forced.has(u.key)) return true;
-				return rawSelected(u);
-			}
-			function siblingSkus(u) {
-				// labels of OTHER variants sharing this structure unit's wrapper/group
-				return UNITS.list
-					.filter(
-						(x) =>
-							x.group === 'structure' &&
-							x.key !== u.key &&
-							x.mk === u.mk &&
-							(isAmazon() ? x.wrapper === u.wrapper : true),
-					)
-					.map((x) => x.blockKey.replace('variant:', ''));
-			}
-
-			function toggleUnit(key) {
-				const u = UNITS.map[key];
-				if (!u) return;
-				const willSelect = deselectedUnits.has(key);
-				setSel(key, willSelect);
-
-				if (u.group === 'structure') {
-					// sibling cascade (Amazon: same wrapper; Shopify: all)
-					siblingStructureKeys(u).forEach((k) => setSel(k, willSelect));
-				}
-				if (u.group === 'variantAttributes' && willSelect) {
-					// selecting variant attributes pulls in structure if it changed
-					const myStruct = UNITS.list.filter(
-						(s) => s.group === 'structure' && (isAmazon() ? s.blockKey === u.blockKey : true),
-					);
-					myStruct.forEach((s) => {
-						setSel(s.key, true);
-						siblingStructureKeys(s).forEach((k) => setSel(k, true));
-					});
-					if (!isAmazon() && UNITS.list.some((s) => s.group === 'structure')) {
-						// Shopify: also pull ALL variants' variant attributes
-						UNITS.list.filter((x) => x.group === 'variantAttributes').forEach((x) => setSel(x.key, true));
-					}
-				}
-				renderAll();
-			}
-
-			/* ============================================================
-			 *  LEFT — product list
+			 *  LEFT CARD — product list
 			 * ============================================================ */
 			function groupCounts(p) {
 				const out = {};
@@ -1909,7 +1444,8 @@
 					.map((p) => {
 						const total = live(p).length;
 						const gc = groupCounts(p);
-						const chips = GROUP_ORDER.filter((g) => gc[g])
+						const chips = Object.keys(GROUPS)
+							.filter((g) => gc[g])
 							.map(
 								(g) =>
 									`<span class="gcount">${GROUPS[g].name}<span class="gnum">${gc[g]}</span></span>`,
@@ -1925,11 +1461,11 @@
 			}
 
 			/* ============================================================
-			 *  RIGHT — channel / marketplace bar
+			 *  RIGHT CARD — channel / marketplace bar
 			 * ============================================================ */
 			function renderBar() {
 				const p = cur();
-				const chans = p.channels
+				let chans = p.channels
 					.map((c) => {
 						const cnt = live(p).filter((x) => x.channel === c.type).length;
 						return `<button class="chanTab ${channel === c.type ? 'active' : ''}" onclick="setChannel('${c.type}')">
@@ -1937,14 +1473,12 @@
 					})
 					.join('');
 				let html = `<div class="barRow"><span class="barLbl">Channel</span>${chans}</div>`;
-				// Marketplace chips render ONLY for Amazon
-				if (isAmazon()) {
+
+				if (channel === 'AMAZON') {
 					const mps = p.channels.find((c) => c.type === 'AMAZON').marketplaces;
 					html += `<div class="barRow"><span class="barLbl">Marketplace</span>${mps
 						.map((m) => {
-							const cnt = live(p).filter(
-								(x) => x.channel === 'AMAZON' && x.group !== 'media' && x.marketplace === m,
-							).length;
+							const cnt = live(p).filter((x) => x.channel === 'AMAZON' && x.marketplace === m).length;
 							return `<button class="mpChip ${marketplace === m ? 'active' : ''}" onclick="setMarketplace('${m}')">
 								${m} <span class="ct">${cnt}</span></button>`;
 						})
@@ -1954,221 +1488,135 @@
 			}
 
 			/* ============================================================
-			 *  RIGHT — blocks (parent + per variant), grouped, with units
+			 *  RIGHT CARD — parent block + one block per variant
 			 * ============================================================ */
 			function renderDetail() {
 				const p = cur();
 				dName.textContent = p.name;
-				const recs = live(p).filter(inView);
-				const vc = new Set(recs.filter((x) => x.variantSku).map((x) => x.variantSku)).size;
-				dMeta.innerHTML = `<span class="mono">${esc(p.sku)}</span> · ${p.channels.map((c) => c.type).join(' + ')} · ${vc ? vc + ' variant(s) changed' : 'no variant changes'} · ${esc(scopeLabel())}`;
+				const vc = new Set(
+					live(p)
+						.filter((x) => x.variantSku)
+						.map((x) => x.variantSku),
+				).size;
+				dMeta.innerHTML = `<span class="mono">${esc(p.sku)}</span> · ${p.channels.map((c) => c.type).join(' + ')} · ${vc ? vc + ' variant(s) changed' : 'no variants'}`;
 
-				// rebuild unit index for this view
-				UNITS = { list: [], map: {} };
-
+				const recs = live(p).filter(inChannel);
+				const where = channel === 'AMAZON' ? 'Amazon ' + marketplace : 'Shopify';
 				if (!recs.length) {
 					detailBody.innerHTML = `<div class="empty"><div class="big">✓</div>
-						<div style="margin-top:8px;font-weight:700">No changes for ${esc(scopeLabel())}.</div>
-						<div style="font-size:12px;margin-top:4px">Nothing changed for this product on ${esc(scopeLabel())} since the last sync.</div></div>`;
-					renderMetrics();
+						<div style="margin-top:8px;font-weight:700">No changes for ${where}.</div>
+						<div style="font-size:12px;margin-top:4px">Nothing changed for this product on ${where} since the last sync.</div></div>`;
 					return;
 				}
 
-				// build all units first (so cascade/forced calc sees the full view)
-				const blocks = [];
+				let html = '';
 				const parent = recs.filter((x) => x.level === 'product');
-				if (parent.length)
-					blocks.push({
-						blockKey: 'parent',
-						kind: 'parent',
-						title: esc(p.sku),
-						sub: '',
-						units: buildUnitsForBlock(parent, 'parent'),
-					});
+				if (parent.length) html += renderBlock('parent', 'parent', esc(p.sku), '', parent, PARENT_GROUPS);
+				else html += `<div class="note">No parent-level changes for ${where} — variant changes only.</div>`;
+
 				p.variants.forEach((v) => {
 					const vDeltas = recs.filter((x) => x.variantSku === v.sku);
-					if (vDeltas.length) {
-						const bk = 'variant:' + v.sku;
-						blocks.push({
-							blockKey: bk,
-							kind: 'variant',
-							title: esc(v.sku),
-							sub: esc(v.desc),
-							units: buildUnitsForBlock(vDeltas, bk),
-						});
-					}
+					if (vDeltas.length)
+						html += renderBlock(
+							'variant:' + v.sku,
+							'variant',
+							esc(v.sku),
+							esc(v.desc),
+							vDeltas,
+							VARIANT_GROUPS,
+						);
 				});
-				blocks.forEach((b) =>
-					b.units.forEach((u) => {
-						UNITS.list.push(u);
-						UNITS.map[u.key] = u;
-					}),
-				);
-
-				const forced = forcedStructureKeys();
-
-				let html = '';
-				if (!parent.length)
-					html += `<div class="note">No parent-level changes for ${esc(scopeLabel())} — variant changes only.</div>`;
-				blocks.forEach((b) => (html += renderBlock(b, forced)));
 				detailBody.innerHTML = html;
-				renderMetrics();
 			}
 
-			function renderBlock(b, forced) {
-				const sel = b.units.filter((u) => effectiveSelected(u, forced)).length;
-				const ck = `${viewKey()}|${b.blockKey}`;
-				const isVar = b.kind === 'variant';
-				// wrapper tag for Amazon variant blocks
-				const sUnit = b.units.find((u) => u.group === 'structure');
-				const wrapTag =
-					isVar && isAmazon() && sUnit && sUnit.wrapper
-						? `<span class="wrapTag">wrapper ${esc(sUnit.wrapper)}</span>`
-						: '';
-
-				let body = '';
-				GROUP_ORDER.forEach((gKey) => {
-					const units = b.units.filter((u) => u.group === gKey);
-					if (units.length) body += renderGroup(b.blockKey, gKey, units, forced);
-				});
-
+			function renderBlock(blockKey, kind, mainTitle, sub, deltas, groupList) {
+				const groupsHtml = groupList
+					.map((gKey) => {
+						const items = deltas.filter((x) => x.group === gKey);
+						return items.length ? renderGroup(blockKey, gKey, items) : '';
+					})
+					.join('');
+				const isVar = kind === 'variant';
+				const sel = deltas.filter(isSelected).length;
+				const ck = `${viewKey()}|${blockKey}`;
 				return `<div class="block ${collapsed.has(ck) ? 'collapsed' : ''}">
-					<div class="blockHead ${b.kind}" onclick="toggleCollapse(this,'${ck}')">
+					<div class="blockHead ${kind}" onclick="toggleCollapse(this,'${ck}')">
 						<div class="blockTitle">
 							<span class="bcaret">▼</span>
 							<span class="kind">${isVar ? 'Variant' : 'Parent'}</span>
-							<span class="sku mono">${b.title}</span>
-							${b.sub ? `<span class="desc">${b.sub}</span>` : ''}
-							${wrapTag}
-							<span class="cnt">${b.units.length} group${b.units.length > 1 ? 's' : ''} · ${sel} selected</span>
+							<span class="sku mono">${mainTitle}</span>
+							${sub ? `<span class="desc">${sub}</span>` : ''}
+							<span class="cnt">${deltas.length} change${deltas.length > 1 ? 's' : ''} · ${sel} selected</span>
 						</div>
 						<div class="right" onclick="event.stopPropagation()">
-							<button class="btn small ghost" onclick="setBlock('${b.blockKey}',true)">Select all</button>
-							<button class="btn small ghost" onclick="setBlock('${b.blockKey}',false)">Deselect all</button>
-							<button class="btn small danger" onclick="revertBlock('${b.blockKey}')">↺ Revert ${isVar ? 'variant' : 'parent'}</button>
+							<button class="btn small ghost" onclick="setBlock('${blockKey}',true)">Select all</button>
+							<button class="btn small ghost" onclick="setBlock('${blockKey}',false)">Deselect all</button>
+							<button class="btn small danger" onclick="revertBlock('${blockKey}')">↺ Revert ${isVar ? 'variant' : 'parent'}</button>
 						</div>
 					</div>
-					<div class="blockBody">${body}</div>
+					<div class="blockBody">${groupsHtml}</div>
 				</div>`;
 			}
 
-			function renderGroup(blockKey, gKey, units, forced) {
-				const sel = units.filter((u) => effectiveSelected(u, forced)).length;
+			function renderGroup(blockKey, gKey, items) {
+				const g = GROUPS[gKey];
+				const sel = items.filter(isSelected).length;
 				const ck = `${viewKey()}|${blockKey}::${gKey}`;
-				const noteHtml = groupNote(gKey, units);
 				return `<div class="group ${collapsed.has(ck) ? 'collapsed' : ''}">
 					<div class="groupHead" onclick="toggleCollapse(this,'${ck}')">
 						<div class="left">
 							<div>
-								<div class="groupName">${GROUPS[gKey].name}</div>
-								<div class="groupSub">${units.length} item${units.length > 1 ? 's' : ''} · ${sel} selected</div>
+								<div class="groupName">${g.name}</div>
+								<div class="groupSub">${items.length} change${items.length > 1 ? 's' : ''} · ${sel} selected</div>
 							</div>
 						</div>
-						<div class="right"><span class="caret">▼</span></div>
+						<div class="right" onclick="event.stopPropagation()">
+							<button class="btn small ghost" onclick="setGroup('${blockKey}','${gKey}',true)">Select all</button>
+							<button class="btn small ghost" onclick="setGroup('${blockKey}','${gKey}',false)">Deselect all</button>
+							<button class="btn small danger" onclick="revertGroup('${blockKey}','${gKey}')">↺ Revert group</button>
+							<span class="caret">▼</span>
+						</div>
 					</div>
-					<div class="groupBody">${noteHtml}${units.map((u) => renderUnit(u, forced)).join('')}</div>
+					<div class="groupBody">${items.map(renderCard).join('')}</div>
 				</div>`;
 			}
 
-			// contextual notes per group (channel-aware)
-			function groupNote(gKey, units) {
-				const box = (cls, txt) =>
-					`<div class="notebox ${cls}"><span class="ni">ⓘ</span><span>${txt}</span></div>`;
-				if (gKey === 'structure')
-					return isAmazon()
-						? box(
-								'',
-								`Amazon: variant structure is shared by the parent wrapper. Selecting one variant also selects its <b>sibling variants in the same wrapper</b>.`,
-							)
-						: box(
-								'',
-								`Shopify: variant structure is shared across the product. Selecting it syncs structure for <b>all variants</b>.`,
-							);
-				if (gKey === 'variantAttributes')
-					return isAmazon()
-						? box(
-								'',
-								`All of a variant's attribute changes sync together. If this variant's structure also changed, selecting attributes will also select its <b>structure (and sibling variants)</b>.`,
-							)
-						: box(
-								'',
-								`All variant attribute changes sync together. If structure changed, selecting any variant's attributes selects <b>all variants' attributes and structure</b>.`,
-							);
-				if (gKey === 'pricing' && isAmazon())
-					return box(
-						'',
-						`Amazon requires the <b>whole pricing block</b> — offer & list price (purchasable_offer / list_price) are included; partial pricing can't be synced.`,
-					);
-				return '';
-			}
-
-			/* ---------- one selectable unit (one checkbox) ---------- */
-			function renderUnit(u, forced) {
-				const locked = u.group === 'structure' && forced.has(u.key) && !rawSelected(u);
-				const selected = effectiveSelected(u, forced);
-
-				// badges
-				const badges = [];
-				if (u.group === 'attributes' && u.grouped)
-					badges.push('<span class="badge hier">Hierarchy · all together</span>');
-				if (u.single) badges.push('<span class="badge single">Single select</span>');
-				if (u.channelLevel) badges.push('<span class="badge channel">Channel-wide</span>');
-				if (locked) badges.push('<span class="badge auto">Auto · from variant attributes</span>');
-
-				// title + info
-				let title = u.title;
-				let info = '';
-				if (u.group === 'attributes' && !u.grouped)
-					info = `<span class="info" title="internal name: ${esc(u.members[0].name)}">i</span>`;
-
-				// body
-				let body = '';
-				if (u.group === 'attributes') {
-					body = u.grouped
-						? subRows(u.members, 'Sub-property')
-						: cmp(u.members[0].original, u.members[0].current);
-				} else if (u.group === 'pricing') {
-					body = renderPrice(u.members.find((m) => m.group === 'pricing'));
-					if (u.owned && u.owned.length)
-						body +=
-							`<div class="ownedHint">Included with pricing (Amazon)</div>` +
-							subRows(u.owned, 'Pricing attribute');
-				} else if (u.group === 'media') {
-					body = renderMedia(u.members[0]);
-				} else if (u.group === 'structure') {
-					body = renderStructure(u.members[0]);
-					const sibs = siblingSkus(u);
-					if (sibs.length)
-						body += `<div class="ownedHint">Also affects: ${sibs.map((s) => `<span class="mono">${esc(s)}</span>`).join(', ')}</div>`;
-				} else if (u.group === 'variantAttributes') {
-					body = subRows(u.members, 'Attribute');
+			/* ---------- one change card ---------- */
+			function renderCard(x) {
+				let title,
+					info = '',
+					chip = '',
+					body;
+				if (x.group === 'attributes' || x.group === 'variantAttributes') {
+					title = x.label;
+					info = `<span class="info" title="internal name: ${esc(x.name)}">i</span>`;
+					if (x.changeType === 'added') chip = '<span class="tag t-added">Added</span>';
+					else if (x.changeType === 'removed') chip = '<span class="tag t-removed">Removed</span>';
+					body = cmp(x.original, x.current);
+				} else if (x.group === 'pricing') {
+					title = 'Price structure';
+					body = renderPrice(x);
+				} else if (x.group === 'media') {
+					title = 'Media gallery';
+					body = renderMedia(x);
+				} else if (x.group === 'structure') {
+					title = 'Variation structure';
+					body = renderStructure(x);
 				} else {
-					body = renderMisc(u.members[0]);
+					title = x.label || humanize(x.baselineType);
+					body = renderMisc(x);
 				}
 
-				const lockAttr = locked ? 'disabled' : '';
-				const lockCls = locked ? 'locked' : '';
-				const onchange = locked ? '' : `onchange="toggleUnit('${u.key}')"`;
-
-				// Revert is per individual change (in the body) for grouped attributes,
-				// pricing and variant attributes. Single-change groups (media, variant
-				// structure, misc, direct attributes) keep ONE revert in the header.
-				const headerRevert =
-					u.group === 'media' ||
-					u.group === 'structure' ||
-					u.group === 'miscellaneous' ||
-					(u.group === 'attributes' && !u.grouped);
-
-				return `<div class="chg ${selected ? 'sel' : ''}">
+				return `<div class="chg">
 					<div class="chgHead">
 						<div class="l">
-							<input class="chk" id="u-${u.key}" type="checkbox" ${selected ? 'checked' : ''} ${lockAttr} ${onchange} />
-							<label class="chkbox ${lockCls}" for="u-${u.key}" title="${locked ? 'Locked — required by a selected variant-attribute change' : 'Select'}">
+							<input class="chk" id="chk-${x.id}" type="checkbox" ${isSelected(x) ? 'checked' : ''} onchange="toggleRow(${x.id}, this.checked)" />
+							<label class="chkbox" for="chk-${x.id}" title="Select">
 								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
 							</label>
-							<span class="chgTitle">${esc(title)}</span>${info}${badges.join('')}
+							<span class="chgTitle">${esc(title)}</span>${info}${chip}
 						</div>
-						${headerRevert ? `<button class="btn small danger" onclick="revertUnit('${u.key}')">↺ Revert</button>` : ''}
+						<button class="btn small danger" onclick="revertChange(${x.id})">↺ Revert</button>
 					</div>
 					<div class="chgBody">${body}</div>
 				</div>`;
@@ -2180,27 +1628,19 @@
 					<div class="cmpCol c"><strong>Current</strong><div class="cmpVal">${val(c)}</div></div>
 				</div>`;
 			}
-			// read-only rows for composite hierarchy children / variant attributes / pricing-owned
-			function subRows(members, kind) {
-				return `<div class="subRows">${members
-					.map(
-						(m) => `<div class="subRow">
-							<div class="sk">
-								<span class="skl">${esc(m.label)} <span class="info" title="internal name: ${esc(m.name || '')}">i</span> ${chipFor(m)}</span>
-								<button class="btn small danger" style="margin-left:auto" onclick="revertChange(${m.id})">↺ Revert</button>
-							</div>
-							${cmp(m.original, m.current)}
-						</div>`,
-					)
-					.join('')}</div>`;
-			}
 
-			/* ---------- pricing — changed price-types only, per-type revert ---------- */
+			/* ---------- pricing ---------- */
 			function renderPrice(x) {
-				if (!x) return '';
 				const amazon = x.channel === 'AMAZON';
 				const o = x.original || {},
 					c = x.current || {};
+				const line = (label, ov, cv, meta) => {
+					const diff = String(ov ?? '') !== String(cv ?? '');
+					return `<div class="prow ${diff ? 'diff' : ''}">
+						<div class="pl">${label}${meta ? `<div class="pmeta">${meta}</div>` : ''}</div>
+						<div class="pv o">${val(ov)}</div>
+						<div class="pv c">${val(cv)}</div></div>`;
+				};
 				const dates = (sp) =>
 					sp && (sp.startDate || sp.endDate) ? `${sp.startDate || '…'} → ${sp.endDate || '…'}` : '';
 				const qd = (arr) =>
@@ -2208,57 +1648,29 @@
 						? `<span class="qd">${arr.map((q) => `Qty ≥${q.quantity}: ${q.price}${q.priceType === 'percent' ? '%' : ' (fixed)'}`).join('<br>')}</span>`
 						: '<em class="ev">(empty)</em>';
 
-				// Collect only price types that actually changed.
-				const fields = [];
-				const add = (key, label, ov, cv, meta, isHtml) => {
-					const a = isHtml ? ov : (ov ?? '');
-					const b = isHtml ? cv : (cv ?? '');
-					if (String(a) !== String(b)) fields.push({ key, label, ov, cv, meta, isHtml });
-				};
-				add('listPrice', 'List price', o.listPrice?.price, c.listPrice?.price);
-				add('offerPrice', 'Offer price', o.offerPrice?.price, c.offerPrice?.price);
+				let rows = line('List price', o.listPrice?.price, c.listPrice?.price);
+				rows += line('Offer price', o.offerPrice?.price, c.offerPrice?.price);
 				if (amazon) {
 					const dm =
 						dates(o.salePrice) || dates(c.salePrice)
 							? `Original: ${dates(o.salePrice) || '—'} · Current: ${dates(c.salePrice) || '—'}`
 							: '';
-					add('salePrice', 'Sale price', o.salePrice?.price, c.salePrice?.price, dm);
-					add(
-						'businessBase',
+					rows += line('Sale price', o.salePrice?.price, c.salePrice?.price, dm);
+					rows += line(
 						'Business base price',
 						o.businessPrice?.baseBusinessPrice,
 						c.businessPrice?.baseBusinessPrice,
 					);
-					add(
-						'consumerSale',
+					rows += line(
 						'Consumer sale price',
 						o.businessPrice?.consumerSalePrice,
 						c.businessPrice?.consumerSalePrice,
 					);
-					add(
-						'quantityDiscounts',
-						'Quantity discounts',
-						qd(o.businessPrice?.quantityDiscount),
-						qd(c.businessPrice?.quantityDiscount),
-						'',
-						true,
-					);
+					const qo = qd(o.businessPrice?.quantityDiscount),
+						qc = qd(c.businessPrice?.quantityDiscount);
+					rows += `<div class="prow ${qo !== qc ? 'diff' : ''}"><div class="pl">Quantity discounts</div><div class="pv o">${qo}</div><div class="pv c">${qc}</div></div>`;
 				}
-
-				const remaining = fields.filter((f) => !revertedPriceFields.has(`${x.id}|${f.key}`));
-				if (!remaining.length) return '<div class="note">No remaining pricing changes.</div>';
-
-				const rows = remaining
-					.map(
-						(f) => `<div class="prow">
-							<div class="pl">${f.label}${f.meta ? `<div class="pmeta">${f.meta}</div>` : ''}</div>
-							<div class="pv o">${f.isHtml ? f.ov : val(f.ov)}</div>
-							<div class="pv c">${f.isHtml ? f.cv : val(f.cv)}</div>
-							<div class="pa"><button class="btn small danger" onclick="revertPriceField(${x.id}, '${f.key}')">↺ Revert</button></div>
-						</div>`,
-					)
-					.join('');
-				return `<div class="ptable"><div class="phead"><span>Price type</span><span>Original</span><span>Current</span><span></span></div>${rows}</div>`;
+				return `<div class="ptable"><div class="phead"><span>Price type</span><span>Original</span><span>Current</span></div>${rows}</div>`;
 			}
 
 			/* ---------- media ---------- */
@@ -2315,9 +1727,9 @@
 				return html;
 			}
 
-			/* ---------- miscellaneous ---------- */
+			/* ---------- miscellaneous (baselineType-driven) ---------- */
 			function renderMisc(x) {
-				if (x.baselineType === 'AMAZON_CATEGORY' || x.baselineType === 'SHOPIFY_CATEGORY') {
+				if (x.baselineType === 'category' || x.baselineType === 'shopify_category') {
 					const path = (a) =>
 						a && a.length ? a.map(esc).join('<span class="sep">›</span>') : '<em class="ev">(empty)</em>';
 					return `<div class="cmp">
@@ -2325,6 +1737,7 @@
 						<div class="cmpCol c"><strong>Current path</strong><div class="cmpVal">${path(x.current)}</div></div>
 					</div>`;
 				}
+				// tags / condition_type / anything else → generic Original/Current
 				return cmp(x.original, x.current);
 			}
 
@@ -2334,14 +1747,11 @@
 			function renderMetrics() {
 				const p = cur();
 				mProducts.textContent = products.filter((x) => live(x).length).length;
-				const view = live(p).filter(inView);
+				const view = live(p).filter(inChannel);
 				mView.textContent = view.length;
 				mVariants.textContent = new Set(view.filter((x) => x.variantSku).map((x) => x.variantSku)).size;
-				const forced = forcedStructureKeys();
-				let selCount = 0;
-				UNITS.list.forEach((u) => {
-					if (effectiveSelected(u, forced)) selCount += u.members.length;
-				});
+				// selection is scoped to the active Channel + Marketplace view
+				const selCount = viewSelected(p).length;
 				mApproved.textContent = selCount;
 				const scope = scopeLabel();
 				btnSync.textContent = `Sync selected · ${scope} (${selCount})`;
@@ -2368,51 +1778,51 @@
 				marketplace = m;
 				renderAll();
 			}
+			function toggleRow(id, checked) {
+				checked ? deselected.delete(id) : deselected.add(id);
+				renderAll();
+			}
 			function setBlock(blockKey, select) {
-				const forced = forcedStructureKeys();
-				UNITS.list
-					.filter((u) => u.blockKey === blockKey)
-					.forEach((u) => {
-						if (!select && u.group === 'structure' && forced.has(u.key) && !rawSelected(u)) return; // can't deselect locked
-						setSel(u.key, select);
-					});
+				cur()
+					.deltas.filter((x) => inBlock(x, blockKey))
+					.forEach((x) => (select ? deselected.delete(x.id) : deselected.add(x.id)));
 				renderAll();
 			}
-			function revertUnit(key) {
-				const u = UNITS.map[key];
-				if (!u) return;
-				u.members.forEach((m) => reverted.add(m.id));
-				deselectedUnits.delete(key);
-				toast(`Reverted "${u.title}" to its last synced value`, 'warn');
+			function setGroup(blockKey, gKey, select) {
+				cur()
+					.deltas.filter((x) => inBlock(x, blockKey) && x.group === gKey)
+					.forEach((x) => (select ? deselected.delete(x.id) : deselected.add(x.id)));
 				renderAll();
 			}
-			// Revert a single change record (direct/grouped attribute, variant attribute, pricing-owned attribute).
 			function revertChange(id) {
 				reverted.add(id);
-				toast('Reverted change to its last synced value', 'warn');
+				deselected.delete(id);
+				toast('Change reverted to its last synced value');
 				renderAll();
 			}
-			// Revert a single price-type change within the pricing group.
-			function revertPriceField(deltaId, key) {
-				revertedPriceFields.add(`${deltaId}|${key}`);
-				toast('Reverted pricing change to its last synced value', 'warn');
+			function revertGroup(blockKey, gKey) {
+				const hit = cur().deltas.filter((x) => inBlock(x, blockKey) && x.group === gKey);
+				hit.forEach((x) => reverted.add(x.id));
+				toast(`Reverted ${hit.length} change(s) in "${GROUPS[gKey].name}"`, 'warn');
 				renderAll();
 			}
 			function revertBlock(blockKey) {
-				const hit = UNITS.list.filter((u) => u.blockKey === blockKey).flatMap((u) => u.members);
-				const label = blockKey === 'parent' ? 'parent' : blockKey.replace('variant:', '');
-				if (!confirm(`Revert all ${hit.length} change(s) for ${label} on ${scopeLabel()}?`)) return;
-				hit.forEach((m) => reverted.add(m.id));
-				toast(`Reverted ${hit.length} change(s) for ${label} (${scopeLabel()})`, 'warn');
+				const hit = cur().deltas.filter((x) => inBlock(x, blockKey));
+				const label = blockKey === 'parent' ? 'parent' : blockKey.slice(8);
+				const where = channel === 'AMAZON' ? 'Amazon ' + marketplace : 'Shopify';
+				if (!confirm(`Revert all ${hit.length} change(s) for ${label} on ${where}?`)) return;
+				hit.forEach((x) => reverted.add(x.id));
+				toast(`Reverted ${hit.length} change(s) for ${label} (${where})`, 'warn');
 				renderAll();
 			}
 			function revertSelected() {
-				const forced = forcedStructureKeys();
-				const hit = UNITS.list.filter((u) => effectiveSelected(u, forced)).flatMap((u) => u.members);
-				if (!hit.length) return toast(`No selected changes to revert on ${scopeLabel()}`, 'warn');
-				if (!confirm(`Revert ${hit.length} selected change(s) for "${cur().name}" on ${scopeLabel()}?`)) return;
-				hit.forEach((m) => reverted.add(m.id));
-				toast(`Reverted ${hit.length} selected change(s) on ${scopeLabel()}`, 'warn');
+				const p = cur();
+				const where = scopeLabel();
+				const hit = viewSelected(p);
+				if (!hit.length) return toast(`No selected changes to revert on ${where}`, 'warn');
+				if (!confirm(`Revert ${hit.length} selected change(s) for "${p.name}" on ${where}?`)) return;
+				hit.forEach((x) => reverted.add(x.id));
+				toast(`Reverted ${hit.length} selected change(s) on ${where}`, 'warn');
 				renderAll();
 			}
 			function revertProduct() {
@@ -2426,13 +1836,11 @@
 				renderAll();
 			}
 			function syncProduct() {
-				const forced = forcedStructureKeys();
-				const selUnits = UNITS.list.filter((u) => effectiveSelected(u, forced));
-				const changeCount = selUnits.reduce((n, u) => n + u.members.length, 0);
-				if (!changeCount) return toast(`No selected changes to sync on ${scopeLabel()}`, 'warn');
-				const mediaSel = selUnits.some((u) => u.group === 'media');
-				const extra = mediaSel && isAmazon() ? ` (media goes to all marketplaces: ${mpsList()})` : '';
-				toast(`Syncing ${changeCount} change(s) for "${cur().name}" on ${scopeLabel()}${extra}`);
+				const p = cur();
+				const where = scopeLabel();
+				const approved = viewSelected(p);
+				if (!approved.length) return toast(`No selected changes to sync on ${where}`, 'warn');
+				toast(`Syncing ${approved.length} selected change(s) for "${p.name}" on ${where}`);
 			}
 
 			function toast(msg, kind) {
@@ -2440,13 +1848,14 @@
 				el.className = 'toast ' + (kind || '');
 				el.innerHTML = `<span class="tdot"></span>${esc(msg)}`;
 				toastWrap.appendChild(el);
-				setTimeout(() => el.remove(), 3600);
+				setTimeout(() => el.remove(), 3200);
 			}
 
 			function renderAll() {
 				renderProductList();
 				renderBar();
 				renderDetail();
+				renderMetrics();
 			}
 			pickProduct(products[0].id);
 		</script>
