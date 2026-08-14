@@ -1,38 +1,34 @@
-## api repo only - Only investigation & no modification
+## api repo only
 
-### The task:
+Task: endpoint /get-change-summary which is currently bringing only single product changes will start bringing multiple product changes, as result a top level grouping of product (id + other basic info)
 
-Gemini Context Caching for Amazon Schema Prompt  
-What: buildAmazonAttributeFillerPrompt includes the full Amazon product type  
-schema JSON in every request. This is 2,000–4,000 static tokens sent on every  
-single Amazon product sync call. Gemini's context caching API lets you cache  
-a static prompt prefix and pay only ~25% of the input token price for  
-subsequent calls.  
-How:  
-Extract the static part of the Amazon attribute filler prompt (the schema +  
-instructions) into a Gemini cached content object  
-Cache it once per product type per session (TTL: 1 hour minimum)  
-Reference the cache handle in subsequent generateContent calls  
-Files to change:  
-src/modules/app/ai/ai.service.ts — aiSuggestedValue() method, add  
-cachedContent parameter to generateContent  
-Add a Map<productType, cacheHandle> in the service to store cached content  
-handles  
-Estimated savings: ~75% reduction in input tokens for every Amazon attribute  
-fill call — the biggest per-call cost driver  
-Reference: Gemini supports CachedContent via @google/generative-ai SDK 
+Context:
+api\apps\api-main\src\modules\app\syncBaseline\syncBaseline.controller.ts
+api\apps\api-main\src\modules\app\syncBaseline\syncBaseline.service.ts -> getChangeSummary
 
-### reference files
+Constraints:
 
-api\apps\api-main\src\core\llm\orchestrator\llm-orchestrator.service.ts
-api\apps\api-main\src\core\llm\prompts\prompt-builder.service.ts
+- accept products having type required Record<string, number[]> instead of just product id , remove specificVariantIds in case of specific variants the corresponding product will have a variant ids array length
 
-### Points to be considered
+- As result it should return an array, each element object will have:
+    productId,
+    sku,
+    name,
+    "changeCounts": {
+        "media": 1,
+        "pricing": 4,
+        "attributes": 0,
+        "miscellaneous": 4,
+        "variantStructure": 1,
+        "variantAttributes": 0,
+        "total": 10
+    },
+    data -> this will be current array of marketplace changes, no change in that, in case of non-amazon it will have a single element array having marketplace id as null
 
--> The amazon schema cannot be cached as proposed into the prompt because with every request the referenced schema can be different as amazon has more than 1800 product types and many marketplaces
--> the referenced files are as per the old structure, now we have the full LLM orchestrator file structure to execute the AI calls, so adapt the solution as per current file structure
--> The current LLM handling implementation is way more dynamic where for each LLM call from the provider itself things are dynamic, so this will be for gemini provider only, and another thing keep in mind, every request which is going to be resolved via gemini can still have distinct llm models to be used
--> Currently three type of operation options are there and 5 actual operations are there
+- Refer function getChangeCounts for getting per product info as described above
 
-### You CTA
--> Find out is there something to be used as caching for gemini that will give real benefits and if you found something then only give the implementation details
+- you shouldn't be calling DB queries in loop for each product, imagine 6 type of baseline accumulation for 10 products meaning 60 queries to be fired, those queries should fetch all requested products (consider specific variants for specific products as per requested in body) instead of just one productId, then you can later group per product change accumulation (the whole point is the DB calls shouldn't be O(N) it should be O(1), you can decide whatever approach to achieve it)
+
+- In between you get questions that need my clarification then I am ready for human in the loop
+
+- Do not ask permission for terminal commands, I am granting permission for executing all commands required in this task
