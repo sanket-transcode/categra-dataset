@@ -2271,6 +2271,18 @@
                 {
                   "id": 2,
                   "status": "PROCESSING",
+                  "patches": [
+                    {
+                      "op": "replace",
+                      "path": "/attributes/condition_type",
+                      "value": [
+                        {
+                          "value": "used_good",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ]
+                    }
+                  ],
                   "payload": {
                     "size": [
                       {
@@ -2598,6 +2610,123 @@
                 {
                   "id": 2,
                   "status": "PROCESSING",
+                  "patches": [
+                    {
+                      "op": "replace",
+                      "path": "/attributes/purchasable_offer",
+                      "value": [
+                        {
+                          "audience": "ALL",
+                          "currency": "USD",
+                          "our_price": [
+                            {
+                              "schedule": [
+                                {
+                                  "value_with_tax": 50
+                                }
+                              ]
+                            }
+                          ],
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/list_price",
+                      "value": [
+                        {
+                          "value": 28,
+                          "currency": "USD",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/main_product_image_locator",
+                      "value": [
+                        {
+                          "marketplace_id": "ATVPDKIKX0DER",
+                          "media_location": "http://localhost:3002/uploads/278/product/13820/fdf7ba40-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/other_product_image_locator_1",
+                      "value": [
+                        {
+                          "marketplace_id": "ATVPDKIKX0DER",
+                          "media_location": "http://localhost:3002/uploads/278/product/13820/2ca05950-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/other_product_image_locator_2",
+                      "value": [
+                        {
+                          "marketplace_id": "ATVPDKIKX0DER",
+                          "media_location": "http://localhost:3002/uploads/278/product/13820/2d53f1e0-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_3"
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_4"
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_5"
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_6"
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_7"
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_8"
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/swatch_product_image_locator",
+                      "value": [
+                        {
+                          "marketplace_id": "ATVPDKIKX0DER",
+                          "media_location": "http://localhost:3002/uploads/278/product/13820/256x256_fdf7ba40-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/condition_type",
+                      "value": [
+                        {
+                          "value": "used_acceptable",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/merchant_shipping_group",
+                      "value": [
+                        {
+                          "value": "2be65c4c-75bc-42c8-900c-0d21c18510d4",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ]
+                    }
+                  ],
                   "payload": {
                     "size": [
                       {
@@ -2945,7 +3074,116 @@
               "marketplaces": [
                 {
                   "id": 2,
-                  "status": "PROCESSING",
+                  "error": [
+                    "Invalid empty value provided in patch at index of 3."
+                  ],
+                  "status": "FAILED",
+                  "patches": [
+                    {
+                      "op": "replace",
+                      "path": "/attributes/main_product_image_locator",
+                      "value": [
+                        {
+                          "marketplace_id": "ATVPDKIKX0DER",
+                          "media_location": "http://localhost:3002/uploads/278/product/13820/fe5606e0-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/other_product_image_locator_1",
+                      "value": [
+                        {
+                          "marketplace_id": "ATVPDKIKX0DER",
+                          "media_location": "http://localhost:3002/uploads/278/product/13820/33ae12f0-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/other_product_image_locator_2",
+                      "value": [
+                        {
+                          "marketplace_id": "ATVPDKIKX0DER",
+                          "media_location": "http://localhost:3002/uploads/278/product/13820/3460c120-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_3"
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_4"
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_5"
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_6"
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_7"
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_8"
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/swatch_product_image_locator",
+                      "value": [
+                        {
+                          "marketplace_id": "ATVPDKIKX0DER",
+                          "media_location": "http://localhost:3002/uploads/278/product/13820/256x256_fe5606e0-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/merchant_shipping_group",
+                      "value": [
+                        {
+                          "value": "2be65c4c-75bc-42c8-900c-0d21c18510d4",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/variation_theme",
+                      "value": [
+                        {
+                          "name": "NUMBER_OF_ITEMS"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/parentage_level",
+                      "value": [
+                        {
+                          "value": "child",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/child_parent_sku_relationship",
+                      "value": [
+                        {
+                          "parent_sku": "225680023652",
+                          "marketplace_id": "ATVPDKIKX0DER",
+                          "child_relationship_type": "variation"
+                        }
+                      ]
+                    }
+                  ],
                   "payload": {
                     "size": [
                       {
@@ -3273,6 +3511,29 @@
                       }
                     ]
                   },
+                  "response": {
+                    "header": {
+                      "feedId": "56184020687",
+                      "version": "2.0",
+                      "sellerId": "A13EDBEFHU3OJ1"
+                    },
+                    "issues": [
+                      {
+                        "sku": "225680023652-V4",
+                        "code": "BAD_REQUEST",
+                        "message": "Invalid empty value provided in patch at index of 3.",
+                        "severity": "ERROR",
+                        "messageId": 225688
+                      }
+                    ],
+                    "summary": {
+                      "errors": 1,
+                      "warnings": 0,
+                      "messagesInvalid": 1,
+                      "messagesAccepted": 1,
+                      "messagesProcessed": 2
+                    }
+                  },
                   "countryCode": "US"
                 }
               ]
@@ -3285,7 +3546,39 @@
               "marketplaces": [
                 {
                   "id": 2,
-                  "status": "PROCESSING",
+                  "status": "FINISHED",
+                  "patches": [
+                    {
+                      "op": "replace",
+                      "path": "/attributes/variation_theme",
+                      "value": [
+                        {
+                          "name": "NUMBER_OF_ITEMS"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/parentage_level",
+                      "value": [
+                        {
+                          "value": "child",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/child_parent_sku_relationship",
+                      "value": [
+                        {
+                          "parent_sku": "225680023652",
+                          "marketplace_id": "ATVPDKIKX0DER",
+                          "child_relationship_type": "variation"
+                        }
+                      ]
+                    }
+                  ],
                   "payload": {
                     "size": [
                       {
@@ -3601,6 +3894,29 @@
                       }
                     ]
                   },
+                  "response": {
+                    "header": {
+                      "feedId": "56184020687",
+                      "version": "2.0",
+                      "sellerId": "A13EDBEFHU3OJ1"
+                    },
+                    "issues": [
+                      {
+                        "sku": "225680023652-V4",
+                        "code": "BAD_REQUEST",
+                        "message": "Invalid empty value provided in patch at index of 3.",
+                        "severity": "ERROR",
+                        "messageId": 225688
+                      }
+                    ],
+                    "summary": {
+                      "errors": 1,
+                      "warnings": 0,
+                      "messagesInvalid": 1,
+                      "messagesAccepted": 1,
+                      "messagesProcessed": 2
+                    }
+                  },
                   "countryCode": "US"
                 }
               ]
@@ -3616,198 +3932,8 @@
             },
             {
               "id": 2,
-              "error": [
-                {
-                  "sku": "225680023652",
-                  "type": "CATEGRA",
-                  "input": {
-                    "message": null,
-                    "attribute": "value",
-                    "hierarchy": "unit_count",
-                    "child_hierarchy": "value"
-                  },
-                  "keyWord": "SCHEMA_VALIDATION_ERROR",
-                  "message": "Missing required attribute: Product Details => Unit Count",
-                  "channelId": "481",
-                  "errorCode": null,
-                  "productId": 13820,
-                  "productName": "US - Cute Fall Keychain Wristlet, Thick Embroidered Floral Keychain for Women, Car Key Chain Accessories",
-                  "currentQueue": "Forward-sync-variation-theme-product",
-                  "attributeNames": "unit_count",
-                  "missingProperty": null,
-                  "childHierarchyKey": "value",
-                  "productChannelMarketplaceId": 11809
-                },
-                {
-                  "sku": "225680023652",
-                  "type": "CATEGRA",
-                  "input": {
-                    "message": null,
-                    "attribute": "value",
-                    "hierarchy": "item_weight",
-                    "child_hierarchy": "value"
-                  },
-                  "keyWord": "SCHEMA_VALIDATION_ERROR",
-                  "message": "Missing required attribute: Product Details => Item Weight => Item Weight",
-                  "channelId": "481",
-                  "errorCode": null,
-                  "productId": 13820,
-                  "productName": "US - Cute Fall Keychain Wristlet, Thick Embroidered Floral Keychain for Women, Car Key Chain Accessories",
-                  "currentQueue": "Forward-sync-variation-theme-product",
-                  "attributeNames": "item_weight",
-                  "missingProperty": null,
-                  "childHierarchyKey": "value",
-                  "productChannelMarketplaceId": 11809
-                },
-                {
-                  "sku": "225680023652",
-                  "type": "CATEGRA",
-                  "input": {
-                    "message": null,
-                    "attribute": "value",
-                    "hierarchy": "item_package_weight",
-                    "child_hierarchy": "value"
-                  },
-                  "keyWord": "SCHEMA_VALIDATION_ERROR",
-                  "message": "Missing required attribute: Shipping => Package Weight => Package Weight",
-                  "channelId": "481",
-                  "errorCode": null,
-                  "productId": 13820,
-                  "productName": "US - Cute Fall Keychain Wristlet, Thick Embroidered Floral Keychain for Women, Car Key Chain Accessories",
-                  "currentQueue": "Forward-sync-variation-theme-product",
-                  "attributeNames": "item_package_weight",
-                  "missingProperty": null,
-                  "childHierarchyKey": "value",
-                  "productChannelMarketplaceId": 11809
-                },
-                {
-                  "sku": "225680023652",
-                  "type": "CATEGRA",
-                  "input": {
-                    "message": null,
-                    "attribute": "value",
-                    "hierarchy": "item_package_dimensions",
-                    "child_hierarchy": "width"
-                  },
-                  "keyWord": "SCHEMA_VALIDATION_ERROR",
-                  "message": "Missing required attribute: Shipping => Item Package Dimensions => Package Width => Item Package Width",
-                  "channelId": "481",
-                  "errorCode": null,
-                  "productId": 13820,
-                  "productName": "US - Cute Fall Keychain Wristlet, Thick Embroidered Floral Keychain for Women, Car Key Chain Accessories",
-                  "currentQueue": "Forward-sync-variation-theme-product",
-                  "attributeNames": "item_package_dimensions",
-                  "missingProperty": "value",
-                  "childHierarchyKey": "width",
-                  "productChannelMarketplaceId": 11809
-                },
-                {
-                  "sku": "225680023652",
-                  "type": "CATEGRA",
-                  "input": {
-                    "message": null,
-                    "attribute": "value",
-                    "hierarchy": "item_package_dimensions",
-                    "child_hierarchy": "width"
-                  },
-                  "keyWord": "SCHEMA_VALIDATION_ERROR",
-                  "message": "Missing required attribute: Shipping => Item Package Dimensions => Package Width",
-                  "channelId": "481",
-                  "errorCode": null,
-                  "productId": 13820,
-                  "productName": "US - Cute Fall Keychain Wristlet, Thick Embroidered Floral Keychain for Women, Car Key Chain Accessories",
-                  "currentQueue": "Forward-sync-variation-theme-product",
-                  "attributeNames": "item_package_dimensions",
-                  "missingProperty": "value",
-                  "childHierarchyKey": "width",
-                  "productChannelMarketplaceId": 11809
-                },
-                {
-                  "sku": "225680023652",
-                  "type": "CATEGRA",
-                  "input": {
-                    "message": null,
-                    "attribute": "value",
-                    "hierarchy": "item_package_dimensions",
-                    "child_hierarchy": "height"
-                  },
-                  "keyWord": "SCHEMA_VALIDATION_ERROR",
-                  "message": "Missing required attribute: Shipping => Item Package Dimensions => Package Height => Item Package Height",
-                  "channelId": "481",
-                  "errorCode": null,
-                  "productId": 13820,
-                  "productName": "US - Cute Fall Keychain Wristlet, Thick Embroidered Floral Keychain for Women, Car Key Chain Accessories",
-                  "currentQueue": "Forward-sync-variation-theme-product",
-                  "attributeNames": "item_package_dimensions",
-                  "missingProperty": "value",
-                  "childHierarchyKey": "height",
-                  "productChannelMarketplaceId": 11809
-                },
-                {
-                  "sku": "225680023652",
-                  "type": "CATEGRA",
-                  "input": {
-                    "message": null,
-                    "attribute": "value",
-                    "hierarchy": "item_package_dimensions",
-                    "child_hierarchy": "height"
-                  },
-                  "keyWord": "SCHEMA_VALIDATION_ERROR",
-                  "message": "Missing required attribute: Shipping => Item Package Dimensions => Package Height",
-                  "channelId": "481",
-                  "errorCode": null,
-                  "productId": 13820,
-                  "productName": "US - Cute Fall Keychain Wristlet, Thick Embroidered Floral Keychain for Women, Car Key Chain Accessories",
-                  "currentQueue": "Forward-sync-variation-theme-product",
-                  "attributeNames": "item_package_dimensions",
-                  "missingProperty": "value",
-                  "childHierarchyKey": "height",
-                  "productChannelMarketplaceId": 11809
-                },
-                {
-                  "sku": "225680023652",
-                  "type": "CATEGRA",
-                  "input": {
-                    "message": null,
-                    "attribute": "value",
-                    "hierarchy": "item_package_dimensions",
-                    "child_hierarchy": "length"
-                  },
-                  "keyWord": "SCHEMA_VALIDATION_ERROR",
-                  "message": "Missing required attribute: Shipping => Item Package Dimensions => Package Length => Item Package Length",
-                  "channelId": "481",
-                  "errorCode": null,
-                  "productId": 13820,
-                  "productName": "US - Cute Fall Keychain Wristlet, Thick Embroidered Floral Keychain for Women, Car Key Chain Accessories",
-                  "currentQueue": "Forward-sync-variation-theme-product",
-                  "attributeNames": "item_package_dimensions",
-                  "missingProperty": "value",
-                  "childHierarchyKey": "length",
-                  "productChannelMarketplaceId": 11809
-                },
-                {
-                  "sku": "225680023652",
-                  "type": "CATEGRA",
-                  "input": {
-                    "message": null,
-                    "attribute": "value",
-                    "hierarchy": "item_package_dimensions",
-                    "child_hierarchy": "length"
-                  },
-                  "keyWord": "SCHEMA_VALIDATION_ERROR",
-                  "message": "Missing required attribute: Shipping => Item Package Dimensions => Package Length",
-                  "channelId": "481",
-                  "errorCode": null,
-                  "productId": 13820,
-                  "productName": "US - Cute Fall Keychain Wristlet, Thick Embroidered Floral Keychain for Women, Car Key Chain Accessories",
-                  "currentQueue": "Forward-sync-variation-theme-product",
-                  "attributeNames": "item_package_dimensions",
-                  "missingProperty": "value",
-                  "childHierarchyKey": "length",
-                  "productChannelMarketplaceId": 11809
-                }
-              ],
-              "status": "FAILED",
+              "error": ["Invalid empty value provided in patch at index of 3."],
+              "status": "FINISHED",
               "payload": {
                 "size": [
                   {
@@ -4026,6 +4152,12 @@
                     "marketplace_id": "ATVPDKIKX0DER"
                   }
                 ],
+                "merchant_suggested_asin": [
+                  {
+                    "value": "B0G1TC1KFH",
+                    "marketplace_id": "ATVPDKIKX0DER"
+                  }
+                ],
                 "product_site_launch_date": [
                   {
                     "value": "2025-01-18T14:09:34.783Z",
@@ -4082,10 +4214,33 @@
                 ],
                 "supplier_declared_has_product_identifier_exemption": [
                   {
-                    "value": true,
+                    "value": false,
                     "marketplace_id": "ATVPDKIKX0DER"
                   }
                 ]
+              },
+              "response": {
+                "header": {
+                  "feedId": "56184020687",
+                  "version": "2.0",
+                  "sellerId": "A13EDBEFHU3OJ1"
+                },
+                "issues": [
+                  {
+                    "sku": "225680023652-V4",
+                    "code": "BAD_REQUEST",
+                    "message": "Invalid empty value provided in patch at index of 3.",
+                    "severity": "ERROR",
+                    "messageId": 225688
+                  }
+                ],
+                "summary": {
+                  "errors": 1,
+                  "warnings": 0,
+                  "messagesInvalid": 1,
+                  "messagesAccepted": 1,
+                  "messagesProcessed": 2
+                }
               },
               "countryCode": "US"
             }
@@ -4372,29 +4527,64 @@
       "productChannelMarketplaceId": 11809
     }
   ],
-  "startedAt": "2026-08-22T12:10:22.456Z",
+  "startedAt": "2026-08-22T12:50:13.846Z",
   "amazonFeeds": [
     {
-      "feedId": "56181020687",
+      "feedId": "56183020687",
       "status": "CREATED",
-      "createdAt": "2026-08-22T12:13:10.402Z",
-      "messageIds": [637979, 111042],
+      "createdAt": "2026-08-22T12:53:19.890Z",
+      "messageIds": [750780, 590155],
       "marketplaceId": "ATVPDKIKX0DER",
-      "feedDocumentId": "amzn1.tortuga.4.na.a697c47f-c7af-4abf-88eb-085869fc907b.T2N85FBQO5ZIH3"
+      "feedDocumentId": "amzn1.tortuga.4.na.ec003c9e-8ddb-4fbe-9a67-8d7051562214.T3T1CYRXWDBMX8"
     },
     {
-      "feedId": "56182020687",
+      "feedId": "56184020687",
       "status": "CREATED",
-      "createdAt": "2026-08-22T12:13:55.163Z",
-      "messageIds": [555663, 694553],
+      "createdAt": "2026-08-22T12:54:07.116Z",
+      "messageIds": [225688, 842814],
       "marketplaceId": "ATVPDKIKX0DER",
-      "feedDocumentId": "amzn1.tortuga.4.na.a149003b-007e-4a3f-8dd7-13ea449a988b.T2BDA5DIAWIC5D"
+      "feedDocumentId": "amzn1.tortuga.4.na.2221b25e-c2fe-4f27-ae0f-3fdb4abe3da8.T3W2H2RC7X91V5"
+    },
+    {
+      "feedId": "56184020687",
+      "status": "RESULT_DOCUMENT_READY",
+      "processedAt": "2026-08-22T12:56:09.732Z",
+      "processingStatus": "DONE",
+      "resultFeedDocumentId": "amzn1.tortuga.4.na.1a5eb771-bb46-4593-a54e-681dde8b8ce1.TCDDLT05HOWLF"
     }
   ],
   "environment": "local",
   "toBeStarted": false,
-  "currentQueue": "Forward-sync-create-feed",
+  "currentQueue": "Forward-sync-get-feed-document",
   "Forward-sync-create-feed": {
+    "retryCount": 0
+  },
+  "amazonListingStateRefreshes": [
+    {
+      "sku": "225680023652-V1",
+      "asin": "B0G1T9QL85",
+      "type": "AMAZON_LISTING_STATE_REFRESH",
+      "error": null,
+      "reason": null,
+      "source": "FEED_PROCESSING_DONE",
+      "channelId": "481",
+      "persisted": true,
+      "productId": 13820,
+      "refreshed": true,
+      "variantId": "47316",
+      "recordedAt": "2026-08-22T12:56:19.310Z",
+      "issuesCount": 4,
+      "warningCode": null,
+      "marketplaceId": "ATVPDKIKX0DER",
+      "externalStatus": ["DISCOVERABLE"],
+      "amazonChannelId": "207",
+      "submissionStatus": "ACCEPTED",
+      "verificationStatus": "VERIFIED",
+      "amazonMarketplaceId": 2,
+      "productChannelMarketplaceId": 11809
+    }
+  ],
+  "Forward-sync-get-feed-document": {
     "retryCount": 0
   },
   "Forward-sync-variation-theme-product": {
