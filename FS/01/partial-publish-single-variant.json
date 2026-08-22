@@ -1,0 +1,767 @@
+{
+  "details": [
+    {
+      "sku": "225680023652",
+      "parent": {
+        "sku": "225680023652",
+        "name": "US - Cute Fall Keychain Wristlet, Thick Embroidered Floral Keychain for Women, Car Key Chain Accessories",
+        "productId": 13820
+      },
+      "variants": [],
+      "wrappers": [
+        {
+          "sku": "225680023652-V5",
+          "name": "Decorative Fabric Wristlet Keychain with Leaf Pattern, Wrist Key Chain with Gold Hardware, Green and Cream",
+          "variants": [
+            {
+              "sku": "225680023652-V5",
+              "marketplaces": [
+                {
+                  "status": "PROCESSING"
+                },
+                {
+                  "payload": {
+                    "size": [
+                      {
+                        "value": "Standard",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "brand": [
+                      {
+                        "value": "Generic",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "color": [
+                      {
+                        "value": "Green Leaf",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "standardized_values": ["Beige"]
+                      }
+                    ],
+                    "theme": [
+                      {
+                        "value": "Floral",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "closure": [
+                      {
+                        "type": [
+                          {
+                            "value": "Split Ring",
+                            "language_tag": "en_CA"
+                          }
+                        ],
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "material": [
+                      {
+                        "value": "Alloy",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "item_name": [
+                      {
+                        "value": "CELOKIY Decorative Fabric Wristlet Keychain with Leaf Pattern, Wrist Key Chain with Gold Hardware, Green and Cream",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "department": [
+                      {
+                        "value": "womens",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "list_price": [
+                      {
+                        "value": 20,
+                        "currency": "CAD",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "model_name": [
+                      {
+                        "value": "m01",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "unit_count": [
+                      {
+                        "type": {
+                          "value": "Count",
+                          "language_tag": "en_CA"
+                        },
+                        "value": 1,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "item_weight": [
+                      {
+                        "unit": "kilograms",
+                        "value": 1,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "unspsc_code": [
+                      {
+                        "value": "46171515",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "bullet_point": [
+                      {
+                        "value": "ELEGANT DESIGN: Stylish wristlet keychain featuring a beautiful green leaf pattern embroidered on cream-colored fabric with gold accents",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      },
+                      {
+                        "value": "DURABLE HARDWARE: Gold-toned metal hardware with sturdy key rings and secure clasps ensures long-lasting daily use",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      },
+                      {
+                        "value": "COMFORTABLE GRIP: Soft fabric wristlet design with reinforced stitching provides a secure and comfortable way to carry your keys",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      },
+                      {
+                        "value": "VERSATILE SIZE: Perfect length for wearing on wrist or attaching to bag handles, making it easy to locate and access your keys",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      },
+                      {
+                        "value": "PREMIUM CONSTRUCTION: High-quality fabric with detailed embroidery work and strong webbing backing for enhanced durability",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "target_gender": [
+                      {
+                        "value": "female",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "condition_type": [
+                      {
+                        "value": "new_new",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "parentage_level": [
+                      {
+                        "value": "child",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "variation_theme": [
+                      {
+                        "name": "COLOR"
+                      }
+                    ],
+                    "country_of_origin": [
+                      {
+                        "value": "US",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "purchasable_offer": [
+                      {
+                        "audience": "ALL",
+                        "currency": "CAD",
+                        "our_price": [
+                          {
+                            "schedule": [
+                              {
+                                "value_with_tax": 55
+                              }
+                            ]
+                          }
+                        ],
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "discounted_price": [
+                          {
+                            "schedule": [
+                              {
+                                "end_at": "2026-07-23T23:59:59+00:00",
+                                "start_at": "2026-07-09T00:00:00+00:00",
+                                "value_with_tax": 20.54
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "item_package_weight": [
+                      {
+                        "unit": "kilograms",
+                        "value": 1,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "product_description": [
+                      {
+                        "value": "Elevate your everyday carry with this charming wristlet key chain that combines style and functionality. The elegant design features a nature-inspired leaf pattern in sage green embroidered on cream-colored fabric, accented with delicate golden threading. The durable cotton webbing construction ensures lasting wear while maintaining a soft, comfortable feel on your wrist. The gold-tone hardware adds a luxurious touch and includes a sturdy key ring that keeps your keys securely organized. Perfect for busy days when you need your hands free, this wristlet key chain makes it easy to locate and carry your keys while adding a sophisticated botanical accent to your accessories. The generous length allows for comfortable wear, while the classic pattern coordinates beautifully with any style or season. Ideal for anyone seeking both practicality and fashion in their daily essentials.",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "gpsr_safety_attestation": [
+                      {
+                        "value": true,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "item_package_dimensions": [
+                      {
+                        "width": {
+                          "unit": "centimeters",
+                          "value": 5
+                        },
+                        "height": {
+                          "unit": "centimeters",
+                          "value": 14.3
+                        },
+                        "length": {
+                          "unit": "centimeters",
+                          "value": 0.9
+                        },
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "merchant_shipping_group": [
+                      {
+                        "value": "legacy-template-id",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "merchant_suggested_asin": [
+                      {
+                        "value": "B0G1T4XNH8",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "fulfillment_availability": [
+                      {
+                        "quantity": 0,
+                        "fulfillment_channel_code": "DEFAULT"
+                      }
+                    ],
+                    "product_site_launch_date": [
+                      {
+                        "value": "2025-01-18T14:09:34.783Z",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "recommended_browse_nodes": [
+                      {
+                        "value": "7420596011",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "main_product_image_locator": [
+                      {
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "media_location": "http://localhost:3002/uploads/278/product/13820/fdf7ba40-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "swatch_product_image_locator": [
+                      {
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "media_location": "http://localhost:3002/uploads/278/product/13820/256x256_fdf7ba40-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "child_parent_sku_relationship": [
+                      {
+                        "parent_sku": "225680023652",
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "child_relationship_type": "variation"
+                      }
+                    ],
+                    "other_product_image_locator_1": [
+                      {
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "media_location": "http://localhost:3002/uploads/278/product/13820/2ca05950-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "other_product_image_locator_2": [
+                      {
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "media_location": "http://localhost:3002/uploads/278/product/13820/2d53f1e0-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "supplier_declared_dg_hz_regulation": [
+                      {
+                        "value": "not_applicable",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "supplier_declared_has_product_identifier_exemption": [
+                      {
+                        "value": false,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "error": [
+                    {
+                      "sku": "225680023652-V5",
+                      "type": "CATEGRA",
+                      "input": {
+                        "message": null,
+                        "attribute": "manufacturer_contact_information",
+                        "hierarchy": null,
+                        "child_hierarchy": null
+                      },
+                      "keyWord": "SCHEMA_VALIDATION_ERROR",
+                      "message": "Missing required attribute: Product Details => Manufacturer Contact Information",
+                      "channelId": "481",
+                      "errorCode": null,
+                      "productId": 13820,
+                      "variantId": "47313",
+                      "productName": "CELOKIY Decorative Fabric Wristlet Keychain with Leaf Pattern, Wrist Key Chain with Gold Hardware, Green and Cream",
+                      "currentQueue": "Forward-sync-variation-theme-product",
+                      "attributeNames": ["manufacturer_contact_information"],
+                      "missingProperty": null,
+                      "childHierarchyKey": null,
+                      "productChannelMarketplaceId": 11808
+                    }
+                  ],
+                  "status": "FAILED"
+                }
+              ]
+            }
+          ],
+          "variantId": "47313",
+          "wrapperId": "7356",
+          "marketplaces": [
+            {
+              "id": 1,
+              "status": "NOT_STARTED",
+              "countryCode": "CA"
+            }
+          ]
+        },
+        {
+          "sku": "225680023652-V5",
+          "name": "Decorative Fabric Wristlet Keychain with Leaf Pattern, Wrist Key Chain with Gold Hardware, Green and Cream",
+          "variants": [
+            {
+              "sku": "225680023652-V5",
+              "marketplaces": [
+                {
+                  "status": "PROCESSING"
+                },
+                {
+                  "payload": {
+                    "size": [
+                      {
+                        "value": "Standard",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "brand": [
+                      {
+                        "value": "Generic",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "color": [
+                      {
+                        "value": "Green Leaf",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER",
+                        "standardized_values": ["Beige"]
+                      }
+                    ],
+                    "theme": [
+                      {
+                        "value": "Floral",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "closure": [
+                      {
+                        "type": [
+                          {
+                            "value": "Split Ring",
+                            "language_tag": "en_US"
+                          }
+                        ],
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "material": [
+                      {
+                        "value": "regular",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "item_name": [
+                      {
+                        "value": "Decorative Fabric Wristlet Keychain with Leaf Pattern, Wrist Key Chain with Gold Hardware, Green and Cream",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "department": [
+                      {
+                        "value": "womens",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "list_price": [
+                      {
+                        "value": 28,
+                        "currency": "USD",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "model_name": [
+                      {
+                        "value": "m01",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "skip_offer": [
+                      {
+                        "value": false,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "unit_count": [
+                      {
+                        "type": {
+                          "value": "Count",
+                          "language_tag": "en_US"
+                        },
+                        "value": 1,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "item_weight": [
+                      {
+                        "unit": "kilograms",
+                        "value": 1,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "unspsc_code": [
+                      {
+                        "value": "46171515",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "bullet_point": [
+                      {
+                        "value": "ELEGANT DESIGN: Stylish wristlet keychain featuring a beautiful green leaf pattern embroidered on cream-colored fabric with gold accents",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      },
+                      {
+                        "value": "DURABLE HARDWARE: Gold-toned metal hardware with sturdy key rings and secure clasps ensures long-lasting daily use",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      },
+                      {
+                        "value": "COMFORTABLE GRIP: Soft fabric wristlet design with reinforced stitching provides a secure and comfortable way to carry your keys",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      },
+                      {
+                        "value": "VERSATILE SIZE: Perfect length for wearing on wrist or attaching to bag handles, making it easy to locate and access your keys",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      },
+                      {
+                        "value": "PREMIUM CONSTRUCTION: High-quality fabric with detailed embroidery work and strong webbing backing for enhanced durability",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "target_gender": [
+                      {
+                        "value": "female",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "condition_type": [
+                      {
+                        "value": "used_acceptable",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "parentage_level": [
+                      {
+                        "value": "child",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "special_feature": [
+                      {
+                        "value": "None",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "variation_theme": [
+                      {
+                        "name": "COLOR"
+                      }
+                    ],
+                    "country_of_origin": [
+                      {
+                        "value": "US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "item_type_keyword": [
+                      {
+                        "value": "Keyrings, Keychains & Charms",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "purchasable_offer": [
+                      {
+                        "audience": "ALL",
+                        "currency": "USD",
+                        "our_price": [
+                          {
+                            "schedule": [
+                              {
+                                "value_with_tax": 50
+                              }
+                            ]
+                          }
+                        ],
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "batteries_included": [
+                      {
+                        "value": false,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "batteries_required": [
+                      {
+                        "value": false,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "import_designation": [
+                      {
+                        "value": "Imported",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "item_package_weight": [
+                      {
+                        "unit": "kilograms",
+                        "value": 1,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "product_description": [
+                      {
+                        "value": "Elevate your everyday carry with this charming wristlet key chain that combines style and functionality. The elegant design features a nature-inspired leaf pattern in sage green embroidered on cream-colored fabric, accented with delicate golden threading. The durable cotton webbing construction ensures lasting wear while maintaining a soft, comfortable feel on your wrist. The gold-tone hardware adds a luxurious touch and includes a sturdy key ring that keeps your keys securely organized. Perfect for busy days when you need your hands free, this wristlet key chain makes it easy to locate and carry your keys while adding a sophisticated botanical accent to your accessories. The generous length allows for comfortable wear, while the classic pattern coordinates beautifully with any style or season. Ideal for anyone seeking both practicality and fashion in their daily essentials.",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "gpsr_safety_attestation": [
+                      {
+                        "value": true,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "item_package_dimensions": [
+                      {
+                        "width": {
+                          "unit": "centimeters",
+                          "value": 5
+                        },
+                        "height": {
+                          "unit": "centimeters",
+                          "value": 14.3
+                        },
+                        "length": {
+                          "unit": "centimeters",
+                          "value": 0.9
+                        },
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "merchant_shipping_group": [
+                      {
+                        "value": "2be65c4c-75bc-42c8-900c-0d21c18510d4",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "merchant_suggested_asin": [
+                      {
+                        "value": "B0G1T4XNH8",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "fulfillment_availability": [
+                      {
+                        "quantity": 0,
+                        "fulfillment_channel_code": "DEFAULT"
+                      }
+                    ],
+                    "product_site_launch_date": [
+                      {
+                        "value": "2025-01-18T14:09:34.783Z",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "main_product_image_locator": [
+                      {
+                        "marketplace_id": "ATVPDKIKX0DER",
+                        "media_location": "http://localhost:3002/uploads/278/product/13820/fdf7ba40-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "swatch_product_image_locator": [
+                      {
+                        "marketplace_id": "ATVPDKIKX0DER",
+                        "media_location": "http://localhost:3002/uploads/278/product/13820/256x256_fdf7ba40-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "child_parent_sku_relationship": [
+                      {
+                        "parent_sku": "225680023652-V5",
+                        "marketplace_id": "ATVPDKIKX0DER",
+                        "child_relationship_type": "variation"
+                      }
+                    ],
+                    "other_product_image_locator_1": [
+                      {
+                        "marketplace_id": "ATVPDKIKX0DER",
+                        "media_location": "http://localhost:3002/uploads/278/product/13820/2ca05950-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "other_product_image_locator_2": [
+                      {
+                        "marketplace_id": "ATVPDKIKX0DER",
+                        "media_location": "http://localhost:3002/uploads/278/product/13820/2d53f1e0-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "supplier_declared_dg_hz_regulation": [
+                      {
+                        "value": "not_applicable",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "supplier_declared_has_product_identifier_exemption": [
+                      {
+                        "value": false,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ],
+          "variantId": "47313",
+          "wrapperId": "7357",
+          "marketplaces": [
+            {
+              "id": 2,
+              "status": "NOT_STARTED",
+              "countryCode": "US"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "feedData": [
+    {
+      "sku": "225680023652-V5",
+      "name": "Decorative Fabric Wristlet Keychain with Leaf Pattern, Wrist Key Chain with Gold Hardware, Green and Cream",
+      "language": "en_CA",
+      "parentSku": "225680023652",
+      "productId": 13820,
+      "variantId": "47313",
+      "wrapperId": "7356",
+      "batchIndex": 1,
+      "publishScope": {
+        "mode": "PARTIAL",
+        "selection": {
+          "media": true,
+          "pricing": false,
+          "variantId": 47313
+        },
+        "amazonMarketplaceId": 1
+      },
+      "isVariantSync": true,
+      "marketplaceId": 1,
+      "externalMarketplaceId": "A2EUQ1WTGCTBG2",
+      "productChannelMarketplaceId": 11808
+    },
+    {
+      "sku": "225680023652-V5",
+      "name": "Decorative Fabric Wristlet Keychain with Leaf Pattern, Wrist Key Chain with Gold Hardware, Green and Cream",
+      "language": "en_US",
+      "parentSku": "225680023652",
+      "productId": 13820,
+      "variantId": "47313",
+      "wrapperId": "7357",
+      "batchIndex": 2,
+      "publishScope": {
+        "mode": "PARTIAL",
+        "selection": {
+          "media": true,
+          "pricing": true,
+          "miscTypes": [],
+          "variantId": 47313
+        },
+        "amazonMarketplaceId": 2
+      },
+      "isVariantSync": true,
+      "marketplaceId": 2,
+      "externalMarketplaceId": "ATVPDKIKX0DER",
+      "productChannelMarketplaceId": 11809
+    }
+  ],
+  "startedAt": "2026-08-21T08:50:03.318Z",
+  "amazonFeeds": [
+    {
+      "feedId": "56176020686",
+      "status": "CREATED",
+      "createdAt": "2026-08-21T08:51:45.196Z",
+      "messageIds": [919132],
+      "marketplaceId": "ATVPDKIKX0DER",
+      "feedDocumentId": "amzn1.tortuga.4.na.435a50ff-6935-4fc0-b3f6-2c8525954476.T3QUDKPVQSQ2Y7"
+    }
+  ],
+  "environment": "local",
+  "currentQueue": "Forward-sync-create-feed",
+  "Forward-sync-create-feed": {
+    "retryCount": 0
+  },
+  "Forward-sync-variation-theme-product": {
+    "retryCount": 0
+  }
+}

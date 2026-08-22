@@ -1,0 +1,219 @@
+{
+  "details": [
+    {
+      "sku": "225680023652",
+      "parent": {
+        "sku": "225680023652",
+        "name": "US - Cute Fall Keychain Wristlet, Thick Embroidered Floral Keychain for Women, Car Key Chain Accessories",
+        "productId": 13820,
+        "marketplaces": [
+          {
+            "id": 2,
+            "error": [
+              {
+                "message": "Queue processing time exceeded or jobs missing for the task"
+              }
+            ],
+            "status": "FAILED",
+            "countryCode": "US"
+          }
+        ]
+      },
+      "variants": [],
+      "wrappers": [
+        {
+          "sku": "225680023652",
+          "name": "US - Cute Fall Keychain Wristlet, Thick Embroidered Floral Keychain for Women, Car Key Chain Accessories",
+          "productId": 13820,
+          "wrapperId": "7356",
+          "marketplaces": [
+            {
+              "id": 2,
+              "status": "NOT_STARTED",
+              "countryCode": "US"
+            }
+          ]
+        },
+        {
+          "sku": null,
+          "name": "US - Cute Fall Keychain Wristlet, Thick Embroidered Floral Keychain for Women, Car Key Chain Accessories",
+          "variants": [
+            {
+              "sku": "225680023652-V2",
+              "name": "Vintage Floral Wristlet Keychain for Women, Embroidered Fabric, Green and Cream Boho Short Lanyard for Keys",
+              "variantId": "47312",
+              "wrapperId": "7357",
+              "marketplaces": [
+                {
+                  "id": 2,
+                  "status": "NOT_STARTED",
+                  "countryCode": "US"
+                }
+              ]
+            },
+            {
+              "sku": "225680023652-V5",
+              "name": "Decorative Fabric Wristlet Keychain with Leaf Pattern, Wrist Key Chain with Gold Hardware, Green and Cream",
+              "variantId": "47313",
+              "wrapperId": "7357",
+              "marketplaces": [
+                {
+                  "id": 2,
+                  "status": "NOT_STARTED",
+                  "countryCode": "US"
+                }
+              ]
+            },
+            {
+              "sku": "225680023652-V3",
+              "name": "Cute Fall Keychain Wristlet, Thick Embroidered Floral Keychain for Women, Car Key Chain Accessories",
+              "variantId": "47314",
+              "wrapperId": "7357",
+              "marketplaces": [
+                {
+                  "id": 2,
+                  "status": "NOT_STARTED",
+                  "countryCode": "US"
+                }
+              ]
+            },
+            {
+              "sku": "225680023652-V4",
+              "name": "Celestial Keychain Wristlet, Sun Moon Stars Design, Black and Gold Fabric Wrist Key Chain with Metal Hardware",
+              "variantId": "47315",
+              "wrapperId": "7357",
+              "marketplaces": [
+                {
+                  "id": 2,
+                  "status": "NOT_STARTED",
+                  "countryCode": "US"
+                }
+              ]
+            }
+          ],
+          "productId": 13820,
+          "wrapperId": "7357",
+          "marketplaces": [
+            {
+              "id": 2,
+              "status": "NOT_STARTED",
+              "countryCode": "US"
+            }
+          ]
+        },
+        {
+          "sku": "225680023652",
+          "name": "US - Cute Fall Keychain Wristlet, Thick Embroidered Floral Keychain for Women, Car Key Chain Accessories",
+          "variants": [
+            {
+              "sku": "225680023652-V1",
+              "name": "CELOKIY Floral Embroidered Fabric Wristlet Keychain, Vintage Style Wrist Key Chain Women with Brass Hardware",
+              "variantId": "47316",
+              "wrapperId": "7667",
+              "marketplaces": [
+                {
+                  "id": 2,
+                  "status": "NOT_STARTED",
+                  "countryCode": "US"
+                }
+              ]
+            }
+          ],
+          "productId": 13820,
+          "wrapperId": "7667",
+          "marketplaces": [
+            {
+              "id": 2,
+              "status": "NOT_STARTED",
+              "countryCode": "US"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "feedData": [
+    {
+      "sku": "225680023652",
+      "name": "US - Cute Fall Keychain Wristlet, Thick Embroidered Floral Keychain for Women, Car Key Chain Accessories",
+      "language": "en_US",
+      "productId": 13820,
+      "variantId": null,
+      "batchIndex": 1,
+      "marketplaceId": 2,
+      "externalMarketplaceId": "ATVPDKIKX0DER",
+      "productChannelMarketplaceId": 11809
+    },
+    {
+      "sku": "225680023652-V2",
+      "name": "Vintage Floral Wristlet Keychain for Women, Embroidered Fabric, Green and Cream Boho Short Lanyard for Keys",
+      "language": "en_US",
+      "parentSku": "225680023652",
+      "productId": 13820,
+      "variantId": "47312",
+      "wrapperId": "7357",
+      "batchIndex": 1,
+      "marketplaceId": 2,
+      "externalMarketplaceId": "ATVPDKIKX0DER",
+      "productChannelMarketplaceId": 11809
+    },
+    {
+      "sku": "225680023652-V5",
+      "name": "Decorative Fabric Wristlet Keychain with Leaf Pattern, Wrist Key Chain with Gold Hardware, Green and Cream",
+      "language": "en_US",
+      "parentSku": "225680023652",
+      "productId": 13820,
+      "variantId": "47313",
+      "wrapperId": "7357",
+      "batchIndex": 1,
+      "marketplaceId": 2,
+      "externalMarketplaceId": "ATVPDKIKX0DER",
+      "productChannelMarketplaceId": 11809
+    },
+    {
+      "sku": "225680023652-V3",
+      "name": "Cute Fall Keychain Wristlet, Thick Embroidered Floral Keychain for Women, Car Key Chain Accessories",
+      "language": "en_US",
+      "parentSku": "225680023652",
+      "productId": 13820,
+      "variantId": "47314",
+      "wrapperId": "7357",
+      "batchIndex": 2,
+      "marketplaceId": 2,
+      "externalMarketplaceId": "ATVPDKIKX0DER",
+      "productChannelMarketplaceId": 11809
+    },
+    {
+      "sku": "225680023652-V4",
+      "name": "Celestial Keychain Wristlet, Sun Moon Stars Design, Black and Gold Fabric Wrist Key Chain with Metal Hardware",
+      "language": "en_US",
+      "parentSku": "225680023652",
+      "productId": 13820,
+      "variantId": "47315",
+      "wrapperId": "7357",
+      "batchIndex": 2,
+      "marketplaceId": 2,
+      "externalMarketplaceId": "ATVPDKIKX0DER",
+      "productChannelMarketplaceId": 11809
+    },
+    {
+      "sku": "225680023652-V1",
+      "name": "CELOKIY Floral Embroidered Fabric Wristlet Keychain, Vintage Style Wrist Key Chain Women with Brass Hardware",
+      "language": "en_US",
+      "parentSku": "225680023652",
+      "productId": 13820,
+      "variantId": "47316",
+      "wrapperId": "7667",
+      "batchIndex": 2,
+      "marketplaceId": 2,
+      "externalMarketplaceId": "ATVPDKIKX0DER",
+      "productChannelMarketplaceId": 11809
+    }
+  ],
+  "startedAt": "2026-08-19T04:56:59.947Z",
+  "environment": "local",
+  "toBeStarted": false,
+  "Forward-sync-variation-theme-product": {
+    "retryCount": 0
+  }
+}

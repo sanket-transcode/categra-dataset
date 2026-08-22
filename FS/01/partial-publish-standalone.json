@@ -1,0 +1,1056 @@
+{
+  "details": [
+    {
+      "sku": "MA-G9XT-DUQU",
+      "parent": {
+        "sku": "MA-G9XT-DUQU",
+        "name": "Water Bottle",
+        "productId": 13776,
+        "marketplaces": [
+          {
+            "id": 1,
+            "status": "FINISHED",
+            "payload": {
+              "size": [
+                {
+                  "value": "25 Ounces",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "brand": [
+                {
+                  "value": "Generic",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "color": [
+                {
+                  "value": "Clear",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "style": [
+                {
+                  "value": "Sports",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "hazmat": [
+                {
+                  "value": "12345",
+                  "aspect": "united_nations_regulatory_id",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "capacity": [
+                {
+                  "unit": "ounces",
+                  "value": 25.36,
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "material": [
+                {
+                  "value": "Plastic",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "container": [
+                {
+                  "type": [
+                    {
+                      "value": "Bottle",
+                      "language_tag": "en_CA"
+                    }
+                  ],
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "item_name": [
+                {
+                  "value": "CA - Premium Reusable Water Bottle, BPA-Free, Leak-Proof Sports Design, 750ml Capacity, Wide-Mouth Opening, Lightweight for Gym, Hiking, Office",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "team_name": [
+                {
+                  "value": "Jetha Ke Jabaz",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "item_shape": [
+                {
+                  "value": "Cylindrical",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "list_price": [
+                {
+                  "value": 150,
+                  "currency": "CAD",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "model_name": [
+                {
+                  "value": "Premium Sport 750",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "skip_offer": [
+                {
+                  "value": false,
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "unit_count": [
+                {
+                  "type": {
+                    "value": "count",
+                    "language_tag": "en_CA"
+                  },
+                  "value": "1.0",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "bottle_type": [
+                {
+                  "value": "Sports",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "item_weight": [
+                {
+                  "unit": "ounces",
+                  "value": "12.0",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "league_name": [
+                {
+                  "value": "Ranji Trophy",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                },
+                {
+                  "value": "Polaris Nu Popdu",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "reusability": [
+                {
+                  "value": "Reusable",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "unspsc_code": [
+                {
+                  "value": "52150000",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "bullet_point": [
+                {
+                  "value": "CAPACITY: Large 750ml (25.3 oz) water bottle perfect for daily hydration needs at work, gym, or outdoor activities",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                },
+                {
+                  "value": "MATERIAL: Premium BPA-free construction ensures pure, fresh-tasting water with every sip",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                },
+                {
+                  "value": "LEAK-PROOF DESIGN: Secure lid prevents spills and leaks, keeping your belongings dry and protected",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                },
+                {
+                  "value": "WIDE-MOUTH OPENING: Easy to fill, clean, and add ice cubes for refreshingly cold drinks",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                },
+                {
+                  "value": "PORTABLE: Lightweight construction makes it convenient to carry during workouts, hiking, or daily commutes",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "manufacturer": [
+                {
+                  "value": "Generic - CA",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "model_number": [
+                {
+                  "value": "Wb750 - CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "package_level": [
+                {
+                  "value": "case",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "condition_type": [
+                {
+                  "value": "new_new",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "item_dimensions": [
+                {
+                  "width": {
+                    "unit": "inches",
+                    "value": "3.0"
+                  },
+                  "height": {
+                    "unit": "inches",
+                    "value": 9.5
+                  },
+                  "length": {
+                    "unit": "inches",
+                    "value": "3.0"
+                  },
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "number_of_items": [
+                {
+                  "value": 1,
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "special_feature": [
+                {
+                  "value": "Leak Proof",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                },
+                {
+                  "value": "Lightweight",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                },
+                {
+                  "value": "Wide-mouth Opening",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                },
+                {
+                  "value": "Easy-clean",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "compliance_media": [
+                {
+                  "content_type": "certificate_of_analysis",
+                  "marketplace_id": "A2EUQ1WTGCTBG2",
+                  "source_location": "123432452424",
+                  "content_language": "de_DE"
+                }
+              ],
+              "care_instructions": [
+                {
+                  "value": "Hand Wash Only",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                },
+                {
+                  "value": "Dishwasher Safe",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "country_of_origin": [
+                {
+                  "value": "CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "item_width_height": [
+                {
+                  "width": {
+                    "unit": "centimeters",
+                    "value": "3.0"
+                  },
+                  "height": {
+                    "unit": "centimeters",
+                    "value": 9.5
+                  },
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "purchasable_offer": [
+                {
+                  "audience": "ALL",
+                  "currency": "CAD",
+                  "start_at": {
+                    "value": "2025-08-14T11:50:27.716Z"
+                  },
+                  "our_price": [
+                    {
+                      "schedule": [
+                        {
+                          "value_with_tax": 137.52
+                        }
+                      ]
+                    }
+                  ],
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "material_type_free": [
+                {
+                  "value": "Bpa-free Plastic",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "included_components": [
+                {
+                  "value": "Water Bottle",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                },
+                {
+                  "value": "Leak-proof Lid",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "item_package_weight": [
+                {
+                  "unit": "pounds",
+                  "value": 0.6,
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "product_description": [
+                {
+                  "value": "Elevate your daily hydration with this Premium Reusable Water Bottle, thoughtfully designed for active lifestyles. The generous 750ml capacity ensures you stay well-hydrated throughout your activities, while the BPA-free construction maintains your water's pure, fresh taste. This versatile bottle features a leak-proof lid that provides peace of mind whether it's in your gym bag, backpack, or on your desk. The lightweight design makes it an ideal companion for all your adventures, from intense workout sessions to long office days. Its practical wide-mouth opening simplifies cleaning and lets you easily add ice cubes for a refreshing cold drink. The durable construction stands up to daily use, while the sleek sports design offers both style and functionality. Whether you're hitting the trails, heading to yoga, or tackling your daily commute, this water bottle delivers reliable performance and convenience in every situation.",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "package_contains_sku": [
+                {
+                  "sku": "SKU1",
+                  "quantity": 10,
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "item_package_dimensions": [
+                {
+                  "width": {
+                    "unit": "inches",
+                    "value": 3.5
+                  },
+                  "height": {
+                    "unit": "inches",
+                    "value": 10.5
+                  },
+                  "length": {
+                    "unit": "inches",
+                    "value": "10.0"
+                  },
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "merchant_shipping_group": [
+                {
+                  "value": "legacy-template-id",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "merchant_suggested_asin": [
+                {
+                  "value": "B0FMFMGBYC",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "fulfillment_availability": [
+                {
+                  "quantity": 0,
+                  "fulfillment_channel_code": "DEFAULT"
+                }
+              ],
+              "product_site_launch_date": [
+                {
+                  "value": "2025-08-14T13:35:52.053Z",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "recommended_browse_nodes": [
+                {
+                  "value": "2406090011",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "specific_uses_for_product": [
+                {
+                  "value": "Hydration",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                },
+                {
+                  "value": "Sports",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "main_product_image_locator": [
+                {
+                  "marketplace_id": "A2EUQ1WTGCTBG2",
+                  "media_location": "http://localhost:3002/uploads/278/product/13776/70b7c120-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                }
+              ],
+              "recommended_uses_for_product": [
+                {
+                  "value": "Gym",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                },
+                {
+                  "value": "Hiking",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                },
+                {
+                  "value": "Office",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                },
+                {
+                  "value": "Sports",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                },
+                {
+                  "value": "Outdoor Activities",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "swatch_product_image_locator": [
+                {
+                  "marketplace_id": "A2EUQ1WTGCTBG2",
+                  "media_location": "http://localhost:3002/uploads/278/product/13776/256x256_70b7c120-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                }
+              ],
+              "other_product_image_locator_1": [
+                {
+                  "marketplace_id": "A2EUQ1WTGCTBG2",
+                  "media_location": "http://localhost:3002/uploads/278/product/13776/8e38be60-8cc7-11f1-9156-4bd0fee1ca81.jpg"
+                }
+              ],
+              "other_product_image_locator_2": [
+                {
+                  "marketplace_id": "A2EUQ1WTGCTBG2",
+                  "media_location": "http://localhost:3002/uploads/278/product/13776/8ed3ecf0-8cc7-11f1-9156-4bd0fee1ca81.jpg"
+                }
+              ],
+              "manufacturer_contact_information": [
+                {
+                  "value": "M1",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                },
+                {
+                  "value": "M2",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                },
+                {
+                  "value": "M3",
+                  "language_tag": "en_CA",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "supplier_declared_dg_hz_regulation": [
+                {
+                  "value": "not_applicable",
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ],
+              "supplier_declared_has_product_identifier_exemption": [
+                {
+                  "value": false,
+                  "marketplace_id": "A2EUQ1WTGCTBG2"
+                }
+              ]
+            },
+            "response": {
+              "sku": "MA-G9XT-DUQU",
+              "issues": [],
+              "status": "ACCEPTED",
+              "submissionId": "2b9f891a0da14e9ba878fe629ff5cd87"
+            },
+            "countryCode": "CA"
+          },
+          {
+            "id": 2,
+            "status": "FINISHED",
+            "payload": {
+              "size": [
+                {
+                  "value": "25.4 Ounces",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "brand": [
+                {
+                  "value": "Generic",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "color": [
+                {
+                  "value": "Clear",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "style": [
+                {
+                  "value": "Sports",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "hazmat": [
+                {
+                  "value": "12345",
+                  "aspect": "united_nations_regulatory_id",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "capacity": [
+                {
+                  "unit": "ounces",
+                  "value": 25.36,
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "material": [
+                {
+                  "value": "Bpa-free Plastic",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "container": [
+                {
+                  "type": [
+                    {
+                      "value": "Bottle",
+                      "language_tag": "en_US"
+                    }
+                  ],
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "item_name": [
+                {
+                  "value": "Water Bottle",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "team_name": [
+                {
+                  "value": "Jetha Ke Jabaz",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "item_shape": [
+                {
+                  "value": "Rectangular",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "list_price": [
+                {
+                  "value": 99.99,
+                  "currency": "USD",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "model_name": [
+                {
+                  "value": "Premium Sport 750",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "skip_offer": [
+                {
+                  "value": false,
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "unit_count": [
+                {
+                  "type": {
+                    "value": "Count",
+                    "language_tag": "en_US"
+                  },
+                  "value": "1.0",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "bottle_type": [
+                {
+                  "value": "Sports",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "item_weight": [
+                {
+                  "unit": "ounces",
+                  "value": "12.0",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "league_name": [
+                {
+                  "value": "Ranji Trophy",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                },
+                {
+                  "value": "Polaris Nu Popdu",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "reusability": [
+                {
+                  "value": "Reusable",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "unspsc_code": [
+                {
+                  "value": "52150000",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "bullet_point": [
+                {
+                  "value": "CAPACITY: Large 750ml (25.3 oz) water bottle perfect for daily hydration needs at work, gym, or outdoor activities",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                },
+                {
+                  "value": "MATERIAL: Premium BPA-free construction ensures pure, fresh-tasting water with every sip",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                },
+                {
+                  "value": "LEAK-PROOF DESIGN: Secure lid prevents spills and leaks, keeping your belongings dry and protected",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                },
+                {
+                  "value": "WIDE-MOUTH OPENING: Easy to fill, clean, and add ice cubes for refreshingly cold drinks",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "manufacturer": [
+                {
+                  "value": "Generic - US",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "model_number": [
+                {
+                  "value": "Wb750 - US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "package_level": [
+                {
+                  "value": "case",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "condition_type": [
+                {
+                  "value": "new_new",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "item_dimensions": [
+                {
+                  "width": {
+                    "unit": "inches",
+                    "value": "3.0"
+                  },
+                  "height": {
+                    "unit": "inches",
+                    "value": 9.5
+                  },
+                  "length": {
+                    "unit": "inches",
+                    "value": "3.0"
+                  },
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "number_of_items": [
+                {
+                  "value": 1,
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "special_feature": [
+                {
+                  "value": "Leak-proof",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                },
+                {
+                  "value": "Lightweight",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                },
+                {
+                  "value": "Wide-mouth Opening",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                },
+                {
+                  "value": "Easy-clean",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "compliance_media": [
+                {
+                  "content_type": "application_guide",
+                  "marketplace_id": "ATVPDKIKX0DER",
+                  "source_location": "1234",
+                  "content_language": "de_DE"
+                }
+              ],
+              "care_instructions": [
+                {
+                  "value": "Hand Wash Recommended",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                },
+                {
+                  "value": "Dishwasher Safe",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                },
+                {
+                  "value": "Freezer Safe",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                },
+                {
+                  "value": "Hand Wash Only",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                },
+                {
+                  "value": "Fridge Safe",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "country_of_origin": [
+                {
+                  "value": "CN",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "item_type_keyword": [
+                {
+                  "value": "Water Bottles",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "item_width_height": [
+                {
+                  "width": {
+                    "unit": "inches",
+                    "value": "3.0"
+                  },
+                  "height": {
+                    "unit": "inches",
+                    "value": 9.5
+                  },
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "purchasable_offer": [
+                {
+                  "audience": "ALL",
+                  "currency": "USD",
+                  "start_at": {
+                    "value": "2025-08-14T10:57:42.684Z"
+                  },
+                  "our_price": [
+                    {
+                      "schedule": [
+                        {
+                          "value_with_tax": 99.99
+                        }
+                      ]
+                    }
+                  ],
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "material_type_free": [
+                {
+                  "value": "Bpa-free Plastic",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "included_components": [
+                {
+                  "value": "Water Bottle",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                },
+                {
+                  "value": "Leak-proof Lid",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "item_package_weight": [
+                {
+                  "unit": "pounds",
+                  "value": 0.6,
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "product_description": [
+                {
+                  "value": "Elevate your daily hydration with this Premium Reusable Water Bottle, thoughtfully designed for active lifestyles. The generous 750ml capacity ensures you stay well-hydrated throughout your activities, while the BPA-free construction maintains your water's pure, fresh taste. This versatile bottle features a leak-proof lid that provides peace of mind whether it's in your gym bag, backpack, or on your desk. The lightweight design makes it an ideal companion for all your adventures, from intense workout sessions to long office days. Its practical wide-mouth opening simplifies cleaning and lets you easily add ice cubes for a refreshing cold drink. The durable construction stands up to daily use, while the sleek sports design offers both style and functionality. Whether you're hitting the trails, heading to yoga, or tackling your daily commute, this water bottle delivers reliable performance and convenience in every situation.",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "package_contains_sku": [
+                {
+                  "sku": "SKU1",
+                  "quantity": 10,
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "item_package_dimensions": [
+                {
+                  "width": {
+                    "unit": "inches",
+                    "value": 3.5
+                  },
+                  "height": {
+                    "unit": "inches",
+                    "value": 10.5
+                  },
+                  "length": {
+                    "unit": "inches",
+                    "value": "10.0"
+                  },
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "merchant_shipping_group": [
+                {
+                  "value": "legacy-template-id",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "merchant_suggested_asin": [
+                {
+                  "value": "B0FMFMGBYC",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "fulfillment_availability": [
+                {
+                  "quantity": 0,
+                  "fulfillment_channel_code": "DEFAULT"
+                }
+              ],
+              "product_site_launch_date": [
+                {
+                  "value": "2025-08-14T10:56:47.425Z",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "specific_uses_for_product": [
+                {
+                  "value": "Hydration",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                },
+                {
+                  "value": "School",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "main_product_image_locator": [
+                {
+                  "marketplace_id": "ATVPDKIKX0DER",
+                  "media_location": "http://localhost:3002/uploads/278/product/13776/70b7c120-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                }
+              ],
+              "recommended_uses_for_product": [
+                {
+                  "value": "Gym",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                },
+                {
+                  "value": "Hiking",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                },
+                {
+                  "value": "Office",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                },
+                {
+                  "value": "Sports",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                },
+                {
+                  "value": "Outdoor Activities",
+                  "language_tag": "en_US",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "swatch_product_image_locator": [
+                {
+                  "marketplace_id": "ATVPDKIKX0DER",
+                  "media_location": "http://localhost:3002/uploads/278/product/13776/256x256_70b7c120-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                }
+              ],
+              "other_product_image_locator_1": [
+                {
+                  "marketplace_id": "ATVPDKIKX0DER",
+                  "media_location": "http://localhost:3002/uploads/278/product/13776/8e38be60-8cc7-11f1-9156-4bd0fee1ca81.jpg"
+                }
+              ],
+              "other_product_image_locator_2": [
+                {
+                  "marketplace_id": "ATVPDKIKX0DER",
+                  "media_location": "http://localhost:3002/uploads/278/product/13776/8ed3ecf0-8cc7-11f1-9156-4bd0fee1ca81.jpg"
+                }
+              ],
+              "supplier_declared_dg_hz_regulation": [
+                {
+                  "value": "not_applicable",
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ],
+              "supplier_declared_has_product_identifier_exemption": [
+                {
+                  "value": false,
+                  "marketplace_id": "ATVPDKIKX0DER"
+                }
+              ]
+            },
+            "response": {
+              "sku": "MA-G9XT-DUQU",
+              "issues": [],
+              "status": "ACCEPTED",
+              "submissionId": "37d5c98b40784faa8cfaa96fd355d649"
+            },
+            "countryCode": "US"
+          }
+        ]
+      },
+      "variants": []
+    }
+  ],
+  "startedAt": "2026-08-22T07:01:19.006Z",
+  "environment": "local",
+  "currentQueue": "Forward-sync-standAlone-product",
+  "amazonListingStateRefreshes": [
+    {
+      "sku": "MA-G9XT-DUQU",
+      "asin": "B0FMFMGBYC",
+      "type": "AMAZON_LISTING_STATE_REFRESH",
+      "error": null,
+      "reason": null,
+      "source": "DIRECT_LISTINGS_PUT_SIMPLE_PRODUCT",
+      "channelId": "481",
+      "persisted": true,
+      "productId": 13776,
+      "refreshed": true,
+      "variantId": null,
+      "recordedAt": "2026-08-22T07:01:46.339Z",
+      "issuesCount": 1,
+      "warningCode": null,
+      "marketplaceId": "A2EUQ1WTGCTBG2",
+      "externalStatus": ["DISCOVERABLE"],
+      "amazonChannelId": "207",
+      "submissionStatus": "ACCEPTED",
+      "verificationStatus": "VERIFIED",
+      "amazonMarketplaceId": 1,
+      "productChannelMarketplaceId": 11745
+    },
+    {
+      "sku": "MA-G9XT-DUQU",
+      "asin": "B0FMFMGBYC",
+      "type": "AMAZON_LISTING_STATE_REFRESH",
+      "error": null,
+      "reason": null,
+      "source": "DIRECT_LISTINGS_PUT_SIMPLE_PRODUCT",
+      "channelId": "481",
+      "persisted": true,
+      "productId": 13776,
+      "refreshed": true,
+      "variantId": null,
+      "recordedAt": "2026-08-22T07:02:00.838Z",
+      "issuesCount": 2,
+      "warningCode": null,
+      "marketplaceId": "ATVPDKIKX0DER",
+      "externalStatus": ["DISCOVERABLE"],
+      "amazonChannelId": "207",
+      "submissionStatus": "ACCEPTED",
+      "verificationStatus": "VERIFIED",
+      "amazonMarketplaceId": 2,
+      "productChannelMarketplaceId": 11746
+    }
+  ],
+  "Forward-sync-standAlone-product": {
+    "retryCount": 0
+  }
+}

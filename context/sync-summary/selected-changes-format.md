@@ -3,53 +3,50 @@
 AMAZON
 │
 └── channel
-    └── products[]
-        │
-        ├── productId
-        │
-        └── marketplaces[]
-            │
-            ├── amazonMarketplaceId
-            ├── product
-            │   ├── attributes
-            │   ├── pricing
-            │   ├── media
-            │   └── miscTypes[]
-            │
-            ├── variantStructure
-            │
-            └── variants[]
-                └── variant
-                    ├── variantId
-                    ├── attributes
-                    ├── pricing
-                    ├── media
-                    ├── miscTypes[]
-                    └── variantAttributes
-
+└── products[]
+│
+├── productId
+│
+└── marketplaces[]
+│
+├── amazonMarketplaceId
+├── product
+│ ├── attributes
+│ ├── pricing
+│ ├── media
+│ └── miscTypes[]
+│
+└── variants[]
+└── variant
+├── variantId
+├── attributes
+├── pricing
+├── media
+├── miscTypes[]
+├── variantStructure
+└── variantAttributes
 
 NON-AMAZON
 │
 └── channel
-    └── products[]
-        │
-        ├── productId
-        ├── product
-        │   ├── attributes
-        │   ├── pricing
-        │   ├── media
-        │   └── miscTypes[]
-        │
-        ├── variantStructure
-        │
-        └── variants[]
-            └── variant
-                ├── variantId
-                ├── attributes
-                ├── pricing
-                ├── media
-                ├── miscTypes[]
-                └── variantAttributes
+└── products[]
+│
+├── productId
+├── product
+│ ├── attributes
+│ ├── pricing
+│ ├── media
+│ └── miscTypes[]
+│
+└── variants[]
+└── variant
+├── variantId
+├── attributes
+├── pricing
+├── media
+├── miscTypes[]
+├── variantStructure
+└── variantAttributes
 
 ## Examples
 
@@ -81,8 +78,6 @@ NON-AMAZON
             ]
           },
 
-          "variantStructure": true,
-
           "variants": [
             {
               "variantId": 5001,
@@ -93,10 +88,8 @@ NON-AMAZON
               },
               "pricing": true,
               "media": true,
-              "miscTypes": [
-                "AMAZON_CONDITION_TYPE",
-                "AMAZON_CATEGORY"
-              ],
+              "miscTypes": ["AMAZON_CONDITION_TYPE", "AMAZON_CATEGORY"],
+              "variantStructure": true,
               "variantAttributes": true
             },
             {
@@ -108,9 +101,7 @@ NON-AMAZON
               },
               "pricing": false,
               "media": true,
-              "miscTypes": [
-                "AMAZON_SHIPPING_TEMPLATE"
-              ],
+              "miscTypes": ["AMAZON_SHIPPING_TEMPLATE"],
               "variantAttributes": true
             },
             {
@@ -136,21 +127,16 @@ NON-AMAZON
             },
             "pricing": true,
             "media": true,
-            "miscTypes": [
-              "AMAZON_CATEGORY"
-            ]
+            "miscTypes": ["AMAZON_CATEGORY"]
           },
-
-          "variantStructure": false,
 
           "variants": [
             {
               "variantId": 5001,
               "pricing": true,
               "media": true,
-              "miscTypes": [
-                "AMAZON_CATEGORY"
-              ],
+              "miscTypes": ["AMAZON_CATEGORY"],
+              "variantStructure": true,
               "variantAttributes": true
             }
           ]
@@ -172,12 +158,8 @@ NON-AMAZON
             },
             "pricing": false,
             "media": true,
-            "miscTypes": [
-              "AMAZON_CATEGORY"
-            ]
+            "miscTypes": ["AMAZON_CATEGORY"]
           },
-
-          "variantStructure": true,
 
           "variants": [
             {
@@ -187,9 +169,7 @@ NON-AMAZON
               },
               "pricing": true,
               "media": true,
-              "miscTypes": [
-                "AMAZON_CONDITION_TYPE"
-              ],
+              "miscTypes": ["AMAZON_CONDITION_TYPE"],
               "variantAttributes": true
             },
             {
@@ -199,10 +179,8 @@ NON-AMAZON
               },
               "pricing": true,
               "media": false,
-              "miscTypes": [
-                "AMAZON_SHIPPING_TEMPLATE",
-                "AMAZON_CATEGORY"
-              ],
+              "miscTypes": ["AMAZON_SHIPPING_TEMPLATE", "AMAZON_CATEGORY"],
+              "variantStructure": true,
               "variantAttributes": true
             }
           ]
@@ -238,8 +216,6 @@ NON-AMAZON
         ]
       },
 
-      "variantStructure": true,
-
       "variants": [
         {
           "variantId": 5001,
@@ -250,10 +226,8 @@ NON-AMAZON
           },
           "pricing": true,
           "media": true,
-          "miscTypes": [
-            "TAGS",
-            "SHOPIFY_CATEGORY"
-          ],
+          "miscTypes": ["TAGS", "SHOPIFY_CATEGORY"],
+          "variantStructure": true,
           "variantAttributes": true
         },
         {
@@ -264,9 +238,8 @@ NON-AMAZON
           },
           "pricing": false,
           "media": true,
-          "miscTypes": [
-            "SHOPIFY_COLLECTIONS"
-          ],
+          "miscTypes": ["SHOPIFY_COLLECTIONS"],
+          "variantStructure": true,
           "variantAttributes": true
         },
         {
@@ -278,10 +251,7 @@ NON-AMAZON
           },
           "pricing": true,
           "media": false,
-          "miscTypes": [
-            "TAGS",
-            "SHOPIFY_THEME_TEMPLATE"
-          ],
+          "miscTypes": ["TAGS", "SHOPIFY_THEME_TEMPLATE"],
           "variantAttributes": false
         }
       ]
@@ -295,13 +265,8 @@ NON-AMAZON
           "attributeIds": [15, 22]
         },
         "media": true,
-        "miscTypes": [
-          "SHOPIFY_CATEGORY",
-          "SHOPIFY_COLLECTIONS"
-        ]
+        "miscTypes": ["SHOPIFY_CATEGORY", "SHOPIFY_COLLECTIONS"]
       },
-
-      "variantStructure": false,
 
       "variants": [
         {
@@ -312,9 +277,8 @@ NON-AMAZON
           },
           "pricing": true,
           "media": true,
-          "miscTypes": [
-            "TAGS"
-          ],
+          "miscTypes": ["TAGS"],
+          "variantStructure": true,
           "variantAttributes": true
         },
         {
@@ -325,13 +289,11 @@ NON-AMAZON
           },
           "pricing": true,
           "media": false,
-          "miscTypes": [
-            "SHOPIFY_CATEGORY"
-          ],
-          "variantAttributes": true
+          "miscTypes": ["SHOPIFY_CATEGORY"],
+          "variantStructure": false
         }
       ]
     }
   ]
 }
- ```
+```

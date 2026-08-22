@@ -1,0 +1,843 @@
+{
+  "details": [
+    {
+      "sku": "67cea95dcebc58e9ee0871a9",
+      "parent": {
+        "sku": "67cea95dcebc58e9ee0871a9",
+        "name": "Whimsical Monkey Ceramic Mug, Colorful Animal Coffee Cup, Fun Gift for Kids, Playful Kitchen Decor",
+        "productId": 13818
+      },
+      "variants": [],
+      "wrappers": [
+        {
+          "sku": "55252223219787294959",
+          "name": "Whimsical Monkey Ceramic Mug, Colorful Animal Coffee Cup, Fun Gift for Kids, Playful Kitchen Decor, Jungle-Themed Drinkware",
+          "variants": [
+            {
+              "sku": "55252223219787294959",
+              "name": "Whimsical Monkey Ceramic Mug, Colorful Animal Coffee Cup, Fun Gift for Kids, Playful Kitchen Decor, Jungle-Themed Drinkware",
+              "variantId": "47307",
+              "wrapperId": "7351",
+              "marketplaces": [
+                {
+                  "id": 2,
+                  "status": "PROCESSING",
+                  "payload": {
+                    "size": [
+                      {
+                        "value": "11oz",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "brand": [
+                      {
+                        "value": "GENERIC",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "color": [
+                      {
+                        "value": "Multiple",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "style": [
+                      {
+                        "value": "Classic",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "capacity": [
+                      {
+                        "unit": "ounces",
+                        "value": 11,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "material": [
+                      {
+                        "value": "Ceramic",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "item_name": [
+                      {
+                        "value": "Whimsical Monkey Ceramic Mug, Colorful Animal Coffee Cup, Fun Gift for Kids, Playful Kitchen Decor, Jungle-Themed Drinkware",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "list_price": [
+                      {
+                        "value": 10,
+                        "currency": "USD",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "model_name": [
+                      {
+                        "value": "Generic",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "skip_offer": [
+                      {
+                        "value": false,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "unit_count": [
+                      {
+                        "type": {
+                          "value": "Count",
+                          "language_tag": "en_US"
+                        },
+                        "value": 1,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "item_weight": [
+                      {
+                        "unit": "pounds",
+                        "value": 0.7,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "unspsc_code": [
+                      {
+                        "value": "52150000",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "bullet_point": [
+                      {
+                        "value": "Glossy ceramic finish for a sleek look",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      },
+                      {
+                        "value": "Vibrant colors that pop with every design",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      },
+                      {
+                        "value": "Microwave-safe for convenient heating",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      },
+                      {
+                        "value": "Dishwasher-safe for easy cleanup",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      },
+                      {
+                        "value": "Available in two sizes: 11oz and 15oz",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "manufacturer": [
+                      {
+                        "value": "Generic",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "model_number": [
+                      {
+                        "value": "Generic",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "condition_type": [
+                      {
+                        "value": "new_new",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "item_dimensions": [
+                      {
+                        "width": {
+                          "unit": "inches",
+                          "value": 3.1
+                        },
+                        "height": {
+                          "unit": "inches",
+                          "value": 3.7
+                        },
+                        "length": {
+                          "unit": "inches",
+                          "value": 3.1
+                        },
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "number_of_items": [
+                      {
+                        "value": 1,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "parentage_level": [
+                      {
+                        "value": "child",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "special_feature": [
+                      {
+                        "value": "Dishwasher Safe",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "variation_theme": [
+                      {
+                        "name": "SIZE"
+                      }
+                    ],
+                    "care_instructions": [
+                      {
+                        "value": "Dishwasher Safe",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "country_of_origin": [
+                      {
+                        "value": "US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "item_type_keyword": [
+                      {
+                        "value": "Cups",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "item_width_height": [
+                      {
+                        "width": {
+                          "unit": "inches",
+                          "value": 3.1
+                        },
+                        "height": {
+                          "unit": "inches",
+                          "value": 3.7
+                        },
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "pesticide_marking": [
+                      {
+                        "marking_type": "epa_establishment_number",
+                        "marketplace_id": "ATVPDKIKX0DER",
+                        "registration_status": "fifra_not_considered_pesticide"
+                      }
+                    ],
+                    "purchasable_offer": [
+                      {
+                        "audience": "ALL",
+                        "currency": "USD",
+                        "start_at": {
+                          "value": "2025-03-10T09:10:54.849Z"
+                        },
+                        "our_price": [
+                          {
+                            "schedule": [
+                              {
+                                "value_with_tax": 10
+                              }
+                            ]
+                          }
+                        ],
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "batteries_required": [
+                      {
+                        "value": false,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "included_components": [
+                      {
+                        "value": "Handle",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "product_description": [
+                      {
+                        "value": "Introducing a vibrant Ceramic Mug that brings a splash of joy to your daily routine! This colorful mug is perfect for coffee lovers, tea enthusiasts, or anyone who appreciates a great beverage. Its glossy finish and lively designs make it a fantastic addition to your kitchen or office, creating an uplifting atmosphere. Whether you're sipping your morning brew or enjoying a cozy evening tea, this mug elevates every sip into a delightful experience. Ideal for gifting on special occasions like birthdays, holidays, or just because – it’s a perfect fit for anyone who loves fun and unique home decor.\n\nProduct features\n- Glossy ceramic finish for a sleek look.\n- Vibrant colors that pop with every design.\n- Microwave-safe for convenient heating.\n- Dishwasher-safe for easy cleanup.\n- Available in two sizes: 11oz and 15oz.\n\nCare instructions\n- Clean in dishwasher or wash by hand with warm water and dish soap",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "merchant_shipping_group": [
+                      {
+                        "value": "legacy-template-id",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "merchant_suggested_asin": [
+                      {
+                        "value": "B0DZXGNKR7",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "fulfillment_availability": [
+                      {
+                        "quantity": 0,
+                        "fulfillment_channel_code": "DEFAULT",
+                        "lead_time_to_ship_max_days": 5
+                      }
+                    ],
+                    "product_site_launch_date": [
+                      {
+                        "value": "2025-03-10T09:01:52.379Z",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "main_product_image_locator": [
+                      {
+                        "marketplace_id": "ATVPDKIKX0DER",
+                        "media_location": "http://localhost:3002/uploads/278/product/13818/f2597c00-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "swatch_product_image_locator": [
+                      {
+                        "marketplace_id": "ATVPDKIKX0DER",
+                        "media_location": "http://localhost:3002/uploads/278/product/13818/256x256_f2597c00-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "child_parent_sku_relationship": [
+                      {
+                        "parent_sku": "67cea95dcebc58e9ee0871a9",
+                        "marketplace_id": "ATVPDKIKX0DER",
+                        "child_relationship_type": "variation"
+                      }
+                    ],
+                    "other_product_image_locator_1": [
+                      {
+                        "marketplace_id": "ATVPDKIKX0DER",
+                        "media_location": "http://localhost:3002/uploads/278/product/13818/074cd660-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "other_product_image_locator_2": [
+                      {
+                        "marketplace_id": "ATVPDKIKX0DER",
+                        "media_location": "http://localhost:3002/uploads/278/product/13818/07b2eb30-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "other_product_image_locator_3": [
+                      {
+                        "marketplace_id": "ATVPDKIKX0DER",
+                        "media_location": "http://localhost:3002/uploads/278/product/13818/080996b0-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "supplier_declared_dg_hz_regulation": [
+                      {
+                        "value": "not_applicable",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "supplier_declared_has_product_identifier_exemption": [
+                      {
+                        "value": false,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ]
+                  },
+                  "countryCode": "US"
+                }
+              ]
+            }
+          ],
+          "productId": 13818,
+          "variantId": "47307",
+          "wrapperId": 7351,
+          "marketplaces": [
+            {
+              "id": 1,
+              "status": "NOT_STARTED",
+              "countryCode": "CA"
+            },
+            {
+              "id": 2,
+              "status": "NOT_STARTED",
+              "countryCode": "US"
+            }
+          ]
+        },
+        {
+          "variants": [
+            {
+              "sku": "55252223219787294959",
+              "name": "Whimsical Monkey Ceramic Mug, Colorful Animal Coffee Cup, Fun Gift for Kids, Playful Kitchen Decor, Jungle-Themed Drinkware",
+              "variantId": "47307",
+              "wrapperId": "7352",
+              "marketplaces": [
+                {
+                  "id": 1,
+                  "status": "PROCESSING",
+                  "payload": {
+                    "size": [
+                      {
+                        "value": "11oz",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "brand": [
+                      {
+                        "value": "GENERIC",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "color": [
+                      {
+                        "value": "Multiple",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "style": [
+                      {
+                        "value": "Classic",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "capacity": [
+                      {
+                        "unit": "ounces",
+                        "value": 11,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "material": [
+                      {
+                        "value": "Ceramic",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "item_name": [
+                      {
+                        "value": "Whimsical Monkey Ceramic Mug, Colorful Animal Coffee Cup, Fun Gift for Kids, Playful Kitchen Decor, Jungle-Themed Drinkware",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "list_price": [
+                      {
+                        "value": 10,
+                        "currency": "CAD",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "model_name": [
+                      {
+                        "value": "Generic",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "unit_count": [
+                      {
+                        "type": {
+                          "value": "Count",
+                          "language_tag": "en_CA"
+                        },
+                        "value": 1,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "item_weight": [
+                      {
+                        "unit": "pounds",
+                        "value": 0.7,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "unspsc_code": [
+                      {
+                        "value": "52150000",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "bullet_point": [
+                      {
+                        "value": "Glossy ceramic finish for a sleek look",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      },
+                      {
+                        "value": "Vibrant colors that pop with every design",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      },
+                      {
+                        "value": "Microwave-safe for convenient heating",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      },
+                      {
+                        "value": "Dishwasher-safe for easy cleanup",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      },
+                      {
+                        "value": "Available in two sizes: 11oz and 15oz",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "manufacturer": [
+                      {
+                        "value": "Generic",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "model_number": [
+                      {
+                        "value": "Generic",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "condition_type": [
+                      {
+                        "value": "new_new",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "item_dimensions": [
+                      {
+                        "width": {
+                          "unit": "inches",
+                          "value": 3.1
+                        },
+                        "height": {
+                          "unit": "inches",
+                          "value": 3.7
+                        },
+                        "length": {
+                          "unit": "inches",
+                          "value": 3.1
+                        },
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "number_of_items": [
+                      {
+                        "value": 1,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "parentage_level": [
+                      {
+                        "value": "child",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "special_feature": [
+                      {
+                        "value": "Dishwasher Safe",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "variation_theme": [
+                      {
+                        "name": "SIZE"
+                      }
+                    ],
+                    "care_instructions": [
+                      {
+                        "value": "Dishwasher Safe",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "country_of_origin": [
+                      {
+                        "value": "US",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "item_width_height": [
+                      {
+                        "width": {
+                          "unit": "inches",
+                          "value": 3.1
+                        },
+                        "height": {
+                          "unit": "inches",
+                          "value": 3.7
+                        },
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "purchasable_offer": [
+                      {
+                        "audience": "ALL",
+                        "currency": "CAD",
+                        "start_at": {
+                          "value": "2025-04-17T07:37:11.641Z"
+                        },
+                        "our_price": [
+                          {
+                            "schedule": [
+                              {
+                                "value_with_tax": 10
+                              }
+                            ]
+                          }
+                        ],
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "included_components": [
+                      {
+                        "value": "Handle",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "product_description": [
+                      {
+                        "value": "Introducing a vibrant Ceramic Mug that brings a splash of joy to your daily routine! This colorful mug is perfect for coffee lovers, tea enthusiasts, or anyone who appreciates a great beverage. Its glossy finish and lively designs make it a fantastic addition to your kitchen or office, creating an uplifting atmosphere. Whether you're sipping your morning brew or enjoying a cozy evening tea, this mug elevates every sip into a delightful experience. Ideal for gifting on special occasions like birthdays, holidays, or just because – it’s a perfect fit for anyone who loves fun and unique home decor.\n\nProduct features\n- Glossy ceramic finish for a sleek look.\n- Vibrant colors that pop with every design.\n- Microwave-safe for convenient heating.\n- Dishwasher-safe for easy cleanup.\n- Available in two sizes: 11oz and 15oz.\n\nCare instructions\n- Clean in dishwasher or wash by hand with warm water and dish soap",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "merchant_shipping_group": [
+                      {
+                        "value": "legacy-template-id",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "merchant_suggested_asin": [
+                      {
+                        "value": "B0DZXGNKR7",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "fulfillment_availability": [
+                      {
+                        "quantity": 0,
+                        "fulfillment_channel_code": "DEFAULT",
+                        "lead_time_to_ship_max_days": 5
+                      }
+                    ],
+                    "product_site_launch_date": [
+                      {
+                        "value": "2025-03-10T09:01:52.379Z",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "recommended_browse_nodes": [
+                      {
+                        "value": "2224068011",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "main_product_image_locator": [
+                      {
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "media_location": "http://localhost:3002/uploads/278/product/13818/f2597c00-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "swatch_product_image_locator": [
+                      {
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "media_location": "http://localhost:3002/uploads/278/product/13818/256x256_f2597c00-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "child_parent_sku_relationship": [
+                      {
+                        "parent_sku": "67cea95dcebc58e9ee0871a9",
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "child_relationship_type": "variation"
+                      }
+                    ],
+                    "other_product_image_locator_1": [
+                      {
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "media_location": "http://localhost:3002/uploads/278/product/13818/074cd660-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "other_product_image_locator_2": [
+                      {
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "media_location": "http://localhost:3002/uploads/278/product/13818/07b2eb30-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "other_product_image_locator_3": [
+                      {
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "media_location": "http://localhost:3002/uploads/278/product/13818/080996b0-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "manufacturer_contact_information": [
+                      {
+                        "value": "honda@support.com",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      },
+                      {
+                        "value": "xxx-xxx-xxx",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "supplier_declared_dg_hz_regulation": [
+                      {
+                        "value": "not_applicable",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "supplier_declared_has_product_identifier_exemption": [
+                      {
+                        "value": false,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ]
+                  },
+                  "countryCode": "CA"
+                }
+              ]
+            }
+          ],
+          "wrapperId": "7352",
+          "marketplaces": [
+            {
+              "id": 1,
+              "status": "NOT_STARTED",
+              "countryCode": "CA"
+            },
+            {
+              "id": 2,
+              "status": "NOT_STARTED",
+              "countryCode": "US"
+            }
+          ]
+        },
+        {
+          "wrapperId": "7384",
+          "marketplaces": [
+            {
+              "id": 1,
+              "status": "NOT_STARTED",
+              "countryCode": "CA"
+            },
+            {
+              "id": 2,
+              "status": "NOT_STARTED",
+              "countryCode": "US"
+            }
+          ]
+        },
+        {
+          "wrapperId": "7385",
+          "marketplaces": [
+            {
+              "id": 1,
+              "status": "NOT_STARTED",
+              "countryCode": "CA"
+            },
+            {
+              "id": 2,
+              "status": "NOT_STARTED",
+              "countryCode": "US"
+            }
+          ]
+        },
+        {
+          "wrapperId": "7386",
+          "marketplaces": [
+            {
+              "id": 1,
+              "status": "NOT_STARTED",
+              "countryCode": "CA"
+            },
+            {
+              "id": 2,
+              "status": "NOT_STARTED",
+              "countryCode": "US"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "feedData": [
+    {
+      "sku": "55252223219787294959",
+      "name": "Whimsical Monkey Ceramic Mug, Colorful Animal Coffee Cup, Fun Gift for Kids, Playful Kitchen Decor, Jungle-Themed Drinkware",
+      "language": "en_CA",
+      "parentSku": "67cea95dcebc58e9ee0871a9",
+      "productId": 13818,
+      "variantId": "47307",
+      "wrapperId": "7352",
+      "batchIndex": 1,
+      "isVariantSync": true,
+      "marketplaceId": 1,
+      "skipWrapperSync": true,
+      "externalMarketplaceId": "A2EUQ1WTGCTBG2",
+      "productChannelMarketplaceId": 11803
+    },
+    {
+      "sku": "55252223219787294959",
+      "name": "Whimsical Monkey Ceramic Mug, Colorful Animal Coffee Cup, Fun Gift for Kids, Playful Kitchen Decor, Jungle-Themed Drinkware",
+      "language": "en_US",
+      "parentSku": "67cea95dcebc58e9ee0871a9",
+      "productId": 13818,
+      "variantId": "47307",
+      "wrapperId": "7351",
+      "batchIndex": 2,
+      "isVariantSync": true,
+      "marketplaceId": 2,
+      "skipWrapperSync": true,
+      "externalMarketplaceId": "ATVPDKIKX0DER",
+      "productChannelMarketplaceId": 11804
+    }
+  ],
+  "startedAt": "2026-08-21T09:16:36.227Z",
+  "amazonFeeds": [
+    {
+      "feedId": "56177020686",
+      "status": "CREATED",
+      "createdAt": "2026-08-21T09:18:04.085Z",
+      "messageIds": [876450],
+      "marketplaceId": "A2EUQ1WTGCTBG2",
+      "feedDocumentId": "amzn1.tortuga.4.na.416b7a02-f0a9-4469-b072-509dbab29ef4.T3NXJUSNS977B1"
+    },
+    {
+      "feedId": "56178020686",
+      "status": "CREATED",
+      "createdAt": "2026-08-21T09:18:51.148Z",
+      "messageIds": [653400],
+      "marketplaceId": "ATVPDKIKX0DER",
+      "feedDocumentId": "amzn1.tortuga.4.na.3cfa4521-c621-47ca-bd33-df38dbb6c4bc.T3L8ZBSNP7NF9X"
+    }
+  ],
+  "environment": "local",
+  "toBeStarted": false,
+  "currentQueue": "Forward-sync-create-feed",
+  "Forward-sync-create-feed": {
+    "retryCount": 0
+  },
+  "Forward-sync-variation-theme-product": {
+    "retryCount": 0
+  }
+}
