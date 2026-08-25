@@ -1,15 +1,16 @@
-## api repo only
+## webapp repo only
 
-Task 1: During Amazon Forward sync using Amazon SP API feed document method: as part of each feed object: use operation type as PATCH instead of PARTIAL_UPDATE, and create patches for affected keys only the similar way it has been done for sync standalone product (syncStandAloneProductToMarketplace) where a dedicated PATCH listing API is being used -> make sure you don't duplicate the code and use common utility functions for generating patches and related functionalities
+Task 1: Remove debounced based value change to direct root state update for product details tab attributes
 
 ### Context
 
-api\apps\api-main\src\modules\app\sync\syncing\productSyncing\amazon\forwardsync\amazonProductFSQ1.service.ts
-api\apps\api-main\src\modules\app\sync\syncing\productSyncing\amazon\forwardsync\amazonProductFSQ2.service.ts
-api\apps\api-main\src\modules\app\sync\syncing\productSyncing\amazon\forwardsync\amazonProductFSQ3.service.ts
-api\apps\api-main\src\modules\app\sync\syncing\productSyncing\amazon\forwardsync\amazonProductVariantFS.service.ts
-api\apps\api-main\src\modules\app\sync\syncing\productSyncing\amazon\amazonProductFS.service.ts
+function -> debouncedReflectValueInStore
+webapp\src\app\(index)\(menu-layout)\products\[product]\hooks\useSaveAttributeValue.tsx
 
 ### Constraints
+
+- 4 type of field type files are affected which are using a local state for immediate UI reflection and the debouncing function debouncedReflectValueInStore for a delayed reflection into store, remove this completely, remove calling debouncedReflectValueInStore completely and use reflectValueInStore at those 4 places and also remove the local state for tracking, use directly from the store state
+- At last remove the function debouncedReflectValueInStore as well, because it will become unused
+
 
 - At any point if there is a strong need for single or multiple clarifications then you must ask for it rather than implementing purely on assumptions
