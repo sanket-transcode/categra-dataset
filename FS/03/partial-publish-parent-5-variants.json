@@ -1,0 +1,4647 @@
+{
+  "details": [
+    {
+      "sku": "225680023652",
+      "parent": {
+        "sku": "225680023652",
+        "name": "US - Cute Fall Keychain Wristlet, Thick Embroidered Floral Keychain for Women, Car Key Chain Accessories",
+        "productId": 13820,
+        "marketplaces": [
+          {
+            "id": 1,
+            "error": [
+              {
+                "sku": "225680023652",
+                "type": "CATEGRA",
+                "input": {
+                  "message": null,
+                  "attribute": "height",
+                  "hierarchy": "item_package_dimensions",
+                  "child_hierarchy": "height"
+                },
+                "keyWord": "SCHEMA_VALIDATION_ERROR",
+                "message": "Missing required attribute: Shipping => Item Package Dimensions => Package Height",
+                "channelId": "481",
+                "errorCode": null,
+                "productId": 13820,
+                "productName": "CA - Engraved Metal Keychain - Personalized Keyring",
+                "currentQueue": "Forward-sync-variation-theme-product",
+                "attributeNames": "item_package_dimensions",
+                "missingProperty": null,
+                "childHierarchyKey": "height",
+                "productChannelMarketplaceId": 11808
+              },
+              {
+                "sku": "225680023652",
+                "type": "CATEGRA",
+                "input": {
+                  "message": null,
+                  "attribute": "width",
+                  "hierarchy": "item_package_dimensions",
+                  "child_hierarchy": "width"
+                },
+                "keyWord": "SCHEMA_VALIDATION_ERROR",
+                "message": "Missing required attribute: Shipping => Item Package Dimensions => Package Width",
+                "channelId": "481",
+                "errorCode": null,
+                "productId": 13820,
+                "productName": "CA - Engraved Metal Keychain - Personalized Keyring",
+                "currentQueue": "Forward-sync-variation-theme-product",
+                "attributeNames": "item_package_dimensions",
+                "missingProperty": null,
+                "childHierarchyKey": "width",
+                "productChannelMarketplaceId": 11808
+              },
+              {
+                "sku": "225680023652",
+                "type": "CATEGRA",
+                "input": {
+                  "message": null,
+                  "attribute": "unit",
+                  "hierarchy": "item_package_dimensions",
+                  "child_hierarchy": "length"
+                },
+                "keyWord": "SCHEMA_VALIDATION_ERROR",
+                "message": "Missing required attribute: Shipping => Item Package Dimensions => Package Length",
+                "channelId": "481",
+                "errorCode": null,
+                "productId": 13820,
+                "productName": "CA - Engraved Metal Keychain - Personalized Keyring",
+                "currentQueue": "Forward-sync-variation-theme-product",
+                "attributeNames": "item_package_dimensions",
+                "missingProperty": "unit",
+                "childHierarchyKey": "length",
+                "productChannelMarketplaceId": 11808
+              }
+            ],
+            "status": "FAILED",
+            "countryCode": "CA"
+          },
+          {
+            "id": 2,
+            "error": [
+              {
+                "sku": "225680023652",
+                "type": "CATEGRA",
+                "input": {
+                  "message": null,
+                  "attribute": "batteries_required",
+                  "hierarchy": null,
+                  "child_hierarchy": null
+                },
+                "keyWord": "SCHEMA_VALIDATION_ERROR",
+                "message": "Missing required attribute: Safety & Compliance => Are batteries required?",
+                "channelId": "481",
+                "errorCode": null,
+                "productId": 13820,
+                "productName": "US - Cute Fall Keychain Wristlet, Thick Embroidered Floral Keychain for Women, Car Key Chain Accessories",
+                "currentQueue": "Forward-sync-variation-theme-product",
+                "attributeNames": "batteries_required",
+                "missingProperty": null,
+                "childHierarchyKey": null,
+                "productChannelMarketplaceId": 11809
+              }
+            ],
+            "status": "FAILED",
+            "countryCode": "US"
+          }
+        ]
+      },
+      "variants": [],
+      "wrappers": [
+        {
+          "sku": "225680023652",
+          "name": "US - Cute Fall Keychain Wristlet, Thick Embroidered Floral Keychain for Women, Car Key Chain Accessories",
+          "variants": [
+            {
+              "sku": "225680023652-V2",
+              "name": "Vintage Floral Wristlet Keychain for Women, Embroidered Fabric, Green and Cream Boho Short Lanyard for Keys",
+              "variantId": "47312",
+              "wrapperId": "7356",
+              "marketplaces": [
+                {
+                  "id": 1,
+                  "status": "FINISHED",
+                  "patches": [
+                    {
+                      "op": "replace",
+                      "path": "/attributes/manufacturer_contact_information",
+                      "value": [
+                        {
+                          "value": "CA manufacturer",
+                          "language_tag": "en_CA",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/recommended_browse_nodes",
+                      "value": [
+                        {
+                          "value": "10287257011",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
+                        }
+                      ]
+                    }
+                  ],
+                  "payload": {
+                    "size": [
+                      {
+                        "value": "Standard",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "brand": [
+                      {
+                        "value": "Generic A1",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "color": [
+                      {
+                        "value": "B-floral",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "standardized_values": ["Beige"]
+                      }
+                    ],
+                    "theme": [
+                      {
+                        "value": "Floral",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "closure": [
+                      {
+                        "type": [
+                          {
+                            "value": "Split Ring",
+                            "language_tag": "en_CA"
+                          }
+                        ],
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "material": [
+                      {
+                        "value": "Alloy",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "item_name": [
+                      {
+                        "value": "CELOKIY Vintage Floral Wristlet Keychain for Women, Embroidered Fabric, Green and Cream Boho Short Lanyard for Keys",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "department": [
+                      {
+                        "value": "womens",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "list_price": [
+                      {
+                        "value": 17,
+                        "currency": "CAD",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "model_name": [
+                      {
+                        "value": "m01",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "unit_count": [
+                      {
+                        "type": {
+                          "value": "Count",
+                          "language_tag": "en_CA"
+                        },
+                        "value": 1,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "item_weight": [
+                      {
+                        "unit": "grams",
+                        "value": 1,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "unspsc_code": [
+                      {
+                        "value": "46171515",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "bullet_point": [
+                      {
+                        "value": "DESIGN FEATURES: Charming floral embroidered pattern on cream-colored fabric with green flowers, complemented by antique brass hardware",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      },
+                      {
+                        "value": "DURABLE HARDWARE: Vintage brass metal hardware with sturdy key rings and secure clasps ensures long-lasting daily use",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      },
+                      {
+                        "value": "COMFORTABLE GRIP: Soft fabric wristlet design with reinforced stitching provides a secure and comfortable way to carry your keys",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      },
+                      {
+                        "value": "VERSATILE SIZE: Perfect length for wearing on wrist or attaching to bag handles, making it easy to locate and access your keys",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      },
+                      {
+                        "value": "PREMIUM CONSTRUCTION: High-quality fabric with detailed embroidery work and strong webbing backing for enhanced durability",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "target_gender": [
+                      {
+                        "value": "female",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "condition_type": [
+                      {
+                        "value": "new_new",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "parentage_level": [
+                      {
+                        "value": "child",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "variation_theme": [
+                      {
+                        "name": "COLOR"
+                      }
+                    ],
+                    "country_of_origin": [
+                      {
+                        "value": "US",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "purchasable_offer": [
+                      {
+                        "audience": "ALL",
+                        "currency": "CAD",
+                        "our_price": [
+                          {
+                            "schedule": [
+                              {
+                                "value_with_tax": 51
+                              }
+                            ]
+                          }
+                        ],
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "discounted_price": [
+                          {
+                            "schedule": [
+                              {
+                                "end_at": "2026-07-31T23:59:59+00:00",
+                                "start_at": "2026-07-09T00:00:00+00:00",
+                                "value_with_tax": 13.7
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "audience": "B2B",
+                        "currency": "CAD",
+                        "our_price": [
+                          {
+                            "schedule": [
+                              {
+                                "value_with_tax": 68.46
+                              }
+                            ]
+                          }
+                        ],
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "quantity_discount_plan": [
+                          {
+                            "schedule": [
+                              {
+                                "levels": [
+                                  {
+                                    "value": 65.73,
+                                    "lower_bound": 2
+                                  }
+                                ],
+                                "discount_type": "fixed"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "item_package_weight": [
+                      {
+                        "unit": "kilograms",
+                        "value": 1,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "product_description": [
+                      {
+                        "value": "Add a charming touch to your everyday essentials with this delightful wristlet key chain. The cream-colored fabric band features an elegant floral pattern in warm autumn tones of rust and green, complemented by delicate black leaf details. The durable cotton webbing construction ensures lasting wear, while the antique brass hardware adds a vintage-inspired finish. The convenient wrist strap design keeps your keys easily accessible and prevents them from getting lost in your bag. Perfect for busy professionals, parents on the go, or anyone who appreciates both style and functionality in their accessories. The classic pattern coordinates beautifully with any outfit or bag, making it an ideal accessory for daily use. The sturdy metal key ring securely holds your keys while the wristlet provides comfortable carrying convenience.",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "gpsr_safety_attestation": [
+                      {
+                        "value": true,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "item_package_dimensions": [
+                      {
+                        "width": {
+                          "unit": "centimeters",
+                          "value": 4.8
+                        },
+                        "height": {
+                          "unit": "centimeters",
+                          "value": 14.3
+                        },
+                        "length": {
+                          "unit": "centimeters",
+                          "value": 0.9
+                        },
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "merchant_shipping_group": [
+                      {
+                        "value": "legacy-template-id",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "merchant_suggested_asin": [
+                      {
+                        "value": "B0G1T38W1N",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "fulfillment_availability": [
+                      {
+                        "quantity": 0,
+                        "fulfillment_channel_code": "DEFAULT"
+                      }
+                    ],
+                    "product_site_launch_date": [
+                      {
+                        "value": "2025-01-18T14:09:34.783Z",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "recommended_browse_nodes": [
+                      {
+                        "value": "10287257011",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "main_product_image_locator": [
+                      {
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "media_location": "https://api-staging.categra.com/uploads/278/product/13820/fd930500-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "swatch_product_image_locator": [
+                      {
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "media_location": "https://api-staging.categra.com/uploads/278/product/13820/256x256_fd930500-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "child_parent_sku_relationship": [
+                      {
+                        "parent_sku": "225680023652",
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "child_relationship_type": "variation"
+                      }
+                    ],
+                    "other_product_image_locator_1": [
+                      {
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "media_location": "https://api-staging.categra.com/uploads/278/product/13820/2bc1e030-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "other_product_image_locator_2": [
+                      {
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "media_location": "https://api-staging.categra.com/uploads/278/product/13820/2c3a1d70-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "manufacturer_contact_information": [
+                      {
+                        "value": "CA manufacturer",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "supplier_declared_dg_hz_regulation": [
+                      {
+                        "value": "not_applicable",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "supplier_declared_has_product_identifier_exemption": [
+                      {
+                        "value": false,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ]
+                  },
+                  "response": {
+                    "header": {
+                      "feedId": "56239020690",
+                      "version": "2.0",
+                      "sellerId": "A13EDBEFHU3OJ1"
+                    },
+                    "issues": [],
+                    "summary": {
+                      "errors": 0,
+                      "warnings": 0,
+                      "messagesInvalid": 0,
+                      "messagesAccepted": 2,
+                      "messagesProcessed": 2
+                    }
+                  },
+                  "countryCode": "CA"
+                }
+              ]
+            },
+            {
+              "sku": "225680023652-V5",
+              "name": "Decorative Fabric Wristlet Keychain with Leaf Pattern, Wrist Key Chain with Gold Hardware, Green and Cream",
+              "variantId": "47313",
+              "wrapperId": "7356",
+              "marketplaces": [
+                {
+                  "id": 1,
+                  "status": "FINISHED",
+                  "patches": [
+                    {
+                      "op": "replace",
+                      "path": "/attributes/manufacturer_contact_information",
+                      "value": [
+                        {
+                          "value": "CA - manufacturer",
+                          "language_tag": "en_CA",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/purchasable_offer",
+                      "value": [
+                        {
+                          "audience": "ALL",
+                          "currency": "CAD",
+                          "our_price": [
+                            {
+                              "schedule": [
+                                {
+                                  "value_with_tax": 55
+                                }
+                              ]
+                            }
+                          ],
+                          "marketplace_id": "A2EUQ1WTGCTBG2",
+                          "discounted_price": [
+                            {
+                              "schedule": [
+                                {
+                                  "end_at": "2026-07-23T23:59:59+00:00",
+                                  "start_at": "2026-07-09T00:00:00+00:00",
+                                  "value_with_tax": 20.54
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/list_price",
+                      "value": [
+                        {
+                          "value": 20,
+                          "currency": "CAD",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/main_product_image_locator",
+                      "value": [
+                        {
+                          "marketplace_id": "A2EUQ1WTGCTBG2",
+                          "media_location": "https://api-staging.categra.com/uploads/278/product/13820/fdf7ba40-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/other_product_image_locator_1",
+                      "value": [
+                        {
+                          "marketplace_id": "A2EUQ1WTGCTBG2",
+                          "media_location": "https://api-staging.categra.com/uploads/278/product/13820/2ca05950-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_2",
+                      "value": [
+                        {
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_3",
+                      "value": [
+                        {
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_4",
+                      "value": [
+                        {
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_5",
+                      "value": [
+                        {
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_6",
+                      "value": [
+                        {
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_7",
+                      "value": [
+                        {
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_8",
+                      "value": [
+                        {
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/swatch_product_image_locator",
+                      "value": [
+                        {
+                          "marketplace_id": "A2EUQ1WTGCTBG2",
+                          "media_location": "https://api-staging.categra.com/uploads/278/product/13820/256x256_fdf7ba40-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                        }
+                      ]
+                    }
+                  ],
+                  "payload": {
+                    "size": [
+                      {
+                        "value": "Standard",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "brand": [
+                      {
+                        "value": "Generic A1",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "color": [
+                      {
+                        "value": "Green Leaf",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "standardized_values": ["Beige"]
+                      }
+                    ],
+                    "theme": [
+                      {
+                        "value": "Floral",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "closure": [
+                      {
+                        "type": [
+                          {
+                            "value": "Split Ring",
+                            "language_tag": "en_CA"
+                          }
+                        ],
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "material": [
+                      {
+                        "value": "Alloy",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "item_name": [
+                      {
+                        "value": "CELOKIY Decorative Fabric Wristlet Keychain with Leaf Pattern, Wrist Key Chain with Gold Hardware, Green and Cream",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "department": [
+                      {
+                        "value": "womens",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "list_price": [
+                      {
+                        "value": 20,
+                        "currency": "CAD",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "model_name": [
+                      {
+                        "value": "m01",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "unit_count": [
+                      {
+                        "type": {
+                          "value": "Count",
+                          "language_tag": "en_CA"
+                        },
+                        "value": 1,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "item_weight": [
+                      {
+                        "unit": "kilograms",
+                        "value": 1,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "unspsc_code": [
+                      {
+                        "value": "46171515",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "bullet_point": [
+                      {
+                        "value": "ELEGANT DESIGN: Stylish wristlet keychain featuring a beautiful green leaf pattern embroidered on cream-colored fabric with gold accents",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      },
+                      {
+                        "value": "DURABLE HARDWARE: Gold-toned metal hardware with sturdy key rings and secure clasps ensures long-lasting daily use",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      },
+                      {
+                        "value": "COMFORTABLE GRIP: Soft fabric wristlet design with reinforced stitching provides a secure and comfortable way to carry your keys",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      },
+                      {
+                        "value": "VERSATILE SIZE: Perfect length for wearing on wrist or attaching to bag handles, making it easy to locate and access your keys",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      },
+                      {
+                        "value": "PREMIUM CONSTRUCTION: High-quality fabric with detailed embroidery work and strong webbing backing for enhanced durability",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "target_gender": [
+                      {
+                        "value": "female",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "condition_type": [
+                      {
+                        "value": "new_new",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "parentage_level": [
+                      {
+                        "value": "child",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "variation_theme": [
+                      {
+                        "name": "COLOR"
+                      }
+                    ],
+                    "country_of_origin": [
+                      {
+                        "value": "US",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "purchasable_offer": [
+                      {
+                        "audience": "ALL",
+                        "currency": "CAD",
+                        "our_price": [
+                          {
+                            "schedule": [
+                              {
+                                "value_with_tax": 55
+                              }
+                            ]
+                          }
+                        ],
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "discounted_price": [
+                          {
+                            "schedule": [
+                              {
+                                "end_at": "2026-07-23T23:59:59+00:00",
+                                "start_at": "2026-07-09T00:00:00+00:00",
+                                "value_with_tax": 20.54
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "item_package_weight": [
+                      {
+                        "unit": "kilograms",
+                        "value": 1,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "product_description": [
+                      {
+                        "value": "Elevate your everyday carry with this charming wristlet key chain that combines style and functionality. The elegant design features a nature-inspired leaf pattern in sage green embroidered on cream-colored fabric, accented with delicate golden threading. The durable cotton webbing construction ensures lasting wear while maintaining a soft, comfortable feel on your wrist. The gold-tone hardware adds a luxurious touch and includes a sturdy key ring that keeps your keys securely organized. Perfect for busy days when you need your hands free, this wristlet key chain makes it easy to locate and carry your keys while adding a sophisticated botanical accent to your accessories. The generous length allows for comfortable wear, while the classic pattern coordinates beautifully with any style or season. Ideal for anyone seeking both practicality and fashion in their daily essentials.",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "gpsr_safety_attestation": [
+                      {
+                        "value": true,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "item_package_dimensions": [
+                      {
+                        "width": {
+                          "unit": "centimeters",
+                          "value": 5
+                        },
+                        "height": {
+                          "unit": "centimeters",
+                          "value": 14.3
+                        },
+                        "length": {
+                          "unit": "centimeters",
+                          "value": 0.9
+                        },
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "merchant_shipping_group": [
+                      {
+                        "value": "legacy-template-id",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "merchant_suggested_asin": [
+                      {
+                        "value": "B0G1T4XNH8",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "fulfillment_availability": [
+                      {
+                        "quantity": 0,
+                        "fulfillment_channel_code": "DEFAULT"
+                      }
+                    ],
+                    "product_site_launch_date": [
+                      {
+                        "value": "2025-01-18T14:09:34.783Z",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "recommended_browse_nodes": [
+                      {
+                        "value": "7420596011",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "main_product_image_locator": [
+                      {
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "media_location": "https://api-staging.categra.com/uploads/278/product/13820/fdf7ba40-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "swatch_product_image_locator": [
+                      {
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "media_location": "https://api-staging.categra.com/uploads/278/product/13820/256x256_fdf7ba40-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "child_parent_sku_relationship": [
+                      {
+                        "parent_sku": "225680023652",
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "child_relationship_type": "variation"
+                      }
+                    ],
+                    "other_product_image_locator_1": [
+                      {
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "media_location": "https://api-staging.categra.com/uploads/278/product/13820/2ca05950-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "manufacturer_contact_information": [
+                      {
+                        "value": "CA - manufacturer",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "supplier_declared_dg_hz_regulation": [
+                      {
+                        "value": "not_applicable",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "supplier_declared_has_product_identifier_exemption": [
+                      {
+                        "value": false,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ]
+                  },
+                  "response": {
+                    "header": {
+                      "feedId": "56239020690",
+                      "version": "2.0",
+                      "sellerId": "A13EDBEFHU3OJ1"
+                    },
+                    "issues": [],
+                    "summary": {
+                      "errors": 0,
+                      "warnings": 0,
+                      "messagesInvalid": 0,
+                      "messagesAccepted": 2,
+                      "messagesProcessed": 2
+                    }
+                  },
+                  "countryCode": "CA"
+                }
+              ]
+            },
+            {
+              "sku": "225680023652-V3",
+              "name": "Cute Fall Keychain Wristlet, Thick Embroidered Floral Keychain for Women, Car Key Chain Accessories",
+              "variantId": "47314",
+              "wrapperId": "7356",
+              "marketplaces": [
+                {
+                  "id": 1,
+                  "status": "FINISHED",
+                  "patches": [
+                    {
+                      "op": "replace",
+                      "path": "/attributes/manufacturer_contact_information",
+                      "value": [
+                        {
+                          "value": "Manufacturer CA",
+                          "language_tag": "en_CA",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/purchasable_offer",
+                      "value": [
+                        {
+                          "audience": "ALL",
+                          "currency": "CAD",
+                          "our_price": [
+                            {
+                              "schedule": [
+                                {
+                                  "value_with_tax": 50
+                                }
+                              ]
+                            }
+                          ],
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/list_price",
+                      "value": [
+                        {
+                          "value": 23,
+                          "currency": "CAD",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/recommended_browse_nodes",
+                      "value": [
+                        {
+                          "value": "10287500011",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
+                        }
+                      ]
+                    }
+                  ],
+                  "payload": {
+                    "size": [
+                      {
+                        "value": "Standard",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "brand": [
+                      {
+                        "value": "Generic A1",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "color": [
+                      {
+                        "value": "C-floral",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "standardized_values": ["Beige"]
+                      }
+                    ],
+                    "theme": [
+                      {
+                        "value": "Floral",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "closure": [
+                      {
+                        "type": [
+                          {
+                            "value": "Buckle",
+                            "language_tag": "en_CA"
+                          }
+                        ],
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "pattern": [
+                      {
+                        "value": "Floral",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "material": [
+                      {
+                        "value": "Fabric, Brass",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "item_name": [
+                      {
+                        "value": "CELOKIY Cute Fall Keychain Wristlet, Thick Embroidered Floral Keychain for Women, Car Key Chain Accessories",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "department": [
+                      {
+                        "value": "womens",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "list_price": [
+                      {
+                        "value": 23,
+                        "currency": "CAD",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "model_name": [
+                      {
+                        "value": "m01",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "unit_count": [
+                      {
+                        "type": {
+                          "value": "Count",
+                          "language_tag": "en_CA"
+                        },
+                        "value": 1,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "item_weight": [
+                      {
+                        "unit": "grams",
+                        "value": 1,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "unspsc_code": [
+                      {
+                        "value": "46171515",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "bullet_point": [
+                      {
+                        "value": "DESIGN FEATURES: Charming floral embroidered pattern on cream-colored fabric with cute flowers, complemented by antique brass hardware",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      },
+                      {
+                        "value": "DURABLE HARDWARE: Vintage brass metal hardware with sturdy key rings and secure clasps ensures long-lasting daily use",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      },
+                      {
+                        "value": "COMFORTABLE GRIP: Soft fabric wristlet design with reinforced stitching provides a secure and comfortable way to carry your keys",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      },
+                      {
+                        "value": "VERSATILE SIZE: Perfect length for wearing on wrist or attaching to bag handles, making it easy to locate and access your keys",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      },
+                      {
+                        "value": "PREMIUM CONSTRUCTION: High-quality fabric with detailed embroidery work and strong webbing backing for enhanced durability",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "target_gender": [
+                      {
+                        "value": "female",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "condition_type": [
+                      {
+                        "value": "new_new",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "parentage_level": [
+                      {
+                        "value": "child",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "variation_theme": [
+                      {
+                        "name": "COLOR"
+                      }
+                    ],
+                    "country_of_origin": [
+                      {
+                        "value": "US",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "purchasable_offer": [
+                      {
+                        "audience": "ALL",
+                        "currency": "CAD",
+                        "our_price": [
+                          {
+                            "schedule": [
+                              {
+                                "value_with_tax": 50
+                              }
+                            ]
+                          }
+                        ],
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "included_components": [
+                      {
+                        "value": "1 x Keychain",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "item_package_weight": [
+                      {
+                        "unit": "pounds",
+                        "value": 1,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "product_description": [
+                      {
+                        "value": "Add a charming touch to your everyday essentials with this delightful wristlet key chain.",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "gpsr_safety_attestation": [
+                      {
+                        "value": true,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "item_package_dimensions": [
+                      {
+                        "width": {
+                          "unit": "inches",
+                          "value": 2.8
+                        },
+                        "height": {
+                          "unit": "inches",
+                          "value": 0.2
+                        },
+                        "length": {
+                          "unit": "inches",
+                          "value": 7
+                        },
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "merchant_shipping_group": [
+                      {
+                        "value": "legacy-template-id",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "merchant_suggested_asin": [
+                      {
+                        "value": "B0G1T4QT6X",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "fulfillment_availability": [
+                      {
+                        "quantity": 0,
+                        "fulfillment_channel_code": "DEFAULT"
+                      }
+                    ],
+                    "product_site_launch_date": [
+                      {
+                        "value": "2025-01-18T14:09:34.783Z",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "recommended_browse_nodes": [
+                      {
+                        "value": "10287500011",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "main_product_image_locator": [
+                      {
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "media_location": "https://api-staging.categra.com/uploads/278/product/13820/fc9b1070-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "swatch_product_image_locator": [
+                      {
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "media_location": "https://api-staging.categra.com/uploads/278/product/13820/256x256_fc9b1070-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "child_parent_sku_relationship": [
+                      {
+                        "parent_sku": "225680023652",
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "child_relationship_type": "variation"
+                      }
+                    ],
+                    "manufacturer_contact_information": [
+                      {
+                        "value": "Manufacturer CA",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "supplier_declared_dg_hz_regulation": [
+                      {
+                        "value": "not_applicable",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "supplier_declared_has_product_identifier_exemption": [
+                      {
+                        "value": false,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ]
+                  },
+                  "response": {
+                    "header": {
+                      "feedId": "56240020690",
+                      "version": "2.0",
+                      "sellerId": "A13EDBEFHU3OJ1"
+                    },
+                    "issues": [],
+                    "summary": {
+                      "errors": 0,
+                      "warnings": 0,
+                      "messagesInvalid": 0,
+                      "messagesAccepted": 3,
+                      "messagesProcessed": 3
+                    }
+                  },
+                  "countryCode": "CA"
+                }
+              ]
+            },
+            {
+              "sku": "225680023652-V4",
+              "name": "Celestial Keychain Wristlet, Sun Moon Stars Design, Black and Gold Fabric Wrist Key Chain with Metal Hardware",
+              "variantId": "47315",
+              "wrapperId": "7356",
+              "marketplaces": [
+                {
+                  "id": 1,
+                  "status": "FINISHED",
+                  "patches": [
+                    {
+                      "op": "replace",
+                      "path": "/attributes/manufacturer_contact_information",
+                      "value": [
+                        {
+                          "value": "M - CA",
+                          "language_tag": "en_CA",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/main_product_image_locator",
+                      "value": [
+                        {
+                          "marketplace_id": "A2EUQ1WTGCTBG2",
+                          "media_location": "https://api-staging.categra.com/uploads/278/product/13820/fe5606e0-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/other_product_image_locator_1",
+                      "value": [
+                        {
+                          "marketplace_id": "A2EUQ1WTGCTBG2",
+                          "media_location": "https://api-staging.categra.com/uploads/278/product/13820/33ae12f0-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/other_product_image_locator_2",
+                      "value": [
+                        {
+                          "marketplace_id": "A2EUQ1WTGCTBG2",
+                          "media_location": "https://api-staging.categra.com/uploads/278/product/13820/3460c120-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/other_product_image_locator_3",
+                      "value": [
+                        {
+                          "marketplace_id": "A2EUQ1WTGCTBG2",
+                          "media_location": "https://api-staging.categra.com/uploads/278/products/13820/1d39d350-979b-11f1-9c70-f14124d42247.webp"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_4",
+                      "value": [
+                        {
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_5",
+                      "value": [
+                        {
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_6",
+                      "value": [
+                        {
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_7",
+                      "value": [
+                        {
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_8",
+                      "value": [
+                        {
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/swatch_product_image_locator",
+                      "value": [
+                        {
+                          "marketplace_id": "A2EUQ1WTGCTBG2",
+                          "media_location": "https://api-staging.categra.com/uploads/278/product/13820/256x256_fe5606e0-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                        }
+                      ]
+                    }
+                  ],
+                  "payload": {
+                    "size": [
+                      {
+                        "value": "Standard",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "brand": [
+                      {
+                        "value": "Generic A1",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "color": [
+                      {
+                        "value": "Celestial",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "standardized_values": ["Beige"]
+                      }
+                    ],
+                    "theme": [
+                      {
+                        "value": "Floral",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "closure": [
+                      {
+                        "type": [
+                          {
+                            "value": "Split Ring",
+                            "language_tag": "en_CA"
+                          }
+                        ],
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "material": [
+                      {
+                        "value": "Alloy",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "item_name": [
+                      {
+                        "value": "CELOKIY Celestial Keychain Wristlet, Sun Moon Stars Design, Black and Gold Fabric Wrist Key Chain with Metal Hardware",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "department": [
+                      {
+                        "value": "womens",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "list_price": [
+                      {
+                        "value": 17,
+                        "currency": "CAD",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "model_name": [
+                      {
+                        "value": "m01",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "unit_count": [
+                      {
+                        "type": {
+                          "value": "Count",
+                          "language_tag": "en_CA"
+                        },
+                        "value": 1,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "item_weight": [
+                      {
+                        "unit": "grams",
+                        "value": 1,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "unspsc_code": [
+                      {
+                        "value": "46171515",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "bullet_point": [
+                      {
+                        "value": "CELESTIAL DESIGN: Beautiful embroidered pattern featuring golden suns, moons, and stars on a black fabric background for a mystical aesthetic",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      },
+                      {
+                        "value": "DURABLE HARDWARE: Gold-toned metal hardware with sturdy key rings and secure clasps ensures long-lasting daily use",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      },
+                      {
+                        "value": "COMFORTABLE GRIP: Soft fabric wristlet design with reinforced stitching provides a secure and comfortable way to carry your keys",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      },
+                      {
+                        "value": "VERSATILE SIZE: Perfect length for wearing on wrist or attaching to bag handles, making it easy to locate and access your keys",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      },
+                      {
+                        "value": "PREMIUM CONSTRUCTION: High-quality fabric with detailed embroidery work and strong webbing backing for enhanced durability",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "target_gender": [
+                      {
+                        "value": "female",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "condition_type": [
+                      {
+                        "value": "new_new",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "number_of_items": [
+                      {
+                        "value": 3,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "parentage_level": [
+                      {
+                        "value": "child",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "special_feature": [
+                      {
+                        "value": "Celestial Design",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "variation_theme": [
+                      {
+                        "name": "COLOR"
+                      }
+                    ],
+                    "country_of_origin": [
+                      {
+                        "value": "US",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "purchasable_offer": [
+                      {
+                        "audience": "ALL",
+                        "currency": "CAD",
+                        "our_price": [
+                          {
+                            "schedule": [
+                              {
+                                "value_with_tax": 50
+                              }
+                            ]
+                          }
+                        ],
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "included_components": [
+                      {
+                        "value": "1 x Keychain",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "item_package_weight": [
+                      {
+                        "unit": "kilograms",
+                        "value": 1,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "product_description": [
+                      {
+                        "value": "Add a touch of celestial elegance to your everyday carry with this stunning wristlet keychain. The black fabric base features exquisite golden embroidered designs of suns, moons, and stars, creating a mystical celestial pattern that catches the eye. The durable wristlet design includes a comfortable black webbing strap and is finished with premium gold-tone hardware for secure key attachment. Perfect for keeping your keys easily accessible while shopping, running errands, or during outdoor activities. The sophisticated design makes it both a practical accessory and a stylish statement piece. The substantial hardware ensures your keys stay safely attached, while the wrist strap provides hands-free convenience when you need it most. This fashionable key wristlet makes an ideal gift for anyone who appreciates both functionality and celestial-inspired aesthetics.",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "gpsr_safety_attestation": [
+                      {
+                        "value": true,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "item_package_dimensions": [
+                      {
+                        "width": {
+                          "unit": "centimeters",
+                          "value": 5
+                        },
+                        "height": {
+                          "unit": "centimeters",
+                          "value": 14.3
+                        },
+                        "length": {
+                          "unit": "centimeters",
+                          "value": 0.9
+                        },
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "merchant_shipping_group": [
+                      {
+                        "value": "legacy-template-id",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "merchant_suggested_asin": [
+                      {
+                        "value": "B0G1T4Q97H",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "fulfillment_availability": [
+                      {
+                        "quantity": 0,
+                        "fulfillment_channel_code": "DEFAULT"
+                      }
+                    ],
+                    "product_site_launch_date": [
+                      {
+                        "value": "2025-01-18T14:09:34.783Z",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "recommended_browse_nodes": [
+                      {
+                        "value": "7420596011",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "main_product_image_locator": [
+                      {
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "media_location": "https://api-staging.categra.com/uploads/278/product/13820/fe5606e0-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "swatch_product_image_locator": [
+                      {
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "media_location": "https://api-staging.categra.com/uploads/278/product/13820/256x256_fe5606e0-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "child_parent_sku_relationship": [
+                      {
+                        "parent_sku": "225680023652",
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "child_relationship_type": "variation"
+                      }
+                    ],
+                    "other_product_image_locator_1": [
+                      {
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "media_location": "https://api-staging.categra.com/uploads/278/product/13820/33ae12f0-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "other_product_image_locator_2": [
+                      {
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "media_location": "https://api-staging.categra.com/uploads/278/product/13820/3460c120-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "other_product_image_locator_3": [
+                      {
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "media_location": "https://api-staging.categra.com/uploads/278/products/13820/1d39d350-979b-11f1-9c70-f14124d42247.webp"
+                      }
+                    ],
+                    "manufacturer_contact_information": [
+                      {
+                        "value": "M - CA",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "supplier_declared_dg_hz_regulation": [
+                      {
+                        "value": "not_applicable",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "supplier_declared_has_product_identifier_exemption": [
+                      {
+                        "value": false,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ]
+                  },
+                  "response": {
+                    "header": {
+                      "feedId": "56240020690",
+                      "version": "2.0",
+                      "sellerId": "A13EDBEFHU3OJ1"
+                    },
+                    "issues": [],
+                    "summary": {
+                      "errors": 0,
+                      "warnings": 0,
+                      "messagesInvalid": 0,
+                      "messagesAccepted": 3,
+                      "messagesProcessed": 3
+                    }
+                  },
+                  "countryCode": "CA"
+                }
+              ]
+            },
+            {
+              "sku": "225680023652-V1",
+              "name": "CELOKIY Floral Embroidered Fabric Wristlet Keychain, Vintage Style Wrist Key Chain Women with Brass Hardware",
+              "variantId": "47316",
+              "wrapperId": "7356",
+              "marketplaces": [
+                {
+                  "id": 1,
+                  "status": "FINISHED",
+                  "patches": [
+                    {
+                      "op": "replace",
+                      "path": "/attributes/manufacturer_contact_information",
+                      "value": [
+                        {
+                          "value": "CA - M",
+                          "language_tag": "en_CA",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
+                        },
+                        {
+                          "value": "CA - M2",
+                          "language_tag": "en_CA",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
+                        },
+                        {
+                          "value": "CA - M3",
+                          "language_tag": "en_CA",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/purchasable_offer",
+                      "value": [
+                        {
+                          "audience": "ALL",
+                          "currency": "CAD",
+                          "our_price": [
+                            {
+                              "schedule": [
+                                {
+                                  "value_with_tax": 56
+                                }
+                              ]
+                            }
+                          ],
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/list_price",
+                      "value": [
+                        {
+                          "value": 17,
+                          "currency": "CAD",
+                          "marketplace_id": "A2EUQ1WTGCTBG2"
+                        }
+                      ]
+                    }
+                  ],
+                  "payload": {
+                    "size": [
+                      {
+                        "value": "Standard",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "brand": [
+                      {
+                        "value": "Generic A1",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "color": [
+                      {
+                        "value": "A-floral",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "standardized_values": ["Beige"]
+                      }
+                    ],
+                    "theme": [
+                      {
+                        "value": "Floral",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "closure": [
+                      {
+                        "type": [
+                          {
+                            "value": "Split Ring",
+                            "language_tag": "en_CA"
+                          }
+                        ],
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "material": [
+                      {
+                        "value": "Alloy",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "item_name": [
+                      {
+                        "value": "CELOKIY Floral Embroidered Fabric Wristlet Keychain, Vintage Style Wrist Key Chain Women with Brass Hardware",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "department": [
+                      {
+                        "value": "womens",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "list_price": [
+                      {
+                        "value": 17,
+                        "currency": "CAD",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "model_name": [
+                      {
+                        "value": "m01",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "unit_count": [
+                      {
+                        "type": {
+                          "value": "Count",
+                          "language_tag": "en_CA"
+                        },
+                        "value": 1,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "item_weight": [
+                      {
+                        "unit": "grams",
+                        "value": 1,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "unspsc_code": [
+                      {
+                        "value": "46171515",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "bullet_point": [
+                      {
+                        "value": "DESIGN FEATURES: Charming floral embroidered pattern on cream-colored fabric with red and peach flowers, complemented by antique brass hardware",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      },
+                      {
+                        "value": "DURABLE HARDWARE: Vintage brass metal hardware with sturdy key rings and secure clasps ensures long-lasting daily use",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      },
+                      {
+                        "value": "COMFORTABLE GRIP: Soft fabric wristlet design with reinforced stitching provides a secure and comfortable way to carry your keys",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      },
+                      {
+                        "value": "VERSATILE SIZE: Perfect length for wearing on wrist or attaching to bag handles, making it easy to locate and access your keys",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      },
+                      {
+                        "value": "PREMIUM CONSTRUCTION: High-quality fabric with detailed embroidery work and strong webbing backing for enhanced durability",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "target_gender": [
+                      {
+                        "value": "female",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "condition_type": [
+                      {
+                        "value": "new_new",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "number_of_items": [
+                      {
+                        "value": 2,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "parentage_level": [
+                      {
+                        "value": "child",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "variation_theme": [
+                      {
+                        "name": "COLOR"
+                      }
+                    ],
+                    "country_of_origin": [
+                      {
+                        "value": "US",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "purchasable_offer": [
+                      {
+                        "audience": "ALL",
+                        "currency": "CAD",
+                        "our_price": [
+                          {
+                            "schedule": [
+                              {
+                                "value_with_tax": 56
+                              }
+                            ]
+                          }
+                        ],
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "item_package_weight": [
+                      {
+                        "unit": "kilograms",
+                        "value": 1,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "product_description": [
+                      {
+                        "value": "Add a charming touch to your everyday essentials with this delightful wristlet key chain. The cream-colored fabric band features an elegant floral pattern in warm autumn tones of rust and peach, complemented by delicate black leaf details. The durable cotton webbing construction ensures lasting wear, while the antique brass hardware adds a vintage-inspired finish. The convenient wrist strap design keeps your keys easily accessible and prevents them from getting lost in your bag. Perfect for busy professionals, parents on the go, or anyone who appreciates both style and functionality in their accessories. The classic pattern coordinates beautifully with any outfit or bag, making it an ideal accessory for daily use. The sturdy metal key ring securely holds your keys while the wristlet provides comfortable carrying convenience.",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "gpsr_safety_attestation": [
+                      {
+                        "value": true,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "item_package_dimensions": [
+                      {
+                        "width": {
+                          "unit": "centimeters",
+                          "value": 5
+                        },
+                        "height": {
+                          "unit": "centimeters",
+                          "value": 14.3
+                        },
+                        "length": {
+                          "unit": "centimeters",
+                          "value": 0.9
+                        },
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "merchant_shipping_group": [
+                      {
+                        "value": "legacy-template-id",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "merchant_suggested_asin": [
+                      {
+                        "value": "B0G1T9QL85",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "fulfillment_availability": [
+                      {
+                        "quantity": 0,
+                        "fulfillment_channel_code": "DEFAULT"
+                      }
+                    ],
+                    "product_site_launch_date": [
+                      {
+                        "value": "2025-01-18T14:09:34.783Z",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "recommended_browse_nodes": [
+                      {
+                        "value": "7420596011",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "main_product_image_locator": [
+                      {
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "media_location": "https://api-staging.categra.com/uploads/278/product/13820/fe5606e0-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "swatch_product_image_locator": [
+                      {
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "media_location": "https://api-staging.categra.com/uploads/278/product/13820/256x256_fe5606e0-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "child_parent_sku_relationship": [
+                      {
+                        "parent_sku": "225680023652",
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "child_relationship_type": "variation"
+                      }
+                    ],
+                    "other_product_image_locator_1": [
+                      {
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "media_location": "https://api-staging.categra.com/uploads/278/product/13820/33ae12f0-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "other_product_image_locator_2": [
+                      {
+                        "marketplace_id": "A2EUQ1WTGCTBG2",
+                        "media_location": "https://api-staging.categra.com/uploads/278/product/13820/3460c120-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "manufacturer_contact_information": [
+                      {
+                        "value": "CA - M",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      },
+                      {
+                        "value": "CA - M2",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      },
+                      {
+                        "value": "CA - M3",
+                        "language_tag": "en_CA",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "supplier_declared_dg_hz_regulation": [
+                      {
+                        "value": "not_applicable",
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ],
+                    "supplier_declared_has_product_identifier_exemption": [
+                      {
+                        "value": false,
+                        "marketplace_id": "A2EUQ1WTGCTBG2"
+                      }
+                    ]
+                  },
+                  "response": {
+                    "header": {
+                      "feedId": "56240020690",
+                      "version": "2.0",
+                      "sellerId": "A13EDBEFHU3OJ1"
+                    },
+                    "issues": [],
+                    "summary": {
+                      "errors": 0,
+                      "warnings": 0,
+                      "messagesInvalid": 0,
+                      "messagesAccepted": 3,
+                      "messagesProcessed": 3
+                    }
+                  },
+                  "countryCode": "CA"
+                }
+              ]
+            }
+          ],
+          "productId": 13820,
+          "wrapperId": "7356",
+          "marketplaces": [
+            {
+              "id": 1,
+              "error": [
+                {
+                  "sku": "225680023652",
+                  "type": "CATEGRA",
+                  "input": {
+                    "message": null,
+                    "attribute": "height",
+                    "hierarchy": "item_package_dimensions",
+                    "child_hierarchy": "height"
+                  },
+                  "keyWord": "SCHEMA_VALIDATION_ERROR",
+                  "message": "Missing required attribute: Shipping => Item Package Dimensions => Package Height",
+                  "channelId": "481",
+                  "errorCode": null,
+                  "productId": 13820,
+                  "productName": "CA - Engraved Metal Keychain - Personalized Keyring",
+                  "currentQueue": "Forward-sync-variation-theme-product",
+                  "attributeNames": "item_package_dimensions",
+                  "missingProperty": null,
+                  "childHierarchyKey": "height",
+                  "productChannelMarketplaceId": 11808
+                },
+                {
+                  "sku": "225680023652",
+                  "type": "CATEGRA",
+                  "input": {
+                    "message": null,
+                    "attribute": "height",
+                    "hierarchy": "item_package_dimensions",
+                    "child_hierarchy": "height"
+                  },
+                  "keyWord": "SCHEMA_VALIDATION_ERROR",
+                  "message": "Missing required attribute: Shipping => Item Package Dimensions => Package Height",
+                  "channelId": "481",
+                  "errorCode": null,
+                  "productId": 13820,
+                  "productName": "CA - Engraved Metal Keychain - Personalized Keyring",
+                  "currentQueue": "Forward-sync-variation-theme-product",
+                  "attributeNames": "item_package_dimensions",
+                  "missingProperty": null,
+                  "childHierarchyKey": "height",
+                  "productChannelMarketplaceId": 11808
+                },
+                {
+                  "sku": "225680023652",
+                  "type": "CATEGRA",
+                  "input": {
+                    "message": null,
+                    "attribute": "width",
+                    "hierarchy": "item_package_dimensions",
+                    "child_hierarchy": "width"
+                  },
+                  "keyWord": "SCHEMA_VALIDATION_ERROR",
+                  "message": "Missing required attribute: Shipping => Item Package Dimensions => Package Width",
+                  "channelId": "481",
+                  "errorCode": null,
+                  "productId": 13820,
+                  "productName": "CA - Engraved Metal Keychain - Personalized Keyring",
+                  "currentQueue": "Forward-sync-variation-theme-product",
+                  "attributeNames": "item_package_dimensions",
+                  "missingProperty": null,
+                  "childHierarchyKey": "width",
+                  "productChannelMarketplaceId": 11808
+                },
+                {
+                  "sku": "225680023652",
+                  "type": "CATEGRA",
+                  "input": {
+                    "message": null,
+                    "attribute": "width",
+                    "hierarchy": "item_package_dimensions",
+                    "child_hierarchy": "width"
+                  },
+                  "keyWord": "SCHEMA_VALIDATION_ERROR",
+                  "message": "Missing required attribute: Shipping => Item Package Dimensions => Package Width",
+                  "channelId": "481",
+                  "errorCode": null,
+                  "productId": 13820,
+                  "productName": "CA - Engraved Metal Keychain - Personalized Keyring",
+                  "currentQueue": "Forward-sync-variation-theme-product",
+                  "attributeNames": "item_package_dimensions",
+                  "missingProperty": null,
+                  "childHierarchyKey": "width",
+                  "productChannelMarketplaceId": 11808
+                },
+                {
+                  "sku": "225680023652",
+                  "type": "CATEGRA",
+                  "input": {
+                    "message": null,
+                    "attribute": "unit",
+                    "hierarchy": "item_package_dimensions",
+                    "child_hierarchy": "length"
+                  },
+                  "keyWord": "SCHEMA_VALIDATION_ERROR",
+                  "message": "Missing required attribute: Shipping => Item Package Dimensions => Package Length",
+                  "channelId": "481",
+                  "errorCode": null,
+                  "productId": 13820,
+                  "productName": "CA - Engraved Metal Keychain - Personalized Keyring",
+                  "currentQueue": "Forward-sync-variation-theme-product",
+                  "attributeNames": "item_package_dimensions",
+                  "missingProperty": "unit",
+                  "childHierarchyKey": "length",
+                  "productChannelMarketplaceId": 11808
+                },
+                {
+                  "sku": "225680023652",
+                  "type": "CATEGRA",
+                  "input": {
+                    "message": null,
+                    "attribute": "unit",
+                    "hierarchy": "item_package_dimensions",
+                    "child_hierarchy": "length"
+                  },
+                  "keyWord": "SCHEMA_VALIDATION_ERROR",
+                  "message": "Missing required attribute: Shipping => Item Package Dimensions => Package Length => Package Length Unit",
+                  "channelId": "481",
+                  "errorCode": null,
+                  "productId": 13820,
+                  "productName": "CA - Engraved Metal Keychain - Personalized Keyring",
+                  "currentQueue": "Forward-sync-variation-theme-product",
+                  "attributeNames": "item_package_dimensions",
+                  "missingProperty": "unit",
+                  "childHierarchyKey": "length",
+                  "productChannelMarketplaceId": 11808
+                }
+              ],
+              "status": "FINISHED",
+              "payload": {
+                "size": [
+                  {
+                    "value": "Standard",
+                    "language_tag": "en_CA",
+                    "marketplace_id": "A2EUQ1WTGCTBG2"
+                  }
+                ],
+                "brand": [
+                  {
+                    "value": "Generic A1",
+                    "language_tag": "en_CA",
+                    "marketplace_id": "A2EUQ1WTGCTBG2"
+                  }
+                ],
+                "theme": [
+                  {
+                    "value": "Floral",
+                    "language_tag": "en_CA",
+                    "marketplace_id": "A2EUQ1WTGCTBG2"
+                  }
+                ],
+                "closure": [
+                  {
+                    "type": [
+                      {
+                        "value": "Split Ring",
+                        "language_tag": "en_CA"
+                      }
+                    ],
+                    "marketplace_id": "A2EUQ1WTGCTBG2"
+                  }
+                ],
+                "material": [
+                  {
+                    "value": "Alloy",
+                    "language_tag": "en_CA",
+                    "marketplace_id": "A2EUQ1WTGCTBG2"
+                  }
+                ],
+                "item_name": [
+                  {
+                    "value": "CA - Engraved Metal Keychain - Personalized Keyring",
+                    "language_tag": "en_CA",
+                    "marketplace_id": "A2EUQ1WTGCTBG2"
+                  }
+                ],
+                "department": [
+                  {
+                    "value": "womens",
+                    "language_tag": "en_CA",
+                    "marketplace_id": "A2EUQ1WTGCTBG2"
+                  }
+                ],
+                "unspsc_code": [
+                  {
+                    "value": "CA - Code",
+                    "marketplace_id": "A2EUQ1WTGCTBG2"
+                  }
+                ],
+                "bullet_point": [
+                  {
+                    "value": "Keep your keys organized and add a personal touch with our Engraved Metal Keychain. Crafted from durable metal, this keyring is perfect for everyday use. Personalize it with a name, initials, or a special date to create a unique and memorable accessory",
+                    "language_tag": "en_CA",
+                    "marketplace_id": "A2EUQ1WTGCTBG2"
+                  },
+                  {
+                    "value": " Its compact design ensures it won't add bulk to your pockets, while its sturdy construction ensures your keys stay secure.",
+                    "language_tag": "en_CA",
+                    "marketplace_id": "A2EUQ1WTGCTBG2"
+                  }
+                ],
+                "target_gender": [
+                  {
+                    "value": "female",
+                    "marketplace_id": "A2EUQ1WTGCTBG2"
+                  }
+                ],
+                "condition_type": [
+                  {
+                    "value": "new_new",
+                    "marketplace_id": "A2EUQ1WTGCTBG2"
+                  }
+                ],
+                "parentage_level": [
+                  {
+                    "value": "parent",
+                    "marketplace_id": "A2EUQ1WTGCTBG2"
+                  }
+                ],
+                "special_feature": [
+                  {
+                    "value": "None",
+                    "language_tag": "en_CA",
+                    "marketplace_id": "A2EUQ1WTGCTBG2"
+                  }
+                ],
+                "variation_theme": [
+                  {
+                    "name": "COLOR"
+                  }
+                ],
+                "country_of_origin": [
+                  {
+                    "value": "US",
+                    "marketplace_id": "A2EUQ1WTGCTBG2"
+                  }
+                ],
+                "batteries_required": [
+                  {
+                    "value": false,
+                    "marketplace_id": "A2EUQ1WTGCTBG2"
+                  }
+                ],
+                "included_components": [
+                  {
+                    "value": "Dice",
+                    "language_tag": "en_CA",
+                    "marketplace_id": "A2EUQ1WTGCTBG2"
+                  },
+                  {
+                    "value": "Gift Bag",
+                    "language_tag": "en_CA",
+                    "marketplace_id": "A2EUQ1WTGCTBG2"
+                  }
+                ],
+                "product_description": [
+                  {
+                    "value": "Keep your keys organized and add a personal touch with our Engraved Metal Keychain. Crafted from durable metal, this keyring is perfect for everyday use. Personalize it with a name, initials, or a special date to create a unique and memorable accessory. Ideal for gifting or treating yourself, this keychain combines practicality with sentimental value. Its compact design ensures it won't add bulk to your pockets, while its sturdy construction ensures your keys stay secure.",
+                    "language_tag": "en_CA",
+                    "marketplace_id": "A2EUQ1WTGCTBG2"
+                  }
+                ],
+                "item_package_dimensions": [
+                  {
+                    "length": {
+                      "value": 5
+                    },
+                    "marketplace_id": "A2EUQ1WTGCTBG2"
+                  }
+                ],
+                "merchant_suggested_asin": [
+                  {
+                    "value": "B0G1TFRD7P",
+                    "marketplace_id": "A2EUQ1WTGCTBG2"
+                  }
+                ],
+                "product_site_launch_date": [
+                  {
+                    "value": "2025-01-18T14:09:34.783Z",
+                    "marketplace_id": "A2EUQ1WTGCTBG2"
+                  }
+                ],
+                "recommended_browse_nodes": [
+                  {
+                    "value": "7420596011",
+                    "marketplace_id": "A2EUQ1WTGCTBG2"
+                  }
+                ],
+                "main_product_image_locator": [
+                  {
+                    "marketplace_id": "A2EUQ1WTGCTBG2",
+                    "media_location": "https://api-staging.categra.com/uploads/278/product/13820/fc9b1070-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                  }
+                ],
+                "swatch_product_image_locator": [
+                  {
+                    "marketplace_id": "A2EUQ1WTGCTBG2",
+                    "media_location": "https://api-staging.categra.com/uploads/278/product/13820/256x256_fc9b1070-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                  }
+                ],
+                "child_parent_sku_relationship": [
+                  {
+                    "marketplace_id": "A2EUQ1WTGCTBG2",
+                    "child_relationship_type": "variation"
+                  }
+                ],
+                "other_product_image_locator_1": [
+                  {
+                    "marketplace_id": "A2EUQ1WTGCTBG2",
+                    "media_location": "https://api-staging.categra.com/uploads/278/product/13820/2099bc50-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                  }
+                ],
+                "other_product_image_locator_2": [
+                  {
+                    "marketplace_id": "A2EUQ1WTGCTBG2",
+                    "media_location": "https://api-staging.categra.com/uploads/278/product/13820/211729b0-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                  }
+                ],
+                "other_product_image_locator_3": [
+                  {
+                    "marketplace_id": "A2EUQ1WTGCTBG2",
+                    "media_location": "https://api-staging.categra.com/uploads/278/product/13820/2195cf90-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                  }
+                ],
+                "other_product_image_locator_4": [
+                  {
+                    "marketplace_id": "A2EUQ1WTGCTBG2",
+                    "media_location": "https://api-staging.categra.com/uploads/278/product/13820/223e92b0-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                  }
+                ],
+                "other_product_image_locator_5": [
+                  {
+                    "marketplace_id": "A2EUQ1WTGCTBG2",
+                    "media_location": "https://api-staging.categra.com/uploads/278/products/13820/094afb30-979b-11f1-9c70-f14124d42247.png"
+                  }
+                ],
+                "supplier_declared_dg_hz_regulation": [
+                  {
+                    "value": "not_applicable",
+                    "marketplace_id": "A2EUQ1WTGCTBG2"
+                  }
+                ],
+                "supplier_declared_has_product_identifier_exemption": [
+                  {
+                    "value": false,
+                    "marketplace_id": "A2EUQ1WTGCTBG2"
+                  }
+                ]
+              },
+              "response": {
+                "header": {
+                  "feedId": "56240020690",
+                  "version": "2.0",
+                  "sellerId": "A13EDBEFHU3OJ1"
+                },
+                "issues": [],
+                "summary": {
+                  "errors": 0,
+                  "warnings": 0,
+                  "messagesInvalid": 0,
+                  "messagesAccepted": 3,
+                  "messagesProcessed": 3
+                }
+              },
+              "countryCode": "CA"
+            },
+            {
+              "id": 2,
+              "status": "NOT_STARTED",
+              "countryCode": "US"
+            }
+          ]
+        },
+        {
+          "sku": null,
+          "name": "US - Cute Fall Keychain Wristlet, Thick Embroidered Floral Keychain for Women, Car Key Chain Accessories",
+          "variants": [
+            {
+              "sku": "225680023652-V2",
+              "name": "Vintage Floral Wristlet Keychain for Women, Embroidered Fabric, Green and Cream Boho Short Lanyard for Keys",
+              "variantId": "47312",
+              "wrapperId": "7357",
+              "marketplaces": [
+                {
+                  "id": 2,
+                  "status": "FINISHED",
+                  "patches": [
+                    {
+                      "op": "replace",
+                      "path": "/attributes/condition_type",
+                      "value": [
+                        {
+                          "value": "used_good",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ]
+                    }
+                  ],
+                  "payload": {
+                    "size": [
+                      {
+                        "value": "Standard",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "brand": [
+                      {
+                        "value": "Generic A1",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "color": [
+                      {
+                        "value": "B-floral",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER",
+                        "standardized_values": ["Beige"]
+                      }
+                    ],
+                    "theme": [
+                      {
+                        "value": "Floral",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "closure": [
+                      {
+                        "type": [
+                          {
+                            "value": "Split Ring",
+                            "language_tag": "en_US"
+                          }
+                        ],
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "material": [
+                      {
+                        "value": "regular",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "item_name": [
+                      {
+                        "value": "Vintage Floral Wristlet Keychain for Women, Embroidered Fabric, Green and Cream Boho Short Lanyard for Keys",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "department": [
+                      {
+                        "value": "womens",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "list_price": [
+                      {
+                        "value": 17,
+                        "currency": "USD",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "model_name": [
+                      {
+                        "value": "m01",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "skip_offer": [
+                      {
+                        "value": false,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "unit_count": [
+                      {
+                        "type": {
+                          "value": "Count",
+                          "language_tag": "en_US"
+                        },
+                        "value": 1,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "item_weight": [
+                      {
+                        "unit": "grams",
+                        "value": 1,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "unspsc_code": [
+                      {
+                        "value": "46171515",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "bullet_point": [
+                      {
+                        "value": "DESIGN FEATURES: Charming floral embroidered pattern on cream-colored fabric with green flowers, complemented by antique brass hardware",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      },
+                      {
+                        "value": "DURABLE HARDWARE: Vintage brass metal hardware with sturdy key rings and secure clasps ensures long-lasting daily use",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      },
+                      {
+                        "value": "COMFORTABLE GRIP: Soft fabric wristlet design with reinforced stitching provides a secure and comfortable way to carry your keys",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      },
+                      {
+                        "value": "VERSATILE SIZE: Perfect length for wearing on wrist or attaching to bag handles, making it easy to locate and access your keys",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      },
+                      {
+                        "value": "PREMIUM CONSTRUCTION: High-quality fabric with detailed embroidery work and strong webbing backing for enhanced durability",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "target_gender": [
+                      {
+                        "value": "female",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "condition_type": [
+                      {
+                        "value": "used_good",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "parentage_level": [
+                      {
+                        "value": "child",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "special_feature": [
+                      {
+                        "value": "None",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "variation_theme": [
+                      {
+                        "name": "COLOR"
+                      }
+                    ],
+                    "country_of_origin": [
+                      {
+                        "value": "US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "item_type_keyword": [
+                      {
+                        "value": "Keyrings, Keychains & Charms",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "purchasable_offer": [
+                      {
+                        "audience": "ALL",
+                        "currency": "USD",
+                        "our_price": [
+                          {
+                            "schedule": [
+                              {
+                                "value_with_tax": 50
+                              }
+                            ]
+                          }
+                        ],
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "batteries_included": [
+                      {
+                        "value": false,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "batteries_required": [
+                      {
+                        "value": false,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "import_designation": [
+                      {
+                        "value": "Imported",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "item_package_weight": [
+                      {
+                        "unit": "kilograms",
+                        "value": 1,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "product_description": [
+                      {
+                        "value": "Add a charming touch to your everyday essentials with this delightful wristlet key chain. The cream-colored fabric band features an elegant floral pattern in warm autumn tones of rust and green, complemented by delicate black leaf details. The durable cotton webbing construction ensures lasting wear, while the antique brass hardware adds a vintage-inspired finish. The convenient wrist strap design keeps your keys easily accessible and prevents them from getting lost in your bag. Perfect for busy professionals, parents on the go, or anyone who appreciates both style and functionality in their accessories. The classic pattern coordinates beautifully with any outfit or bag, making it an ideal accessory for daily use. The sturdy metal key ring securely holds your keys while the wristlet provides comfortable carrying convenience.",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "gpsr_safety_attestation": [
+                      {
+                        "value": true,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "item_package_dimensions": [
+                      {
+                        "width": {
+                          "unit": "centimeters",
+                          "value": 4.8
+                        },
+                        "height": {
+                          "unit": "centimeters",
+                          "value": 14.3
+                        },
+                        "length": {
+                          "unit": "centimeters",
+                          "value": 0.9
+                        },
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "merchant_shipping_group": [
+                      {
+                        "value": "legacy-template-id",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "merchant_suggested_asin": [
+                      {
+                        "value": "B0G1T38W1N",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "fulfillment_availability": [
+                      {
+                        "quantity": 0,
+                        "fulfillment_channel_code": "DEFAULT"
+                      }
+                    ],
+                    "product_site_launch_date": [
+                      {
+                        "value": "2025-01-18T14:09:34.783Z",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "main_product_image_locator": [
+                      {
+                        "marketplace_id": "ATVPDKIKX0DER",
+                        "media_location": "https://api-staging.categra.com/uploads/278/product/13820/fd930500-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "swatch_product_image_locator": [
+                      {
+                        "marketplace_id": "ATVPDKIKX0DER",
+                        "media_location": "https://api-staging.categra.com/uploads/278/product/13820/256x256_fd930500-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "child_parent_sku_relationship": [
+                      {
+                        "parent_sku": "225680023652-V2",
+                        "marketplace_id": "ATVPDKIKX0DER",
+                        "child_relationship_type": "variation"
+                      }
+                    ],
+                    "other_product_image_locator_1": [
+                      {
+                        "marketplace_id": "ATVPDKIKX0DER",
+                        "media_location": "https://api-staging.categra.com/uploads/278/product/13820/2bc1e030-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "other_product_image_locator_2": [
+                      {
+                        "marketplace_id": "ATVPDKIKX0DER",
+                        "media_location": "https://api-staging.categra.com/uploads/278/product/13820/2c3a1d70-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "supplier_declared_dg_hz_regulation": [
+                      {
+                        "value": "not_applicable",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "supplier_declared_has_product_identifier_exemption": [
+                      {
+                        "value": false,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ]
+                  },
+                  "response": {
+                    "header": {
+                      "feedId": "56241020690",
+                      "version": "2.0",
+                      "sellerId": "A13EDBEFHU3OJ1"
+                    },
+                    "issues": [],
+                    "summary": {
+                      "errors": 0,
+                      "warnings": 0,
+                      "messagesInvalid": 0,
+                      "messagesAccepted": 2,
+                      "messagesProcessed": 2
+                    }
+                  },
+                  "countryCode": "US"
+                }
+              ]
+            },
+            {
+              "sku": "225680023652-V5",
+              "name": "Decorative Fabric Wristlet Keychain with Leaf Pattern, Wrist Key Chain with Gold Hardware, Green and Cream",
+              "variantId": "47313",
+              "wrapperId": "7357",
+              "marketplaces": [
+                {
+                  "id": 2,
+                  "status": "FINISHED",
+                  "patches": [
+                    {
+                      "op": "replace",
+                      "path": "/attributes/purchasable_offer",
+                      "value": [
+                        {
+                          "audience": "ALL",
+                          "currency": "USD",
+                          "our_price": [
+                            {
+                              "schedule": [
+                                {
+                                  "value_with_tax": 50
+                                }
+                              ]
+                            }
+                          ],
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/list_price",
+                      "value": [
+                        {
+                          "value": 28,
+                          "currency": "USD",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/main_product_image_locator",
+                      "value": [
+                        {
+                          "marketplace_id": "ATVPDKIKX0DER",
+                          "media_location": "https://api-staging.categra.com/uploads/278/product/13820/fdf7ba40-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/other_product_image_locator_1",
+                      "value": [
+                        {
+                          "marketplace_id": "ATVPDKIKX0DER",
+                          "media_location": "https://api-staging.categra.com/uploads/278/product/13820/2ca05950-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_2",
+                      "value": [
+                        {
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_3",
+                      "value": [
+                        {
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_4",
+                      "value": [
+                        {
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_5",
+                      "value": [
+                        {
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_6",
+                      "value": [
+                        {
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_7",
+                      "value": [
+                        {
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_8",
+                      "value": [
+                        {
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/swatch_product_image_locator",
+                      "value": [
+                        {
+                          "marketplace_id": "ATVPDKIKX0DER",
+                          "media_location": "https://api-staging.categra.com/uploads/278/product/13820/256x256_fdf7ba40-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/condition_type",
+                      "value": [
+                        {
+                          "value": "used_acceptable",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/merchant_shipping_group",
+                      "value": [
+                        {
+                          "value": "2be65c4c-75bc-42c8-900c-0d21c18510d4",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ]
+                    }
+                  ],
+                  "payload": {
+                    "size": [
+                      {
+                        "value": "Standard",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "brand": [
+                      {
+                        "value": "Generic A1",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "color": [
+                      {
+                        "value": "Green Leaf",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER",
+                        "standardized_values": ["Beige"]
+                      }
+                    ],
+                    "theme": [
+                      {
+                        "value": "Floral",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "closure": [
+                      {
+                        "type": [
+                          {
+                            "value": "Split Ring",
+                            "language_tag": "en_US"
+                          }
+                        ],
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "material": [
+                      {
+                        "value": "regular",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "item_name": [
+                      {
+                        "value": "Decorative Fabric Wristlet Keychain with Leaf Pattern, Wrist Key Chain with Gold Hardware, Green and Cream",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "department": [
+                      {
+                        "value": "womens",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "list_price": [
+                      {
+                        "value": 28,
+                        "currency": "USD",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "model_name": [
+                      {
+                        "value": "m01",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "skip_offer": [
+                      {
+                        "value": false,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "unit_count": [
+                      {
+                        "type": {
+                          "value": "Count",
+                          "language_tag": "en_US"
+                        },
+                        "value": 1,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "item_weight": [
+                      {
+                        "unit": "kilograms",
+                        "value": 1,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "unspsc_code": [
+                      {
+                        "value": "46171515",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "bullet_point": [
+                      {
+                        "value": "ELEGANT DESIGN: Stylish wristlet keychain featuring a beautiful green leaf pattern embroidered on cream-colored fabric with gold accents",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      },
+                      {
+                        "value": "DURABLE HARDWARE: Gold-toned metal hardware with sturdy key rings and secure clasps ensures long-lasting daily use",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      },
+                      {
+                        "value": "COMFORTABLE GRIP: Soft fabric wristlet design with reinforced stitching provides a secure and comfortable way to carry your keys",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      },
+                      {
+                        "value": "VERSATILE SIZE: Perfect length for wearing on wrist or attaching to bag handles, making it easy to locate and access your keys",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      },
+                      {
+                        "value": "PREMIUM CONSTRUCTION: High-quality fabric with detailed embroidery work and strong webbing backing for enhanced durability",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "target_gender": [
+                      {
+                        "value": "female",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "condition_type": [
+                      {
+                        "value": "used_acceptable",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "parentage_level": [
+                      {
+                        "value": "child",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "special_feature": [
+                      {
+                        "value": "None",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "variation_theme": [
+                      {
+                        "name": "COLOR"
+                      }
+                    ],
+                    "country_of_origin": [
+                      {
+                        "value": "US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "item_type_keyword": [
+                      {
+                        "value": "Keyrings, Keychains & Charms",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "purchasable_offer": [
+                      {
+                        "audience": "ALL",
+                        "currency": "USD",
+                        "our_price": [
+                          {
+                            "schedule": [
+                              {
+                                "value_with_tax": 50
+                              }
+                            ]
+                          }
+                        ],
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "batteries_included": [
+                      {
+                        "value": false,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "batteries_required": [
+                      {
+                        "value": false,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "import_designation": [
+                      {
+                        "value": "Imported",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "item_package_weight": [
+                      {
+                        "unit": "kilograms",
+                        "value": 1,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "product_description": [
+                      {
+                        "value": "Elevate your everyday carry with this charming wristlet key chain that combines style and functionality. The elegant design features a nature-inspired leaf pattern in sage green embroidered on cream-colored fabric, accented with delicate golden threading. The durable cotton webbing construction ensures lasting wear while maintaining a soft, comfortable feel on your wrist. The gold-tone hardware adds a luxurious touch and includes a sturdy key ring that keeps your keys securely organized. Perfect for busy days when you need your hands free, this wristlet key chain makes it easy to locate and carry your keys while adding a sophisticated botanical accent to your accessories. The generous length allows for comfortable wear, while the classic pattern coordinates beautifully with any style or season. Ideal for anyone seeking both practicality and fashion in their daily essentials.",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "gpsr_safety_attestation": [
+                      {
+                        "value": true,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "item_package_dimensions": [
+                      {
+                        "width": {
+                          "unit": "centimeters",
+                          "value": 5
+                        },
+                        "height": {
+                          "unit": "centimeters",
+                          "value": 14.3
+                        },
+                        "length": {
+                          "unit": "centimeters",
+                          "value": 0.9
+                        },
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "merchant_shipping_group": [
+                      {
+                        "value": "2be65c4c-75bc-42c8-900c-0d21c18510d4",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "merchant_suggested_asin": [
+                      {
+                        "value": "B0G1T4XNH8",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "fulfillment_availability": [
+                      {
+                        "quantity": 0,
+                        "fulfillment_channel_code": "DEFAULT"
+                      }
+                    ],
+                    "product_site_launch_date": [
+                      {
+                        "value": "2025-01-18T14:09:34.783Z",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "main_product_image_locator": [
+                      {
+                        "marketplace_id": "ATVPDKIKX0DER",
+                        "media_location": "https://api-staging.categra.com/uploads/278/product/13820/fdf7ba40-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "swatch_product_image_locator": [
+                      {
+                        "marketplace_id": "ATVPDKIKX0DER",
+                        "media_location": "https://api-staging.categra.com/uploads/278/product/13820/256x256_fdf7ba40-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "child_parent_sku_relationship": [
+                      {
+                        "parent_sku": "225680023652-V5",
+                        "marketplace_id": "ATVPDKIKX0DER",
+                        "child_relationship_type": "variation"
+                      }
+                    ],
+                    "other_product_image_locator_1": [
+                      {
+                        "marketplace_id": "ATVPDKIKX0DER",
+                        "media_location": "https://api-staging.categra.com/uploads/278/product/13820/2ca05950-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "supplier_declared_dg_hz_regulation": [
+                      {
+                        "value": "not_applicable",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "supplier_declared_has_product_identifier_exemption": [
+                      {
+                        "value": false,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ]
+                  },
+                  "response": {
+                    "header": {
+                      "feedId": "56241020690",
+                      "version": "2.0",
+                      "sellerId": "A13EDBEFHU3OJ1"
+                    },
+                    "issues": [],
+                    "summary": {
+                      "errors": 0,
+                      "warnings": 0,
+                      "messagesInvalid": 0,
+                      "messagesAccepted": 2,
+                      "messagesProcessed": 2
+                    }
+                  },
+                  "countryCode": "US"
+                }
+              ]
+            }
+          ],
+          "productId": 13820,
+          "wrapperId": "7357",
+          "marketplaces": [
+            {
+              "id": 1,
+              "status": "NOT_STARTED",
+              "countryCode": "CA"
+            },
+            {
+              "id": 2,
+              "status": "FINISHED",
+              "response": {
+                "header": {
+                  "feedId": "56241020690",
+                  "version": "2.0",
+                  "sellerId": "A13EDBEFHU3OJ1"
+                },
+                "issues": [],
+                "summary": {
+                  "errors": 0,
+                  "warnings": 0,
+                  "messagesInvalid": 0,
+                  "messagesAccepted": 2,
+                  "messagesProcessed": 2
+                }
+              },
+              "tempError": ["Wrapper has no assigned SKU."],
+              "countryCode": "US"
+            }
+          ]
+        },
+        {
+          "sku": "225680023652",
+          "name": "US - Cute Fall Keychain Wristlet, Thick Embroidered Floral Keychain for Women, Car Key Chain Accessories",
+          "variants": [
+            {
+              "sku": "225680023652-V4",
+              "name": "Celestial Keychain Wristlet, Sun Moon Stars Design, Black and Gold Fabric Wrist Key Chain with Metal Hardware",
+              "variantId": "47315",
+              "wrapperId": "7667",
+              "marketplaces": [
+                {
+                  "id": 2,
+                  "status": "FINISHED",
+                  "patches": [
+                    {
+                      "op": "replace",
+                      "path": "/attributes/main_product_image_locator",
+                      "value": [
+                        {
+                          "marketplace_id": "ATVPDKIKX0DER",
+                          "media_location": "https://api-staging.categra.com/uploads/278/product/13820/fe5606e0-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/other_product_image_locator_1",
+                      "value": [
+                        {
+                          "marketplace_id": "ATVPDKIKX0DER",
+                          "media_location": "https://api-staging.categra.com/uploads/278/product/13820/33ae12f0-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/other_product_image_locator_2",
+                      "value": [
+                        {
+                          "marketplace_id": "ATVPDKIKX0DER",
+                          "media_location": "https://api-staging.categra.com/uploads/278/product/13820/3460c120-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/other_product_image_locator_3",
+                      "value": [
+                        {
+                          "marketplace_id": "ATVPDKIKX0DER",
+                          "media_location": "https://api-staging.categra.com/uploads/278/products/13820/1d39d350-979b-11f1-9c70-f14124d42247.webp"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_4",
+                      "value": [
+                        {
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_5",
+                      "value": [
+                        {
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_6",
+                      "value": [
+                        {
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_7",
+                      "value": [
+                        {
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "delete",
+                      "path": "/attributes/other_product_image_locator_8",
+                      "value": [
+                        {
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/swatch_product_image_locator",
+                      "value": [
+                        {
+                          "marketplace_id": "ATVPDKIKX0DER",
+                          "media_location": "https://api-staging.categra.com/uploads/278/product/13820/256x256_fe5606e0-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/merchant_shipping_group",
+                      "value": [
+                        {
+                          "value": "2be65c4c-75bc-42c8-900c-0d21c18510d4",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/variation_theme",
+                      "value": [
+                        {
+                          "name": "NUMBER_OF_ITEMS"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/parentage_level",
+                      "value": [
+                        {
+                          "value": "child",
+                          "marketplace_id": "ATVPDKIKX0DER"
+                        }
+                      ]
+                    },
+                    {
+                      "op": "replace",
+                      "path": "/attributes/child_parent_sku_relationship",
+                      "value": [
+                        {
+                          "parent_sku": "225680023652",
+                          "marketplace_id": "ATVPDKIKX0DER",
+                          "child_relationship_type": "variation"
+                        }
+                      ]
+                    }
+                  ],
+                  "payload": {
+                    "size": [
+                      {
+                        "value": "Standard",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "brand": [
+                      {
+                        "value": "Generic A1",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "color": [
+                      {
+                        "value": "Celestial",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER",
+                        "standardized_values": ["Beige"]
+                      }
+                    ],
+                    "theme": [
+                      {
+                        "value": "Floral",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "closure": [
+                      {
+                        "type": [
+                          {
+                            "value": "Split Ring",
+                            "language_tag": "en_US"
+                          }
+                        ],
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "material": [
+                      {
+                        "value": "regular",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "item_name": [
+                      {
+                        "value": "Celestial Keychain Wristlet, Sun Moon Stars Design, Black and Gold Fabric Wrist Key Chain with Metal Hardware",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "department": [
+                      {
+                        "value": "womens",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "list_price": [
+                      {
+                        "value": 17,
+                        "currency": "USD",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "model_name": [
+                      {
+                        "value": "m01",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "skip_offer": [
+                      {
+                        "value": false,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "unit_count": [
+                      {
+                        "type": {
+                          "value": "Count",
+                          "language_tag": "en_US"
+                        },
+                        "value": 1,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "item_weight": [
+                      {
+                        "unit": "grams",
+                        "value": 1,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "unspsc_code": [
+                      {
+                        "value": "46171515",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "bullet_point": [
+                      {
+                        "value": "CELESTIAL DESIGN: Beautiful embroidered pattern featuring golden suns, moons, and stars on a black fabric background for a mystical aesthetic",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      },
+                      {
+                        "value": "DURABLE HARDWARE: Gold-toned metal hardware with sturdy key rings and secure clasps ensures long-lasting daily use",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      },
+                      {
+                        "value": "COMFORTABLE GRIP: Soft fabric wristlet design with reinforced stitching provides a secure and comfortable way to carry your keys",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      },
+                      {
+                        "value": "VERSATILE SIZE: Perfect length for wearing on wrist or attaching to bag handles, making it easy to locate and access your keys",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      },
+                      {
+                        "value": "PREMIUM CONSTRUCTION: High-quality fabric with detailed embroidery work and strong webbing backing for enhanced durability",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "target_gender": [
+                      {
+                        "value": "unisex",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "condition_type": [
+                      {
+                        "value": "new_new",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "number_of_items": [
+                      {
+                        "value": 3,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "parentage_level": [
+                      {
+                        "value": "child",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "special_feature": [
+                      {
+                        "value": "Celestial Design",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "variation_theme": [
+                      {
+                        "name": "NUMBER_OF_ITEMS"
+                      }
+                    ],
+                    "country_of_origin": [
+                      {
+                        "value": "US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "item_type_keyword": [
+                      {
+                        "value": "Keyrings, Keychains & Charms",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "purchasable_offer": [
+                      {
+                        "audience": "ALL",
+                        "currency": "USD",
+                        "our_price": [
+                          {
+                            "schedule": [
+                              {
+                                "value_with_tax": 50
+                              }
+                            ]
+                          }
+                        ],
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "batteries_included": [
+                      {
+                        "value": false,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "batteries_required": [
+                      {
+                        "value": false,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "import_designation": [
+                      {
+                        "value": "Imported",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "included_components": [
+                      {
+                        "value": "1 x Keychain",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "item_package_weight": [
+                      {
+                        "unit": "kilograms",
+                        "value": 1,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "product_description": [
+                      {
+                        "value": "Add a touch of celestial elegance to your everyday carry with this stunning wristlet keychain. The black fabric base features exquisite golden embroidered designs of suns, moons, and stars, creating a mystical celestial pattern that catches the eye. The durable wristlet design includes a comfortable black webbing strap and is finished with premium gold-tone hardware for secure key attachment. Perfect for keeping your keys easily accessible while shopping, running errands, or during outdoor activities. The sophisticated design makes it both a practical accessory and a stylish statement piece. The substantial hardware ensures your keys stay safely attached, while the wrist strap provides hands-free convenience when you need it most. This fashionable key wristlet makes an ideal gift for anyone who appreciates both functionality and celestial-inspired aesthetics.",
+                        "language_tag": "en_US",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "gpsr_safety_attestation": [
+                      {
+                        "value": true,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "item_package_dimensions": [
+                      {
+                        "width": {
+                          "unit": "centimeters",
+                          "value": 5
+                        },
+                        "height": {
+                          "unit": "centimeters",
+                          "value": 14.3
+                        },
+                        "length": {
+                          "unit": "centimeters",
+                          "value": 0.9
+                        },
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "merchant_shipping_group": [
+                      {
+                        "value": "2be65c4c-75bc-42c8-900c-0d21c18510d4",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "merchant_suggested_asin": [
+                      {
+                        "value": "B0G1T4Q97H",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "fulfillment_availability": [
+                      {
+                        "quantity": 0,
+                        "fulfillment_channel_code": "DEFAULT"
+                      }
+                    ],
+                    "product_site_launch_date": [
+                      {
+                        "value": "2025-01-18T14:09:34.783Z",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "main_product_image_locator": [
+                      {
+                        "marketplace_id": "ATVPDKIKX0DER",
+                        "media_location": "https://api-staging.categra.com/uploads/278/product/13820/fe5606e0-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "swatch_product_image_locator": [
+                      {
+                        "marketplace_id": "ATVPDKIKX0DER",
+                        "media_location": "https://api-staging.categra.com/uploads/278/product/13820/256x256_fe5606e0-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "child_parent_sku_relationship": [
+                      {
+                        "parent_sku": "225680023652",
+                        "marketplace_id": "ATVPDKIKX0DER",
+                        "child_relationship_type": "variation"
+                      }
+                    ],
+                    "other_product_image_locator_1": [
+                      {
+                        "marketplace_id": "ATVPDKIKX0DER",
+                        "media_location": "https://api-staging.categra.com/uploads/278/product/13820/33ae12f0-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "other_product_image_locator_2": [
+                      {
+                        "marketplace_id": "ATVPDKIKX0DER",
+                        "media_location": "https://api-staging.categra.com/uploads/278/product/13820/3460c120-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                      }
+                    ],
+                    "other_product_image_locator_3": [
+                      {
+                        "marketplace_id": "ATVPDKIKX0DER",
+                        "media_location": "https://api-staging.categra.com/uploads/278/products/13820/1d39d350-979b-11f1-9c70-f14124d42247.webp"
+                      }
+                    ],
+                    "supplier_declared_dg_hz_regulation": [
+                      {
+                        "value": "not_applicable",
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ],
+                    "supplier_declared_has_product_identifier_exemption": [
+                      {
+                        "value": false,
+                        "marketplace_id": "ATVPDKIKX0DER"
+                      }
+                    ]
+                  },
+                  "response": {
+                    "header": {
+                      "feedId": "56242020690",
+                      "version": "2.0",
+                      "sellerId": "A13EDBEFHU3OJ1"
+                    },
+                    "issues": [],
+                    "summary": {
+                      "errors": 0,
+                      "warnings": 0,
+                      "messagesInvalid": 0,
+                      "messagesAccepted": 1,
+                      "messagesProcessed": 1
+                    }
+                  },
+                  "countryCode": "US"
+                }
+              ]
+            }
+          ],
+          "productId": 13820,
+          "wrapperId": "7667",
+          "marketplaces": [
+            {
+              "id": 1,
+              "status": "NOT_STARTED",
+              "countryCode": "CA"
+            },
+            {
+              "id": 2,
+              "error": [
+                {
+                  "sku": "225680023652",
+                  "type": "CATEGRA",
+                  "input": {
+                    "message": null,
+                    "attribute": "batteries_required",
+                    "hierarchy": null,
+                    "child_hierarchy": null
+                  },
+                  "keyWord": "SCHEMA_VALIDATION_ERROR",
+                  "message": "Missing required attribute: Safety & Compliance => Are batteries required?",
+                  "channelId": "481",
+                  "errorCode": null,
+                  "productId": 13820,
+                  "productName": "US - Cute Fall Keychain Wristlet, Thick Embroidered Floral Keychain for Women, Car Key Chain Accessories",
+                  "currentQueue": "Forward-sync-variation-theme-product",
+                  "attributeNames": "batteries_required",
+                  "missingProperty": null,
+                  "childHierarchyKey": null,
+                  "productChannelMarketplaceId": 11809
+                }
+              ],
+              "status": "FINISHED",
+              "payload": {
+                "brand": [
+                  {
+                    "value": "Generic A1",
+                    "language_tag": "en_US",
+                    "marketplace_id": "ATVPDKIKX0DER"
+                  }
+                ],
+                "item_name": [
+                  {
+                    "value": "US - Cute Fall Keychain Wristlet, Thick Embroidered Floral Keychain for Women, Car Key Chain Accessories",
+                    "language_tag": "en_US",
+                    "marketplace_id": "ATVPDKIKX0DER"
+                  }
+                ],
+                "bullet_point": [
+                  {
+                    "value": "Test1",
+                    "language_tag": "en_US",
+                    "marketplace_id": "ATVPDKIKX0DER"
+                  },
+                  {
+                    "value": "Test2",
+                    "language_tag": "en_US",
+                    "marketplace_id": "ATVPDKIKX0DER"
+                  }
+                ],
+                "parentage_level": [
+                  {
+                    "value": "parent",
+                    "marketplace_id": "ATVPDKIKX0DER"
+                  }
+                ],
+                "variation_theme": [
+                  {
+                    "name": "NUMBER_OF_ITEMS"
+                  }
+                ],
+                "country_of_origin": [
+                  {
+                    "value": "AF",
+                    "marketplace_id": "ATVPDKIKX0DER"
+                  }
+                ],
+                "item_type_keyword": [
+                  {
+                    "value": "Keychains",
+                    "marketplace_id": "ATVPDKIKX0DER"
+                  }
+                ],
+                "product_description": [
+                  {
+                    "value": "Add a charming touch to your everyday essentials with this delightful wristlet key chain.",
+                    "language_tag": "en_US",
+                    "marketplace_id": "ATVPDKIKX0DER"
+                  }
+                ],
+                "merchant_suggested_asin": [
+                  {
+                    "value": "B0G1TC1KFH",
+                    "marketplace_id": "ATVPDKIKX0DER"
+                  }
+                ],
+                "main_product_image_locator": [
+                  {
+                    "marketplace_id": "ATVPDKIKX0DER",
+                    "media_location": "https://api-staging.categra.com/uploads/278/product/13820/fc9b1070-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                  }
+                ],
+                "swatch_product_image_locator": [
+                  {
+                    "marketplace_id": "ATVPDKIKX0DER",
+                    "media_location": "https://api-staging.categra.com/uploads/278/product/13820/256x256_fc9b1070-8cc6-11f1-9156-4bd0fee1ca81.jpg"
+                  }
+                ],
+                "child_parent_sku_relationship": [
+                  {
+                    "marketplace_id": "ATVPDKIKX0DER",
+                    "child_relationship_type": "variation"
+                  }
+                ],
+                "other_product_image_locator_1": [
+                  {
+                    "marketplace_id": "ATVPDKIKX0DER",
+                    "media_location": "https://api-staging.categra.com/uploads/278/product/13820/2099bc50-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                  }
+                ],
+                "other_product_image_locator_2": [
+                  {
+                    "marketplace_id": "ATVPDKIKX0DER",
+                    "media_location": "https://api-staging.categra.com/uploads/278/product/13820/211729b0-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                  }
+                ],
+                "other_product_image_locator_3": [
+                  {
+                    "marketplace_id": "ATVPDKIKX0DER",
+                    "media_location": "https://api-staging.categra.com/uploads/278/product/13820/2195cf90-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                  }
+                ],
+                "other_product_image_locator_4": [
+                  {
+                    "marketplace_id": "ATVPDKIKX0DER",
+                    "media_location": "https://api-staging.categra.com/uploads/278/product/13820/223e92b0-8cc8-11f1-9156-4bd0fee1ca81.jpg"
+                  }
+                ],
+                "other_product_image_locator_5": [
+                  {
+                    "marketplace_id": "ATVPDKIKX0DER",
+                    "media_location": "https://api-staging.categra.com/uploads/278/products/13820/094afb30-979b-11f1-9c70-f14124d42247.png"
+                  }
+                ],
+                "supplier_declared_dg_hz_regulation": [
+                  {
+                    "value": "storage",
+                    "marketplace_id": "ATVPDKIKX0DER"
+                  }
+                ],
+                "supplier_declared_has_product_identifier_exemption": [
+                  {
+                    "value": false,
+                    "marketplace_id": "ATVPDKIKX0DER"
+                  }
+                ]
+              },
+              "response": {
+                "header": {
+                  "feedId": "56242020690",
+                  "version": "2.0",
+                  "sellerId": "A13EDBEFHU3OJ1"
+                },
+                "issues": [],
+                "summary": {
+                  "errors": 0,
+                  "warnings": 0,
+                  "messagesInvalid": 0,
+                  "messagesAccepted": 1,
+                  "messagesProcessed": 1
+                }
+              },
+              "countryCode": "US"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "feedData": [
+    {
+      "sku": "225680023652",
+      "name": "US - Cute Fall Keychain Wristlet, Thick Embroidered Floral Keychain for Women, Car Key Chain Accessories",
+      "language": "en_CA",
+      "productId": 13820,
+      "variantId": null,
+      "batchIndex": 1,
+      "publishScope": {
+        "mode": "PARTIAL",
+        "selection": {
+          "media": true,
+          "pricing": true,
+          "attributes": {
+            "hierarchyIds": [1182735, 1182791, 1182848]
+          }
+        },
+        "amazonMarketplaceId": 1
+      },
+      "wrapperScope": {
+        "mode": "PARTIAL",
+        "selection": {
+          "media": true,
+          "pricing": true,
+          "attributes": {
+            "hierarchyIds": [1182735, 1182791, 1182848]
+          }
+        },
+        "amazonMarketplaceId": 1
+      },
+      "isVariantSync": false,
+      "marketplaceId": 1,
+      "skipParentMessage": false,
+      "externalMarketplaceId": "A2EUQ1WTGCTBG2",
+      "structureOnlyWrapperIds": [],
+      "productChannelMarketplaceId": 11808
+    },
+    {
+      "sku": "225680023652-V2",
+      "name": "Vintage Floral Wristlet Keychain for Women, Embroidered Fabric, Green and Cream Boho Short Lanyard for Keys",
+      "language": "en_CA",
+      "parentSku": "225680023652",
+      "productId": 13820,
+      "variantId": "47312",
+      "wrapperId": "7356",
+      "batchIndex": 1,
+      "publishScope": {
+        "mode": "PARTIAL",
+        "selection": {
+          "miscTypes": ["AMAZON_CATEGORY"],
+          "variantId": 47312,
+          "attributes": {
+            "hierarchyIds": [1182798]
+          }
+        },
+        "amazonMarketplaceId": 1
+      },
+      "isVariantSync": false,
+      "marketplaceId": 1,
+      "externalMarketplaceId": "A2EUQ1WTGCTBG2",
+      "productChannelMarketplaceId": 11808
+    },
+    {
+      "sku": "225680023652-V5",
+      "name": "Decorative Fabric Wristlet Keychain with Leaf Pattern, Wrist Key Chain with Gold Hardware, Green and Cream",
+      "language": "en_CA",
+      "parentSku": "225680023652",
+      "productId": 13820,
+      "variantId": "47313",
+      "wrapperId": "7356",
+      "batchIndex": 1,
+      "publishScope": {
+        "mode": "PARTIAL",
+        "selection": {
+          "media": true,
+          "pricing": true,
+          "variantId": 47313,
+          "attributes": {
+            "hierarchyIds": [1182798]
+          }
+        },
+        "amazonMarketplaceId": 1
+      },
+      "isVariantSync": false,
+      "marketplaceId": 1,
+      "externalMarketplaceId": "A2EUQ1WTGCTBG2",
+      "productChannelMarketplaceId": 11808
+    },
+    {
+      "sku": "225680023652-V3",
+      "name": "Cute Fall Keychain Wristlet, Thick Embroidered Floral Keychain for Women, Car Key Chain Accessories",
+      "language": "en_CA",
+      "parentSku": "225680023652",
+      "productId": 13820,
+      "variantId": "47314",
+      "wrapperId": "7356",
+      "batchIndex": 2,
+      "publishScope": {
+        "mode": "PARTIAL",
+        "selection": {
+          "pricing": true,
+          "miscTypes": ["AMAZON_CATEGORY"],
+          "variantId": 47314,
+          "attributes": {
+            "hierarchyIds": [1182798]
+          }
+        },
+        "amazonMarketplaceId": 1
+      },
+      "isVariantSync": false,
+      "marketplaceId": 1,
+      "externalMarketplaceId": "A2EUQ1WTGCTBG2",
+      "productChannelMarketplaceId": 11808
+    },
+    {
+      "sku": "225680023652-V4",
+      "name": "Celestial Keychain Wristlet, Sun Moon Stars Design, Black and Gold Fabric Wrist Key Chain with Metal Hardware",
+      "language": "en_CA",
+      "parentSku": "225680023652",
+      "productId": 13820,
+      "variantId": "47315",
+      "wrapperId": "7356",
+      "batchIndex": 2,
+      "publishScope": {
+        "mode": "PARTIAL",
+        "selection": {
+          "media": true,
+          "variantId": 47315,
+          "attributes": {
+            "hierarchyIds": [1182798]
+          }
+        },
+        "amazonMarketplaceId": 1
+      },
+      "isVariantSync": false,
+      "marketplaceId": 1,
+      "externalMarketplaceId": "A2EUQ1WTGCTBG2",
+      "productChannelMarketplaceId": 11808
+    },
+    {
+      "sku": "225680023652-V1",
+      "name": "CELOKIY Floral Embroidered Fabric Wristlet Keychain, Vintage Style Wrist Key Chain Women with Brass Hardware",
+      "language": "en_CA",
+      "parentSku": "225680023652",
+      "productId": 13820,
+      "variantId": "47316",
+      "wrapperId": "7356",
+      "batchIndex": 2,
+      "publishScope": {
+        "mode": "PARTIAL",
+        "selection": {
+          "pricing": true,
+          "variantId": 47316,
+          "attributes": {
+            "hierarchyIds": [1182798]
+          }
+        },
+        "amazonMarketplaceId": 1
+      },
+      "isVariantSync": false,
+      "marketplaceId": 1,
+      "externalMarketplaceId": "A2EUQ1WTGCTBG2",
+      "productChannelMarketplaceId": 11808
+    },
+    {
+      "sku": "225680023652",
+      "name": "US - Cute Fall Keychain Wristlet, Thick Embroidered Floral Keychain for Women, Car Key Chain Accessories",
+      "language": "en_US",
+      "productId": 13820,
+      "variantId": null,
+      "batchIndex": 3,
+      "publishScope": {
+        "mode": "PARTIAL",
+        "selection": {
+          "media": true,
+          "miscTypes": ["AMAZON_CATEGORY"],
+          "attributes": {
+            "attributeIds": [643752, 643753],
+            "hierarchyIds": [1183042, 1182918, 1183027, 1182897]
+          }
+        },
+        "amazonMarketplaceId": 2
+      },
+      "wrapperScope": {
+        "mode": "PARTIAL",
+        "selection": {
+          "media": true,
+          "miscTypes": ["AMAZON_CATEGORY"],
+          "attributes": {
+            "attributeIds": [643752, 643753],
+            "hierarchyIds": [1183042, 1182918, 1183027, 1182897]
+          }
+        },
+        "amazonMarketplaceId": 2
+      },
+      "isVariantSync": false,
+      "marketplaceId": 2,
+      "skipParentMessage": false,
+      "externalMarketplaceId": "ATVPDKIKX0DER",
+      "structureOnlyWrapperIds": [7667],
+      "productChannelMarketplaceId": 11809
+    },
+    {
+      "sku": "225680023652-V2",
+      "name": "Vintage Floral Wristlet Keychain for Women, Embroidered Fabric, Green and Cream Boho Short Lanyard for Keys",
+      "language": "en_US",
+      "parentSku": "225680023652",
+      "productId": 13820,
+      "variantId": "47312",
+      "wrapperId": "7357",
+      "batchIndex": 3,
+      "publishScope": {
+        "mode": "PARTIAL",
+        "selection": {
+          "miscTypes": ["AMAZON_CONDITION_TYPE"],
+          "variantId": 47312
+        },
+        "amazonMarketplaceId": 2
+      },
+      "isVariantSync": false,
+      "marketplaceId": 2,
+      "externalMarketplaceId": "ATVPDKIKX0DER",
+      "productChannelMarketplaceId": 11809
+    },
+    {
+      "sku": "225680023652-V5",
+      "name": "Decorative Fabric Wristlet Keychain with Leaf Pattern, Wrist Key Chain with Gold Hardware, Green and Cream",
+      "language": "en_US",
+      "parentSku": "225680023652",
+      "productId": 13820,
+      "variantId": "47313",
+      "wrapperId": "7357",
+      "batchIndex": 3,
+      "publishScope": {
+        "mode": "PARTIAL",
+        "selection": {
+          "media": true,
+          "pricing": true,
+          "miscTypes": ["AMAZON_CONDITION_TYPE", "AMAZON_SHIPPING_TEMPLATE"],
+          "variantId": 47313
+        },
+        "amazonMarketplaceId": 2
+      },
+      "isVariantSync": false,
+      "marketplaceId": 2,
+      "externalMarketplaceId": "ATVPDKIKX0DER",
+      "productChannelMarketplaceId": 11809
+    },
+    {
+      "sku": "225680023652-V4",
+      "name": "Celestial Keychain Wristlet, Sun Moon Stars Design, Black and Gold Fabric Wrist Key Chain with Metal Hardware",
+      "language": "en_US",
+      "parentSku": "225680023652",
+      "productId": 13820,
+      "variantId": "47315",
+      "wrapperId": "7667",
+      "batchIndex": 4,
+      "publishScope": {
+        "mode": "PARTIAL",
+        "selection": {
+          "media": true,
+          "miscTypes": ["AMAZON_SHIPPING_TEMPLATE"],
+          "variantId": 47315,
+          "variantStructure": true
+        },
+        "amazonMarketplaceId": 2
+      },
+      "isVariantSync": false,
+      "marketplaceId": 2,
+      "externalMarketplaceId": "ATVPDKIKX0DER",
+      "productChannelMarketplaceId": 11809
+    }
+  ],
+  "startedAt": "2026-08-25T04:47:55.167Z",
+  "amazonFeeds": [
+    {
+      "feedId": "56239020690",
+      "status": "CREATED",
+      "createdAt": "2026-08-25T04:49:45.206Z",
+      "messageIds": [106600, 811540],
+      "marketplaceId": "A2EUQ1WTGCTBG2",
+      "feedDocumentId": "amzn1.tortuga.4.na.d079555e-5a6d-4155-bfe2-acbafc1c27a0.T1UUJO85QUQAL"
+    },
+    {
+      "feedId": "56240020690",
+      "status": "CREATED",
+      "createdAt": "2026-08-25T04:50:33.139Z",
+      "messageIds": [560818, 423303, 930770],
+      "marketplaceId": "A2EUQ1WTGCTBG2",
+      "feedDocumentId": "amzn1.tortuga.4.na.d769d3e5-c58a-4111-83f5-84593724ba74.T16ZO5QQ03BNCN"
+    },
+    {
+      "feedId": "56241020690",
+      "status": "CREATED",
+      "createdAt": "2026-08-25T04:51:14.875Z",
+      "messageIds": [67725, 195649],
+      "marketplaceId": "ATVPDKIKX0DER",
+      "feedDocumentId": "amzn1.tortuga.4.na.6c2c5c30-27c1-4a15-a521-0108d03885ab.T2BDAGEVJXT6N4"
+    },
+    {
+      "feedId": "56242020690",
+      "status": "CREATED",
+      "createdAt": "2026-08-25T04:51:56.678Z",
+      "messageIds": [371309],
+      "marketplaceId": "ATVPDKIKX0DER",
+      "feedDocumentId": "amzn1.tortuga.4.na.4de0c48b-f282-4b49-8aa0-3b159e83d687.T3NHG5ALIS1IP2"
+    },
+    {
+      "feedId": "56242020690",
+      "status": "RESULT_DOCUMENT_READY",
+      "processedAt": "2026-08-25T04:56:23.237Z",
+      "processingStatus": "DONE",
+      "resultFeedDocumentId": "amzn1.tortuga.4.na.46504715-cbf2-4242-aba1-9b1989cf29aa.T1USOBKZ0EATNP"
+    },
+    {
+      "feedId": "56241020690",
+      "status": "RESULT_DOCUMENT_READY",
+      "processedAt": "2026-08-25T05:12:14.549Z",
+      "processingStatus": "DONE",
+      "resultFeedDocumentId": "amzn1.tortuga.4.na.278b8bad-9621-462a-861a-f2a99f8b2b98.T3583EWQED5851"
+    },
+    {
+      "feedId": "56239020690",
+      "status": "RESULT_DOCUMENT_READY",
+      "processedAt": "2026-08-25T05:12:33.427Z",
+      "processingStatus": "DONE",
+      "resultFeedDocumentId": "amzn1.tortuga.4.na.5a9434bc-9843-45ba-9b6c-f5c4ca5c7ffc.T3TWOCAGDHG3P7"
+    },
+    {
+      "feedId": "56240020690",
+      "status": "RESULT_DOCUMENT_READY",
+      "processedAt": "2026-08-25T05:13:19.851Z",
+      "processingStatus": "DONE",
+      "resultFeedDocumentId": "amzn1.tortuga.4.na.f6cdbf88-48a6-4866-9126-843d3d2c2633.T933M422OT9UD"
+    }
+  ],
+  "environment": "development",
+  "currentQueue": "Forward-sync-get-feed-document",
+  "amazonListingStateRefreshes": [
+    {
+      "sku": "225680023652-V4",
+      "asin": "B0G1T4Q97H",
+      "type": "AMAZON_LISTING_STATE_REFRESH",
+      "error": null,
+      "reason": null,
+      "source": "FEED_PROCESSING_DONE",
+      "channelId": "481",
+      "persisted": true,
+      "productId": 13820,
+      "refreshed": true,
+      "variantId": "47315",
+      "recordedAt": "2026-08-25T04:56:25.725Z",
+      "issuesCount": 1,
+      "warningCode": null,
+      "marketplaceId": "ATVPDKIKX0DER",
+      "externalStatus": ["DISCOVERABLE"],
+      "amazonChannelId": "207",
+      "submissionStatus": "ACCEPTED",
+      "verificationStatus": "VERIFIED",
+      "amazonMarketplaceId": 2,
+      "productChannelMarketplaceId": 11809
+    },
+    {
+      "sku": "225680023652-V2",
+      "asin": "B0G1T38W1N",
+      "type": "AMAZON_LISTING_STATE_REFRESH",
+      "error": null,
+      "reason": null,
+      "source": "FEED_PROCESSING_DONE",
+      "channelId": "481",
+      "persisted": true,
+      "productId": 13820,
+      "refreshed": true,
+      "variantId": "47312",
+      "recordedAt": "2026-08-25T05:12:17.295Z",
+      "issuesCount": 5,
+      "warningCode": null,
+      "marketplaceId": "ATVPDKIKX0DER",
+      "externalStatus": ["DISCOVERABLE"],
+      "amazonChannelId": "207",
+      "submissionStatus": "ACCEPTED",
+      "verificationStatus": "VERIFIED",
+      "amazonMarketplaceId": 2,
+      "productChannelMarketplaceId": 11809
+    },
+    {
+      "sku": "225680023652-V5",
+      "asin": "B0G1T4XNH8",
+      "type": "AMAZON_LISTING_STATE_REFRESH",
+      "error": null,
+      "reason": null,
+      "source": "FEED_PROCESSING_DONE",
+      "channelId": "481",
+      "persisted": true,
+      "productId": 13820,
+      "refreshed": true,
+      "variantId": "47313",
+      "recordedAt": "2026-08-25T05:12:19.276Z",
+      "issuesCount": 1,
+      "warningCode": null,
+      "marketplaceId": "ATVPDKIKX0DER",
+      "externalStatus": ["DISCOVERABLE"],
+      "amazonChannelId": "207",
+      "submissionStatus": "ACCEPTED",
+      "verificationStatus": "VERIFIED",
+      "amazonMarketplaceId": 2,
+      "productChannelMarketplaceId": 11809
+    },
+    {
+      "sku": "225680023652-V2",
+      "asin": null,
+      "type": "AMAZON_LISTING_STATE_REFRESH",
+      "error": {
+        "message": "Request failed with status code 429"
+      },
+      "reason": "listing_fetch_failed",
+      "source": "FEED_PROCESSING_DONE",
+      "channelId": "481",
+      "persisted": false,
+      "productId": 13820,
+      "refreshed": false,
+      "variantId": "47312",
+      "recordedAt": "2026-08-25T05:12:35.088Z",
+      "issuesCount": null,
+      "warningCode": "AMAZON_LISTING_STATE_REFRESH_NOT_VERIFIED",
+      "marketplaceId": "A2EUQ1WTGCTBG2",
+      "externalStatus": null,
+      "amazonChannelId": "207",
+      "submissionStatus": "ACCEPTED",
+      "verificationStatus": "UNVERIFIED",
+      "amazonMarketplaceId": 1,
+      "productChannelMarketplaceId": 11808
+    },
+    {
+      "sku": "225680023652-V5",
+      "asin": "B0G1T4XNH8",
+      "type": "AMAZON_LISTING_STATE_REFRESH",
+      "error": null,
+      "reason": null,
+      "source": "FEED_PROCESSING_DONE",
+      "channelId": "481",
+      "persisted": true,
+      "productId": 13820,
+      "refreshed": true,
+      "variantId": "47313",
+      "recordedAt": "2026-08-25T05:12:36.689Z",
+      "issuesCount": 1,
+      "warningCode": null,
+      "marketplaceId": "A2EUQ1WTGCTBG2",
+      "externalStatus": ["DISCOVERABLE"],
+      "amazonChannelId": "207",
+      "submissionStatus": "ACCEPTED",
+      "verificationStatus": "VERIFIED",
+      "amazonMarketplaceId": 1,
+      "productChannelMarketplaceId": 11808
+    },
+    {
+      "sku": "225680023652-V3",
+      "asin": "B0G1T4QT6X",
+      "type": "AMAZON_LISTING_STATE_REFRESH",
+      "error": null,
+      "reason": null,
+      "source": "FEED_PROCESSING_DONE",
+      "channelId": "481",
+      "persisted": true,
+      "productId": 13820,
+      "refreshed": true,
+      "variantId": "47314",
+      "recordedAt": "2026-08-25T05:13:22.467Z",
+      "issuesCount": 2,
+      "warningCode": null,
+      "marketplaceId": "A2EUQ1WTGCTBG2",
+      "externalStatus": ["DISCOVERABLE"],
+      "amazonChannelId": "207",
+      "submissionStatus": "ACCEPTED",
+      "verificationStatus": "VERIFIED",
+      "amazonMarketplaceId": 1,
+      "productChannelMarketplaceId": 11808
+    },
+    {
+      "sku": "225680023652-V4",
+      "asin": null,
+      "type": "AMAZON_LISTING_STATE_REFRESH",
+      "error": {
+        "message": "Request failed with status code 429"
+      },
+      "reason": "listing_fetch_failed",
+      "source": "FEED_PROCESSING_DONE",
+      "channelId": "481",
+      "persisted": false,
+      "productId": 13820,
+      "refreshed": false,
+      "variantId": "47315",
+      "recordedAt": "2026-08-25T05:13:23.785Z",
+      "issuesCount": null,
+      "warningCode": "AMAZON_LISTING_STATE_REFRESH_NOT_VERIFIED",
+      "marketplaceId": "A2EUQ1WTGCTBG2",
+      "externalStatus": null,
+      "amazonChannelId": "207",
+      "submissionStatus": "ACCEPTED",
+      "verificationStatus": "UNVERIFIED",
+      "amazonMarketplaceId": 1,
+      "productChannelMarketplaceId": 11808
+    },
+    {
+      "sku": "225680023652-V1",
+      "asin": null,
+      "type": "AMAZON_LISTING_STATE_REFRESH",
+      "error": {
+        "message": "Request failed with status code 429"
+      },
+      "reason": "listing_fetch_failed",
+      "source": "FEED_PROCESSING_DONE",
+      "channelId": "481",
+      "persisted": false,
+      "productId": 13820,
+      "refreshed": false,
+      "variantId": "47316",
+      "recordedAt": "2026-08-25T05:13:24.914Z",
+      "issuesCount": null,
+      "warningCode": "AMAZON_LISTING_STATE_REFRESH_NOT_VERIFIED",
+      "marketplaceId": "A2EUQ1WTGCTBG2",
+      "externalStatus": null,
+      "amazonChannelId": "207",
+      "submissionStatus": "ACCEPTED",
+      "verificationStatus": "UNVERIFIED",
+      "amazonMarketplaceId": 1,
+      "productChannelMarketplaceId": 11808
+    }
+  ],
+  "Forward-sync-get-feed-document": {
+    "retryCount": 0
+  },
+  "Forward-sync-variation-theme-product": {
+    "retryCount": 0
+  }
+}

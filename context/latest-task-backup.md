@@ -3,9 +3,9 @@
 Task 1: Within amazon FS batches, pass necessary thing in case of 'op' is 'delete'
 
 ### Context
- 
+
 api\apps\api-main\src\modules\app\sync\syncing\productSyncing\incremental\partialPayloadScope.service.ts -> buildScopedPatches, buildPatchOperations, buildFeedMessageBody
-api\apps\api-main\src\modules\app\sync\syncing\productSyncing\amazon\forwardsync\amazonProductFSQ1.service.ts -> syncStandAloneProductToMarketplace
+api\apps\api-main\src\modules\app\sync\syncing\productSyncing\amazon\forwardsync\amazonProductFSQ1.service.ts -> processAmazonProductPublishDirectQ1
 api\apps\api-main\src\modules\app\sync\syncing\productSyncing\amazon\forwardsync\amazonProductFSQ1.service.ts
 api\apps\api-main\src\modules\app\sync\syncing\productSyncing\amazon\forwardsync\amazonProductVariantFS.service.ts
 
