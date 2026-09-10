@@ -1,21 +1,21 @@
 ## api repo only
 
-Task 1: Within amazon FS batches, pass necessary thing in case of 'op' is 'delete'
+Task 1: Execute requested Findings and improvements as per following current constraints from file QUEUE4-BACKWARD-SYNC-PERFORMANCE-ANALYSIS.md
+
+## Description
+
+- Execute points: F, G, I, J, K
 
 ### Context
 
-api\apps\api-main\src\modules\app\sync\syncing\productSyncing\incremental\partialPayloadScope.service.ts -> buildScopedPatches, buildPatchOperations, buildFeedMessageBody
-api\apps\api-main\src\modules\app\sync\syncing\productSyncing\amazon\forwardsync\amazonProductFSQ1.service.ts -> processAmazonProductPublishDirectQ1
-api\apps\api-main\src\modules\app\sync\syncing\productSyncing\amazon\forwardsync\amazonProductFSQ1.service.ts
-api\apps\api-main\src\modules\app\sync\syncing\productSyncing\amazon\forwardsync\amazonProductVariantFS.service.ts
-
 ### Constraints
 
-- A single key within the payload contains an array of objects, within each object it may have 'marketplace_id' and may have 'language_tag' and other data keys which are dynamic
+- For G: You don't pass product ids or variant ids as the intention itself is to find such errors which have SKUs but don't have product ids, so you pass the accumulated SKUs exist into current batch so that the find scope narrows down
 
-- Currently in case of op is 'delete', you're not passing any 'value' key unlike op as 'replace', which is causing issue, here is how you resolve that:
-  - for a single patch, whenever op is 'delete', you need to pass the 'value' key as well but within each array of object, you pass (marketplace_id if schema has it and language_tag if schema has it) no those dynamic keys should be passed
-  - For every delete operation you must need to do that because omitting 'value' field is not working
-- Make sure the existing full publish flow doesn't break at all the change should be done at a consistent and specific places
+- For I: treat as a common solution for this query, for that use utility functions if needed and remove previous utility functions if they are unused now
 
-- At any point if there is a strong need for single or multiple clarifications then you must ask for it rather than implementing purely on assumptions
+- For J: You just create necessary migrations as per the repo conventions and scripts but don't execute them, leave the execution to me
+
+- For K: Only do this task if the function is used within local file and other places (only if those other places fetch base language or necessary things or can fetch without causing any problem) otherwise keep the fetching isolated, and while passing base language to anywhere use the convention as 'baseLanguageCode'
+
+- At any point if there is a little need for single or multiple clarifications then you must ask for it rather than implementing purely on assumptions
