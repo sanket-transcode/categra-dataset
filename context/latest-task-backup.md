@@ -1,21 +1,17 @@
-## api repo only
+## webapp and api and db-migrations repo only
 
-Task 1: Execute requested Findings and improvements as per following current constraints from file QUEUE4-BACKWARD-SYNC-PERFORMANCE-ANALYSIS.md
+Task 1: cleanup requested things and the wherever they are used at the whole codebase and in webapp side also
 
-## Description
+### Description
 
-- Execute points: F, G, I, J, K
+- remove is_inherited from tbl_attribute_translations
+- remove history module + service, product-history.service.ts and related code as history module is a legacy module not used anymore
+- remove complete live-insight module from BE, its controller and service everything related to it but first ensure no route mentioned there is being used at webapp side
 
 ### Context
 
 ### Constraints
 
-- For G: You don't pass product ids or variant ids as the intention itself is to find such errors which have SKUs but don't have product ids, so you pass the accumulated SKUs exist into current batch so that the find scope narrows down
-
-- For I: treat as a common solution for this query, for that use utility functions if needed and remove previous utility functions if they are unused now
-
-- For J: You just create necessary migrations as per the repo conventions and scripts but don't execute them, leave the execution to me
-
-- For K: Only do this task if the function is used within local file and other places (only if those other places fetch base language or necessary things or can fetch without causing any problem) otherwise keep the fetching isolated, and while passing base language to anywhere use the convention as 'baseLanguageCode'
+- Create migration files for them but don't actually execute them
 
 - At any point if there is a little need for single or multiple clarifications then you must ask for it rather than implementing purely on assumptions
