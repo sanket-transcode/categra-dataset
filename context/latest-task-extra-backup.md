@@ -1,21 +1,21 @@
-## api & if required then webapp repo only
+## api & webapp repo only
 
-Task 1: Do requested changes
+Task 1: within channels tab, do the correct calculation of readiness and return in consistent manner from API side, and render correctly into UI as per the given standards
 
 ### Description
 
-- Remove creating these 3 legacy primary attributes: Stock, Price, Category
-
-- Those shouldn't be treated as primary attributes from now, they are separately managed on their own entities or within supporting entities
-
-- Remove those code and implementation wherever they are being used and treated as primary attributes
-
-- Whichever attributes are already created for those, do not do anything for them, you just care about future so do the code level change only, no entity level or actual records deletion
-
-- In case changes required in webapp then do that
+- Figure out from which API, all channels (master and non master channels within webapp\src\app\(index)\(menu-layout)\products\[product]\_components\channels\channels-tab.tsx) is coming, within that for each kind of channel the calculation should be the same way as the referenced task md
+  - Here in channel's tab we care about the parent product values only (explicitly variant id as null in DB queries)
+  - For master, amazon and shopify, all those channel level readiness will show cursor pointer on hover show all languages readiness the same wasy as the referenced task describes
+- For amazon only, there are readiness coming for active marketplace wise also, so there also the calculation should be returned correctly: /product-channel/get-product-channel-data
+  - Here there will be a single value only so no cursor pointer and hover on UI (parent + amazon channel + corresponding active market language)
 
 ### Context
 
+- webapp\src\app\(index)\(menu-layout)\products\[product]\_components\channels\channels-tab.tsx and descendents
+
 ### Constraints
+
+- Apart from the strict overwrites for this task, the readiness rules will be the same as categra-dataset\context\latest-task.md
 
 - At any point if there is a strong need for single or multiple clarifications then you must ask for it rather than implementing purely on assumptions
