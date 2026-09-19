@@ -1,17 +1,16 @@
 ## api & webapp repo only
 
-Task 1: Investigate two features against the provided constraints and if found any bugs then fix them in between
+Task 1: For amazon, if we try to enable variant into a wrapper and it opens the edit dialog but with action 'save and activate', so at that time you pre-populate the amazon category from the parent product assigned amazon category (if there)
 
 ### Description
 
-- 1st: In case of clicking 'Retry {count} Failed Products', into the API
-  - it should retry 
-- Whatever records provides a 'Retry' button, on clicking that into API:
-  - 
+- For getting parent category (if it is not received by default from anywhere), it should be included within get product setting api, remember it also follows the similar item type keyword OR normal id based approach so handle according to that 
 
 ### Context
 
-- webapp\src\app\(index)\(menu-layout)\products\_components\errorListing\errorListingDialog.tsx
+- webapp\src\app\(index)\(menu-layout)\products\[product]\_components\variants\_lib\variants-table-renderer.tsx
+
+- webapp\src\app\(index)\(menu-layout)\products\[product]\_components\variants\_components\edit-variant.tsx
 
 ### Constraints
 

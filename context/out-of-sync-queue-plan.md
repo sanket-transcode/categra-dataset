@@ -4,19 +4,19 @@ Status: **plan only, nothing implemented yet.** Written 2026-09-16.
 
 ## 0. Decisions already taken (with the user)
 
-| # | Decision | Choice |
-|---|---|---|
-| D1 | Queue count | **One queue** `sync-baseline-out-of-sync`, `baselineType` discriminator in the payload, one processor dispatching to the six existing services |
-| D2 | Transaction safety | **`afterCommit` only** — when the caller passes a `transaction`, the job is enqueued in `transaction.afterCommit(...)`; no fixed delay; callers without a transaction enqueue immediately |
-| D3 | Dedup / ordering | **None.** Every trigger = one job. No shared job ids, no per-product lock. Each service keeps its own transaction (as today) |
-| D4 | awaitCompletion | **Not supported.** All call sites become fire-and-forget; UI relies on the existing socket events |
-| D5 | `req` inside the job | Minimal `{ user: { id, accountId } }` (same as readiness). Verified: `BaseService` only reads `req.user.id` / `req.user.accountId`; `logError` tolerates a bare req; the six services + `SyncBaselineService` only read `req.user.id` / `req.user.accountId` |
-| D6 | Failure policy | **1 attempt, log only.** `removeOnComplete: true`, `removeOnFail: 200`. Final failure is logged at error level in `BaseQueueProcessor.handleJobFailed` (same branch style as `EMAIL_QUEUE`) |
-| D7 | Webapp | Audit only; patch only if a flow would read stale sync status. Audit result in §8: **no webapp change required** |
-| D8 | Naming | Queue `GlobalEnums.QueueNames.SYNC_BASELINE_OUT_OF_SYNC = 'sync-baseline-out-of-sync'`; trigger in `sync/baselines/sync-baseline/trigger/`; processor `sync/queue/processors/sync-baseline.processor.ts` |
-| D9 | Subscription capability | None (`getRequiredCapabilityForJob` default `null`) — same as readiness |
-| D10 | Concurrency | `QUEUE_CONCURRENCY[...SYNC_BASELINE_OUT_OF_SYNC] = 10` (readiness uses 20; baseline jobs are heavier per job: multi-table upserts + socket emit) |
-| D11 | `queue_config` DB row | Not added (would need `db-migrations`, out of scope). `getOrCreateQueue` falls back to `DEFAULT_JOB_OPTIONS`; readiness runs the same way today |
+| #   | Decision                | Choice                                                                                                                                                                                                                                                       |
+| --- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| D1  | Queue count             | **One queue** `sync-baseline-out-of-sync`, `baselineType` discriminator in the payload, one processor dispatching to the six existing services                                                                                                               |
+| D2  | Transaction safety      | **`afterCommit` only** — when the caller passes a `transaction`, the job is enqueued in `transaction.afterCommit(...)`; no fixed delay; callers without a transaction enqueue immediately                                                                    |
+| D3  | Dedup / ordering        | **None.** Every trigger = one job. No shared job ids, no per-product lock. Each service keeps its own transaction (as today)                                                                                                                                 |
+| D4  | awaitCompletion         | **Not supported.** All call sites become fire-and-forget; UI relies on the existing socket events                                                                                                                                                            |
+| D5  | `req` inside the job    | Minimal `{ user: { id, accountId } }` (same as readiness). Verified: `BaseService` only reads `req.user.id` / `req.user.accountId`; `logError` tolerates a bare req; the six services + `SyncBaselineService` only read `req.user.id` / `req.user.accountId` |
+| D6  | Failure policy          | **1 attempt, log only.** `removeOnComplete: true`, `removeOnFail: 200`. Final failure is logged at error level in `BaseQueueProcessor.handleJobFailed` (same branch style as `EMAIL_QUEUE`)                                                                  |
+| D7  | Webapp                  | Audit only; patch only if a flow would read stale sync status. Audit result in §8: **no webapp change required**                                                                                                                                             |
+| D8  | Naming                  | Queue `GlobalEnums.QueueNames.SYNC_BASELINE_OUT_OF_SYNC = 'sync-baseline-out-of-sync'`; trigger in `sync/baselines/sync-baseline/trigger/`; processor `sync/queue/processors/sync-baseline.processor.ts`                                                     |
+| D9  | Subscription capability | None (`getRequiredCapabilityForJob` default `null`) — same as readiness                                                                                                                                                                                      |
+| D10 | Concurrency             | `QUEUE_CONCURRENCY[...SYNC_BASELINE_OUT_OF_SYNC] = 10` (readiness uses 20; baseline jobs are heavier per job: multi-table upserts + socket emit)                                                                                                             |
+| D11 | `queue_config` DB row   | Not added (would need `db-migrations`, out of scope). `getOrCreateQueue` falls back to `DEFAULT_JOB_OPTIONS`; readiness runs the same way today                                                                                                              |
 
 ---
 
@@ -24,16 +24,16 @@ Status: **plan only, nothing implemented yet.** Written 2026-09-16.
 
 Six services under `api/apps/api-main/src/modules/app/sync/baselines/` each expose one inline entry point that is called directly from mutation code paths, on the api-main request thread:
 
-| Baseline type | Service | Entry point | Payload today |
-|---|---|---|---|
-| `ATTRIBUTE` | `AttributeSyncBaselineService` | `processAttributeOutOfSync(req, changedAttributes: Record<pagId, Partial<ProductAttribute>[]>, oldAttributes: Partial<ProductAttribute>[])` | plain objects (built by callers) |
-| `VARIANT_ATTRIBUTE` | `VariantAttributeSyncBaselineService` | `processVariantAttributeOutOfSync(req, { changedRecords, oldRecords }: VariantAttributeSyncOutOfSyncRecord[])` | plain |
-| `VARIANT_STRUCTURE` | `VariantStructureBaselineService` | `processVariantStructureOutOfSync(req, { records: VariantStructureOutOfSyncRecord[] })` | plain |
-| `PRODUCT_MEDIA` | `ProductMediaSyncBaselineService` | `processProductMediaOutOfSync({ req, productId, variantId, channelId, wasInherited, oldMediaRecords: Partial<ProductMediaLinker>[] })` | `oldMediaRecords` come from `getMediaLinkersWithInheritanceStatus` → **Sequelize instances** |
-| `MISC` | `MiscSyncBaselineService` | `processMiscSyncOutOfSync(req, { records: MiscSyncBaselineOutOfSyncRecord[] })` | plain |
-| `PRICE` | `PriceSyncBaselineService` | `processPriceOutOfSync(req, body, productChannelMarketplace?: ProductChannelMarketplace, productChannel?: ProductChannel)` | `body` plain; **PCM / PC are Sequelize instances** |
+| Baseline type       | Service                               | Entry point                                                                                                                                 | Payload today                                                                                |
+| ------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `ATTRIBUTE`         | `AttributeSyncBaselineService`        | `processAttributeOutOfSync(req, changedAttributes: Record<pagId, Partial<ProductAttribute>[]>, oldAttributes: Partial<ProductAttribute>[])` | plain objects (built by callers)                                                             |
+| `VARIANT_ATTRIBUTE` | `VariantAttributeSyncBaselineService` | `processVariantAttributeOutOfSync(req, { changedRecords, oldRecords }: VariantAttributeSyncOutOfSyncRecord[])`                              | plain                                                                                        |
+| `VARIANT_STRUCTURE` | `VariantStructureBaselineService`     | `processVariantStructureOutOfSync(req, { records: VariantStructureOutOfSyncRecord[] })`                                                     | plain                                                                                        |
+| `PRODUCT_MEDIA`     | `ProductMediaSyncBaselineService`     | `processProductMediaOutOfSync({ req, productId, variantId, channelId, wasInherited, oldMediaRecords: Partial<ProductMediaLinker>[] })`      | `oldMediaRecords` come from `getMediaLinkersWithInheritanceStatus` → **Sequelize instances** |
+| `MISC`              | `MiscSyncBaselineService`             | `processMiscSyncOutOfSync(req, { records: MiscSyncBaselineOutOfSyncRecord[] })`                                                             | plain                                                                                        |
+| `PRICE`             | `PriceSyncBaselineService`            | `processPriceOutOfSync(req, body, productChannelMarketplace?: ProductChannelMarketplace, productChannel?: ProductChannel)`                  | `body` plain; **PCM / PC are Sequelize instances**                                           |
 
-All six: open their own `sequelize.transaction()`, upsert/delete baseline rows, flip `syncStatus` on PC/VC/PCM/VM, call `SyncBaselineService.restoreInSyncForClearedScopes` / `getScopeStatusChanges` / `emitSyncStatusScopes`, and emit `*_SYNC_BASELINES_UPDATED` via `SocketService.emitToAgainstAccountId` (which already relays through the Redis microservice when running inside api-worker, so worker-side emission works with no change).
+All six: open their own `sequelize.transaction()`, upsert/delete baseline rows, flip `syncStatus` on PC/VC/PCM/VM, call `SyncBaselineService.reconcileSyncStatus` / `getScopeStatusChanges` / `emitSyncStatusScopes`, and emit `*_SYNC_BASELINES_UPDATED` via `SocketService.emitToAgainstAccountId` (which already relays through the Redis microservice when running inside api-worker, so worker-side emission works with no change).
 
 Pattern to mirror: `ReadinessTriggerService` (`catalog/products/readiness/trigger/readiness-trigger.service.ts`) → `QueueService.addJob({ type, accountId, userId, data })` → `ReadinessRecalculationProcessor extends BaseQueueProcessor` → `ReadinessExecutorService.run(...)`.
 
@@ -41,32 +41,32 @@ Pattern to mirror: `ReadinessTriggerService` (`catalog/products/readiness/trigge
 
 Legend: **TX-open** = called while the caller's transaction is still open (needs `transaction` passed → `afterCommit`); **after-commit** = called after `transaction.commit()` or with no transaction (enqueue immediately); **awaited** = caller currently `await`s the result.
 
-| File | Line | Type | Today | Migration |
-|---|---|---|---|---|
-| `catalog/products/lifecycle/update-details.service.ts` | 448 | MISC | after-commit | immediate |
-| same | 870 | ATTRIBUTE | after-commit | immediate |
-| same | 1096 | ATTRIBUTE | after-commit | immediate |
-| same | 1443 | MISC | **TX-open** (commit at 1472) | pass `transaction` |
-| same | 1926 | ATTRIBUTE | **TX-open** (commit at 1937, may be `externalTransaction`) | pass `transaction` (afterCommit fires when the owning tx commits, external or not) |
-| `catalog/products/listings/product-channel.service.ts` | 2890 | ATTRIBUTE | after-commit, **awaited**, in try/catch | immediate, drop `await` + try/catch (trigger never throws) |
-| same | 3163 | ATTRIBUTE | after-commit (UpdateMarketplaceDetail commits at 4808), **awaited** | immediate, drop `await` + try/catch |
-| same | 3748 | MISC | **TX-open** (`handleAmazonProductChannelDetails(..., transaction?)`, committed by caller at 2886) | pass `transaction` (may be undefined → immediate) |
-| same | 5119 | MISC | after-commit | immediate |
-| `catalog/products/shopifyProduct/shopify-product.service.ts` | 2407 | ATTRIBUTE | no tx | immediate |
-| `catalog/products/product.service.ts` | 8233 | PRODUCT_MEDIA | no tx | immediate |
-| same | 8359, 8538, 8760, 9244, 17174 | PRODUCT_MEDIA | after-commit | immediate |
-| same | 12514, 12524 | PRODUCT_MEDIA | no tx | immediate |
-| same | 10521 | VARIANT_STRUCTURE | after-commit | immediate |
-| same | 20099, 20167, 20281, 20395 | VARIANT_STRUCTURE | no tx | immediate |
-| same | 21521, 21711, 21993 | MISC | after-commit | immediate |
-| `catalog/products/variants/product-variants-flow.service.ts` | 3262 | PRODUCT_MEDIA | no tx | immediate |
-| same | 4339, 4830 | VARIANT_ATTRIBUTE | after-commit | immediate |
-| same | 6461, 6984 | VARIANT_STRUCTURE | after-commit | immediate |
-| `catalog/products/pricing/product-pricing.service.ts` | 6448 | PRICE | **TX-open** (`updateChannelPrices(..., transaction, ...)`), **awaited** | pass `transaction`, drop `await` |
-| same | 7664 | PRICE | **TX-open** (commit at 7667), **awaited** | pass `transaction`, drop `await` |
-| same | 8278 | PRICE | **TX-open** (commit at 8281), **awaited** | pass `transaction`, drop `await` |
-| same | 9190 | PRICE | **TX-open** (`transaction` in scope, see 9155), **awaited** | pass `transaction`, drop `await` |
-| `platforms/amazon/channel-config/product-type/amazon-channel-product-type.service.ts` | 2142 | VARIANT_STRUCTURE | after-commit (2096) | immediate |
+| File                                                                                  | Line                          | Type              | Today                                                                                             | Migration                                                                          |
+| ------------------------------------------------------------------------------------- | ----------------------------- | ----------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `catalog/products/lifecycle/update-details.service.ts`                                | 448                           | MISC              | after-commit                                                                                      | immediate                                                                          |
+| same                                                                                  | 870                           | ATTRIBUTE         | after-commit                                                                                      | immediate                                                                          |
+| same                                                                                  | 1096                          | ATTRIBUTE         | after-commit                                                                                      | immediate                                                                          |
+| same                                                                                  | 1443                          | MISC              | **TX-open** (commit at 1472)                                                                      | pass `transaction`                                                                 |
+| same                                                                                  | 1926                          | ATTRIBUTE         | **TX-open** (commit at 1937, may be `externalTransaction`)                                        | pass `transaction` (afterCommit fires when the owning tx commits, external or not) |
+| `catalog/products/listings/product-channel.service.ts`                                | 2890                          | ATTRIBUTE         | after-commit, **awaited**, in try/catch                                                           | immediate, drop `await` + try/catch (trigger never throws)                         |
+| same                                                                                  | 3163                          | ATTRIBUTE         | after-commit (UpdateMarketplaceDetail commits at 4808), **awaited**                               | immediate, drop `await` + try/catch                                                |
+| same                                                                                  | 3748                          | MISC              | **TX-open** (`handleAmazonProductChannelDetails(..., transaction?)`, committed by caller at 2886) | pass `transaction` (may be undefined → immediate)                                  |
+| same                                                                                  | 5119                          | MISC              | after-commit                                                                                      | immediate                                                                          |
+| `catalog/products/shopifyProduct/shopify-product.service.ts`                          | 2407                          | ATTRIBUTE         | no tx                                                                                             | immediate                                                                          |
+| `catalog/products/product.service.ts`                                                 | 8233                          | PRODUCT_MEDIA     | no tx                                                                                             | immediate                                                                          |
+| same                                                                                  | 8359, 8538, 8760, 9244, 17174 | PRODUCT_MEDIA     | after-commit                                                                                      | immediate                                                                          |
+| same                                                                                  | 12514, 12524                  | PRODUCT_MEDIA     | no tx                                                                                             | immediate                                                                          |
+| same                                                                                  | 10521                         | VARIANT_STRUCTURE | after-commit                                                                                      | immediate                                                                          |
+| same                                                                                  | 20099, 20167, 20281, 20395    | VARIANT_STRUCTURE | no tx                                                                                             | immediate                                                                          |
+| same                                                                                  | 21521, 21711, 21993           | MISC              | after-commit                                                                                      | immediate                                                                          |
+| `catalog/products/variants/product-variants-flow.service.ts`                          | 3262                          | PRODUCT_MEDIA     | no tx                                                                                             | immediate                                                                          |
+| same                                                                                  | 4339, 4830                    | VARIANT_ATTRIBUTE | after-commit                                                                                      | immediate                                                                          |
+| same                                                                                  | 6461, 6984                    | VARIANT_STRUCTURE | after-commit                                                                                      | immediate                                                                          |
+| `catalog/products/pricing/product-pricing.service.ts`                                 | 6448                          | PRICE             | **TX-open** (`updateChannelPrices(..., transaction, ...)`), **awaited**                           | pass `transaction`, drop `await`                                                   |
+| same                                                                                  | 7664                          | PRICE             | **TX-open** (commit at 7667), **awaited**                                                         | pass `transaction`, drop `await`                                                   |
+| same                                                                                  | 8278                          | PRICE             | **TX-open** (commit at 8281), **awaited**                                                         | pass `transaction`, drop `await`                                                   |
+| same                                                                                  | 9190                          | PRICE             | **TX-open** (`transaction` in scope, see 9155), **awaited**                                       | pass `transaction`, drop `await`                                                   |
+| `platforms/amazon/channel-config/product-type/amazon-channel-product-type.service.ts` | 2142                          | VARIANT_STRUCTURE | after-commit (2096)                                                                               | immediate                                                                          |
 
 Price sites additionally must stop passing ORM instances: pass `productChannelMarketplaceId` / `productChannelId` (numbers) and let the worker re-fetch.
 
@@ -96,47 +96,80 @@ api-worker
 
 ```ts
 export type SyncBaselineOutOfSyncSource =
-	| 'PRODUCT_PRIMARY_ATTRIBUTES_UPDATED'
-	| 'PRODUCT_GROUP_ATTRIBUTES_UPDATED'
-	| 'PRODUCT_ESSENTIALS_UPDATED'
-	| 'SHOPIFY_ATTRIBUTE_MAPPING_UPDATED'
-	| 'AMAZON_CHANNEL_ATTRIBUTES_UPDATED'
-	| 'AMAZON_MARKETPLACE_ATTRIBUTES_UPDATED'
-	| 'SHOPIFY_PRODUCT_ATTRIBUTES_UPDATED'
-	| 'PRODUCT_CHANNEL_CONFIG_UPDATED'
-	| 'PRODUCT_MEDIA_UPDATED'
-	| 'VARIANT_MEDIA_UPDATED'
-	| 'VARIANT_ATTRIBUTES_UPDATED'
-	| 'VARIANT_STRUCTURE_UPDATED'
-	| 'VARIANT_LISTING_STATUS_UPDATED'
-	| 'AMAZON_ATTRIBUTE_PATH_UPDATED'
-	| 'CONDITION_TYPE_UPDATED'
-	| 'SHIPPING_TEMPLATE_UPDATED'
-	| 'AMAZON_CATEGORY_UPDATED'
-	| 'CHANNEL_PRICE_UPDATED'
-	| 'AMAZON_PRICE_UPDATED'
-	| 'SHOPIFY_PRICE_UPDATED'
-	| 'BUSINESS_PRICE_UPDATED';
+  | 'PRODUCT_PRIMARY_ATTRIBUTES_UPDATED'
+  | 'PRODUCT_GROUP_ATTRIBUTES_UPDATED'
+  | 'PRODUCT_ESSENTIALS_UPDATED'
+  | 'SHOPIFY_ATTRIBUTE_MAPPING_UPDATED'
+  | 'AMAZON_CHANNEL_ATTRIBUTES_UPDATED'
+  | 'AMAZON_MARKETPLACE_ATTRIBUTES_UPDATED'
+  | 'SHOPIFY_PRODUCT_ATTRIBUTES_UPDATED'
+  | 'PRODUCT_CHANNEL_CONFIG_UPDATED'
+  | 'PRODUCT_MEDIA_UPDATED'
+  | 'VARIANT_MEDIA_UPDATED'
+  | 'VARIANT_ATTRIBUTES_UPDATED'
+  | 'VARIANT_STRUCTURE_UPDATED'
+  | 'VARIANT_LISTING_STATUS_UPDATED'
+  | 'AMAZON_ATTRIBUTE_PATH_UPDATED'
+  | 'CONDITION_TYPE_UPDATED'
+  | 'SHIPPING_TEMPLATE_UPDATED'
+  | 'AMAZON_CATEGORY_UPDATED'
+  | 'CHANNEL_PRICE_UPDATED'
+  | 'AMAZON_PRICE_UPDATED'
+  | 'SHOPIFY_PRICE_UPDATED'
+  | 'BUSINESS_PRICE_UPDATED';
 
 // One member per baseline type. `payload` is the exact argument shape of the target service,
 // minus `req`, with ORM instances replaced by ids / plain objects.
-export type SyncBaselineOutOfSyncRequest = { req: AuthenticatedRequest; source: SyncBaselineOutOfSyncSource; transaction?: Transaction } & (
-	| { baselineType: 'ATTRIBUTE'; payload: { changedAttributes: Record<number, Partial<ProductAttribute>[]>; oldAttributes: Partial<ProductAttribute>[] } }
-	| { baselineType: 'VARIANT_ATTRIBUTE'; payload: { changedRecords: VariantAttributeSyncOutOfSyncRecord[]; oldRecords: VariantAttributeSyncOutOfSyncRecord[] } }
-	| { baselineType: 'VARIANT_STRUCTURE'; payload: { records: VariantStructureOutOfSyncRecord[] } }
-	| { baselineType: 'PRODUCT_MEDIA'; payload: Omit<ProcessProductMediaOutOfSync, 'req'> }
-	| { baselineType: 'MISC'; payload: { records: MiscSyncBaselineOutOfSyncRecord[] } }
-	| { baselineType: 'PRICE'; payload: { body: any; productChannelMarketplaceId?: number | null; productChannelId?: number | null } }
+export type SyncBaselineOutOfSyncRequest = {
+  req: AuthenticatedRequest;
+  source: SyncBaselineOutOfSyncSource;
+  transaction?: Transaction;
+} & (
+  | {
+      baselineType: 'ATTRIBUTE';
+      payload: {
+        changedAttributes: Record<number, Partial<ProductAttribute>[]>;
+        oldAttributes: Partial<ProductAttribute>[];
+      };
+    }
+  | {
+      baselineType: 'VARIANT_ATTRIBUTE';
+      payload: {
+        changedRecords: VariantAttributeSyncOutOfSyncRecord[];
+        oldRecords: VariantAttributeSyncOutOfSyncRecord[];
+      };
+    }
+  | {
+      baselineType: 'VARIANT_STRUCTURE';
+      payload: { records: VariantStructureOutOfSyncRecord[] };
+    }
+  | {
+      baselineType: 'PRODUCT_MEDIA';
+      payload: Omit<ProcessProductMediaOutOfSync, 'req'>;
+    }
+  | {
+      baselineType: 'MISC';
+      payload: { records: MiscSyncBaselineOutOfSyncRecord[] };
+    }
+  | {
+      baselineType: 'PRICE';
+      payload: {
+        body: any;
+        productChannelMarketplaceId?: number | null;
+        productChannelId?: number | null;
+      };
+    }
 );
 
-export type SyncBaselineOutOfSyncType = SyncBaselineOutOfSyncRequest['baselineType'];
+export type SyncBaselineOutOfSyncType =
+  SyncBaselineOutOfSyncRequest['baselineType'];
 
 /** What travels inside a `sync-baseline-out-of-sync` job (`job.data.data`). */
 export interface SyncBaselineOutOfSyncJobPayload {
-	req: { user: { id: number | null; accountId: number } };
-	source: SyncBaselineOutOfSyncSource;
-	baselineType: SyncBaselineOutOfSyncType;
-	payload: SyncBaselineOutOfSyncRequest['payload'];
+  req: { user: { id: number | null; accountId: number } };
+  source: SyncBaselineOutOfSyncSource;
+  baselineType: SyncBaselineOutOfSyncType;
+  payload: SyncBaselineOutOfSyncRequest['payload'];
 }
 ```
 
@@ -162,22 +195,28 @@ These early-return rules replicate the guard clauses that already sit at the top
 ```ts
 @Injectable()
 export class SyncBaselineTriggerService {
-	private readonly logger = new Logger(SyncBaselineTriggerService.name);
+  private readonly logger = new Logger(SyncBaselineTriggerService.name);
 
-	constructor(@Inject(forwardRef(() => QueueService)) private readonly _queueService: QueueService) {}
+  constructor(
+    @Inject(forwardRef(() => QueueService))
+    private readonly _queueService: QueueService,
+  ) {}
 
-	/**
-	 * Request an out-of-sync baseline calculation. Never throws: an invalid payload is logged and
-	 * skipped, a queue failure is logged and swallowed, so callers are never blocked.
-	 * When `transaction` is given the job is enqueued only after that transaction commits
-	 * (a rollback means no job).
-	 * @returns {Promise<{ jobId: string | null }>} null when skipped or deferred to afterCommit.
-	 */
-	async trigger(request: SyncBaselineOutOfSyncRequest): Promise<{ jobId: string | null }>
+  /**
+   * Request an out-of-sync baseline calculation. Never throws: an invalid payload is logged and
+   * skipped, a queue failure is logged and swallowed, so callers are never blocked.
+   * When `transaction` is given the job is enqueued only after that transaction commits
+   * (a rollback means no job).
+   * @returns {Promise<{ jobId: string | null }>} null when skipped or deferred to afterCommit.
+   */
+  async trigger(
+    request: SyncBaselineOutOfSyncRequest,
+  ): Promise<{ jobId: string | null }>;
 }
 ```
 
 Behaviour, in order:
+
 1. `accountId = Number(request.req?.user?.accountId)`; if invalid → `logger.warn({ event: 'sync_baseline_trigger_skipped', reason: 'no_account', source, baselineType })`, return `{ jobId: null }`.
 2. `normalizeSyncBaselinePayload(request)`; on rejection → warn `sync_baseline_trigger_skipped` with reason, return.
 3. Build `SyncBaselineOutOfSyncJobPayload` with minimal `req`.
@@ -190,9 +229,9 @@ No `QueueEvents`, no `OnApplicationShutdown` (D4).
 
 ```ts
 @Module({
-	imports: [forwardRef(() => QueueModule)],
-	providers: [SyncBaselineTriggerService],
-	exports: [SyncBaselineTriggerService],
+  imports: [forwardRef(() => QueueModule)],
+  providers: [SyncBaselineTriggerService],
+  exports: [SyncBaselineTriggerService],
 })
 export class SyncBaselineTriggerModule {}
 ```
@@ -221,6 +260,7 @@ export class SyncBaselineOutOfSyncExecutorService {
 ```
 
 `run`:
+
 - `const req = payload.req as unknown as AuthenticatedRequest;`
 - `switch (payload.baselineType)`:
   - `ATTRIBUTE` → `processAttributeOutOfSync(req, p.changedAttributes, p.oldAttributes)`
@@ -237,20 +277,28 @@ Lives in `SyncBaselineModule` (`providers` + `exports`) — that module already 
 
 ```ts
 @Processor(GlobalEnums.QueueNames.SYNC_BASELINE_OUT_OF_SYNC, {
-	concurrency: getQueueConcurrency(GlobalEnums.QueueNames.SYNC_BASELINE_OUT_OF_SYNC),
-	...WORKER_OPTIONS,
+  concurrency: getQueueConcurrency(
+    GlobalEnums.QueueNames.SYNC_BASELINE_OUT_OF_SYNC,
+  ),
+  ...WORKER_OPTIONS,
 })
 export class SyncBaselineOutOfSyncProcessor extends BaseQueueProcessor {
-	constructor(private readonly syncBaselineOutOfSyncExecutorService: SyncBaselineOutOfSyncExecutorService) { super(); }
+  constructor(
+    private readonly syncBaselineOutOfSyncExecutorService: SyncBaselineOutOfSyncExecutorService,
+  ) {
+    super();
+  }
 
-	protected async doProcess(job: Job): Promise<void> {
-		const payload: SyncBaselineOutOfSyncJobPayload = job.data?.data || {};
-		if (!payload?.baselineType || !payload?.req?.user?.accountId) {
-			this.logger.warn(`[${job.queueName}] Sync baseline job ${job.id} carries no baselineType/account; skipping.`);
-			return;
-		}
-		await this.syncBaselineOutOfSyncExecutorService.run(payload);
-	}
+  protected async doProcess(job: Job): Promise<void> {
+    const payload: SyncBaselineOutOfSyncJobPayload = job.data?.data || {};
+    if (!payload?.baselineType || !payload?.req?.user?.accountId) {
+      this.logger.warn(
+        `[${job.queueName}] Sync baseline job ${job.id} carries no baselineType/account; skipping.`,
+      );
+      return;
+    }
+    await this.syncBaselineOutOfSyncExecutorService.run(payload);
+  }
 }
 ```
 
@@ -267,17 +315,17 @@ Identical shape to `readiness.processor.ts`.
 
 ## 4. Edits to existing files
 
-| File | Change |
-|---|---|
-| `core/constants/global-enums.ts` | `QueueNames.SYNC_BASELINE_OUT_OF_SYNC = 'sync-baseline-out-of-sync'`; new `static readonly SyncBaselineTypes = { ATTRIBUTE, VARIANT_ATTRIBUTE, VARIANT_STRUCTURE, PRODUCT_MEDIA, MISC, PRICE }` |
-| `core/constants/queue-concurrency.ts` | `[GlobalEnums.QueueNames.SYNC_BASELINE_OUT_OF_SYNC]: 10` |
-| `sync/queue/sync-consumers.module.ts` | add to `SYNC_QUEUES`, add `SyncBaselineOutOfSyncProcessor` to `PROCESSORS`, add `SyncBaselineModule` to `imports` (exports the executor) |
-| `sync/queue/base-queue.processor.ts` | `handleJobFailed`: new branch `else if (queueName === GlobalEnums.QueueNames.SYNC_BASELINE_OUT_OF_SYNC) { this.logger.error(\`Sync baseline job ${job.id} failed permanently \| baselineType=${job.data?.data?.baselineType ?? 'n/a'} \| ${err?.message}\`, getErrorStack(err)); }` — placed before the `else` "Unknown job type" fallback, same style as the `EMAIL_QUEUE` branch. (Readiness currently falls into the "Unknown job type" warn; we do it properly for this queue.) |
-| `sync/queue/sync-job-metrics.service.ts` | check `channelFromQueueName`; if it throws / mis-buckets unknown names, add the new name to whatever "internal" bucket readiness lands in (verify during implementation, no behaviour change expected) |
-| `sync/baselines/sync-baseline/sync-baseline.module.ts` | add `SyncBaselineOutOfSyncExecutorService` to `providers` + `exports` |
-| `sync/sync.module.ts` | add `SyncBaselineTriggerModule` to the aggregator imports/exports (wherever `ReadinessTriggerModule` is exposed for the readiness case — verify exact spot) |
-| The 9 caller modules (`update-details`, `product-channel`, `shopify-product`, `product`, `product-variants-flow`, `product-pricing`, `amazon-channel-product-type` and their `*.module.ts`) | import `SyncBaselineTriggerModule`; constructor-inject `SyncBaselineTriggerService`; **remove** the injection of the concrete baseline service *only if* that service is no longer used for anything else in the file (e.g. `product-pricing.service.ts` still calls `_priceSyncBaselineService.deleteBaselineRecord` at 7654 → keep it) |
-| 45 call sites (§1.1) | replace `this._xSyncBaselineService.processXOutOfSync(...)` with `void this._syncBaselineTriggerService.trigger({ req, source, transaction?, baselineType, payload })`; drop `await` and the surrounding `try/catch` where it only guarded this call |
+| File                                                                                                                                                                                        | Change                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `core/constants/global-enums.ts`                                                                                                                                                            | `QueueNames.SYNC_BASELINE_OUT_OF_SYNC = 'sync-baseline-out-of-sync'`; new `static readonly SyncBaselineTypes = { ATTRIBUTE, VARIANT_ATTRIBUTE, VARIANT_STRUCTURE, PRODUCT_MEDIA, MISC, PRICE }`                                                                                                                                                                                                                                                                                 |
+| `core/constants/queue-concurrency.ts`                                                                                                                                                       | `[GlobalEnums.QueueNames.SYNC_BASELINE_OUT_OF_SYNC]: 10`                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| `sync/queue/sync-consumers.module.ts`                                                                                                                                                       | add to `SYNC_QUEUES`, add `SyncBaselineOutOfSyncProcessor` to `PROCESSORS`, add `SyncBaselineModule` to `imports` (exports the executor)                                                                                                                                                                                                                                                                                                                                        |
+| `sync/queue/base-queue.processor.ts`                                                                                                                                                        | `handleJobFailed`: new branch `else if (queueName === GlobalEnums.QueueNames.SYNC_BASELINE_OUT_OF_SYNC) { this.logger.error(\`Sync baseline job ${job.id} failed permanently \| baselineType=${job.data?.data?.baselineType ?? 'n/a'} \| ${err?.message}\`, getErrorStack(err)); }`— placed before the`else`"Unknown job type" fallback, same style as the`EMAIL_QUEUE` branch. (Readiness currently falls into the "Unknown job type" warn; we do it properly for this queue.) |
+| `sync/queue/sync-job-metrics.service.ts`                                                                                                                                                    | check `channelFromQueueName`; if it throws / mis-buckets unknown names, add the new name to whatever "internal" bucket readiness lands in (verify during implementation, no behaviour change expected)                                                                                                                                                                                                                                                                          |
+| `sync/baselines/sync-baseline/sync-baseline.module.ts`                                                                                                                                      | add `SyncBaselineOutOfSyncExecutorService` to `providers` + `exports`                                                                                                                                                                                                                                                                                                                                                                                                           |
+| `sync/sync.module.ts`                                                                                                                                                                       | add `SyncBaselineTriggerModule` to the aggregator imports/exports (wherever `ReadinessTriggerModule` is exposed for the readiness case — verify exact spot)                                                                                                                                                                                                                                                                                                                     |
+| The 9 caller modules (`update-details`, `product-channel`, `shopify-product`, `product`, `product-variants-flow`, `product-pricing`, `amazon-channel-product-type` and their `*.module.ts`) | import `SyncBaselineTriggerModule`; constructor-inject `SyncBaselineTriggerService`; **remove** the injection of the concrete baseline service _only if_ that service is no longer used for anything else in the file (e.g. `product-pricing.service.ts` still calls `_priceSyncBaselineService.deleteBaselineRecord` at 7654 → keep it)                                                                                                                                        |
+| 45 call sites (§1.1)                                                                                                                                                                        | replace `this._xSyncBaselineService.processXOutOfSync(...)` with `void this._syncBaselineTriggerService.trigger({ req, source, transaction?, baselineType, payload })`; drop `await` and the surrounding `try/catch` where it only guarded this call                                                                                                                                                                                                                            |
 
 The six `process*OutOfSync` method bodies are **not changed**; they stay public and become worker-only entry points (called by the executor).
 
@@ -311,16 +359,16 @@ The six `process*OutOfSync` method bodies are **not changed**; they stay public 
 
 ## 6. Failure / edge-case behaviour
 
-| Case | Behaviour |
-|---|---|
-| Redis down when triggering | `addJob` throws → logged `sync_baseline_trigger_enqueue_failed`, request continues (same as readiness) |
-| Caller's transaction rolls back | `afterCommit` never fires → no job (correct: nothing changed) |
-| Job fails (DB error not connection-related) | 1 attempt → `handleJobFailed` logs; job kept in `failed` (up to 200) for inspection; **no retry** (D6) |
-| DB connection error | `BaseQueueProcessor` already holds the job with `moveToDelayed` up to `DB_CONNECTION_MAX_RETRIES` — unchanged |
-| Worker restart mid-job | `WORKER_OPTIONS.maxStalledCount` re-queues it; the services' own transaction guarantees atomicity |
+| Case                                                | Behaviour                                                                                                                                                |
+| --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Redis down when triggering                          | `addJob` throws → logged `sync_baseline_trigger_enqueue_failed`, request continues (same as readiness)                                                   |
+| Caller's transaction rolls back                     | `afterCommit` never fires → no job (correct: nothing changed)                                                                                            |
+| Job fails (DB error not connection-related)         | 1 attempt → `handleJobFailed` logs; job kept in `failed` (up to 200) for inspection; **no retry** (D6)                                                   |
+| DB connection error                                 | `BaseQueueProcessor` already holds the job with `moveToDelayed` up to `DB_CONNECTION_MAX_RETRIES` — unchanged                                            |
+| Worker restart mid-job                              | `WORKER_OPTIONS.maxStalledCount` re-queues it; the services' own transaction guarantees atomicity                                                        |
 | Two changes to the same product in quick succession | Two jobs, may run concurrently (D3). Same race exists today between two HTTP requests; each service compares against DB state inside its own transaction |
-| Entity deleted between enqueue and run (PRICE) | executor logs + returns |
-| Unknown `baselineType` | `UnrecoverableError` → immediate failure, logged |
+| Entity deleted between enqueue and run (PRICE)      | executor logs + returns                                                                                                                                  |
+| Unknown `baselineType`                              | `UnrecoverableError` → immediate failure, logged                                                                                                         |
 
 ---
 
