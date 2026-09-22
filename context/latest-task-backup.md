@@ -1,14 +1,15 @@
 ## webapp and api repo only
 
-Task 1: 
+Task 1: Do as proposed into the context file
 
 ### Description
 
-- 
+- For the filter Issue Type, it must select the first one "Error" by default and make it as required so that it cannot be cleared as selected filter
+- While "Failed" selected as filter for Issue Type, then it should hide the columns: SKU, Product, Error From, Actions
 
 ### Context
 
-- 
+- webapp\src\app\(index)\(menu-layout)\products\_components\errorListing\errorListingDialog.tsx
 
 ### Constraints
 
