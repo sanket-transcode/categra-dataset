@@ -1,28 +1,21 @@
-## webapp repo only
+## api repo only
 
-Task 1: Within the modify category dialog for variants only proposed changes and bug fixes
+Task 1: When it is calling suggestions for parent (not variant) then as part of the payload values, it should fill the payload with values with from active channel-marketplace variants
 
 ### Description
 
-Issue:
-
-1. Product Type Categories & Favourite Categories: Search is not working.
-
-2. Unable to mark a category as Favourite.
-
-3. Already selected category is not shown as selected (it should come only for non item type keyword supported categories, should come as selected from all 3 tabs).
-
-4. Favourite Categories: Unable to select a category.
-
-5. Sometimes Browse Amazon Categories: “Oops, something went wrong” error is displayed.
+- within suggestAmazonGroupAttributeValues, currently as part of input payload values, it is levaraging only parent, but from now you'll going to pass values for those keys for which parent doesn't have value but maybe some of the variants have
+  - Check 
 
 ### Context
 
-- webapp\src\app\(index)\(menu-layout)\products\[product]\_components\variants\_components\categoryEditableField.tsx
+- api\apps\api-main\src\modules\app\catalog\products\product.service.ts -> suggestAmazonGroupAttributeValues
 
 ### Constraints
 
-- Things should work the same way as webapp\src\app\(index)\(menu-layout)\products\[product]\_components\channels\channel-details\nonMasterChannels\amazonChannel\categorizeYourProductDialog\categorizeYourProductDialog.tsx (you can reference things into this component)
-- But the referenced one is for selecting for parent category where as this one is for variant
+- Only active variants should be considered (is_active TRUE from tbl_product_variant_channels and status TRUE from tbl_variant_marketplaces)
+- A single attribute key + language should be unique within the payload, meaning per key -> either parent or one variant will get chance to contribute for that key
+  - You can filter out from the database directly to not return those records which have no value for all keys
+- For whatever attribute key + language, the parent has the value and to be contributed within the payload, any of it's variant won't interfere in that as variants will be levaraged only if parent lacks the value per (attribute + language)
 
 **Before implementing, clarify any ambiguity or missing detail at the feature level. Do not make assumptions about intended behavior, even for small details, if they could affect the implementation. If there is any uncertainty or multiple reasonable interpretations, ask the user for clarification before proceeding.**
