@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Categra Command Center — Single Screen Intelligence</title>
+<style>
+:root{
+  --navy:#0d1830;--navy2:#172844;--ink:#14203a;--muted:#6d798a;--line:#e5e9ef;--canvas:#f5f6f8;--card:#fff;
+  --tan:#c9936f;--tanlight:#f3e7dc;--danger:#e5484d;--dangerSoft:#fff0f1;--warn:#f2b01e;--warnInk:#8a6206;
+  --warnSoft:#fff6df;--ok:#22a06b;--okSoft:#edf8f2;--stale:#aeb6c2;--blue:#567aa8;--blueSoft:#edf4fb;--purple:#7462aa;--purpleSoft:#f2effb;
+  --shadow:0 5px 18px rgba(22,31,48,.055);--r:16px
+}
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--canvas);color:var(--ink);font-size:14px}
+button{font:inherit;cursor:pointer}.app{display:flex;min-height:100vh}.sidebar{width:248px;background:var(--navy);color:#fff;position:fixed;inset:0 auto 0 0;padding:22px 15px 16px;display:flex;flex-direction:column}
+.brand{display:flex;align-items:center;gap:11px;padding:0 7px 21px}.brandmark{width:39px;height:39px;border-radius:14px;background:var(--tan);display:grid;place-items:center;color:var(--navy);font-weight:900}.brandname{font-weight:850;font-size:17px}.brandsub{font-size:10px;color:#8fa0b9;margin-top:2px}
+.navlabel{font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:#6e7f98;font-weight:800;padding:7px 10px}.nav{display:flex;flex-direction:column;gap:4px}.nav button{border:0;background:transparent;color:#bac6d8;border-radius:10px;padding:10px 11px;display:flex;gap:9px;align-items:center;text-align:left;font-weight:650}.nav button.active{background:#1b2e4d;color:#fff}.nav svg{width:17px;height:17px}
+.navspacer{flex:1}.queuebox{background:#152642;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:13px}.queuebox .k{font-size:9px;letter-spacing:.11em;text-transform:uppercase;color:#aab6c8;font-weight:850}.queuebox strong{display:block;font-size:13px;margin-top:4px}.queuebox span{font-size:10px;color:#93a2b7;line-height:1.35}
+.main{margin-left:248px;width:calc(100% - 248px);min-height:100vh}.topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:15px;padding:15px 22px;background:rgba(245,246,248,.96);border-bottom:1px solid var(--line);backdrop-filter:blur(8px)}
+.titleblock h1{margin:0;font-size:27px;line-height:1;font-weight:900;letter-spacing:-.7px}.titleblock h1 span{color:var(--tan)}.titleblock p{margin:5px 0 0;font-size:11px;color:var(--muted)}
+.topright{display:flex;align-items:center;gap:8px}.scope{display:flex;align-items:center;gap:7px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 7px 6px 11px;box-shadow:0 2px 7px rgba(22,31,48,.04)}.scope span{font-size:10px;color:var(--muted)}.scope b{font-size:11px}.scope button{width:25px;height:25px;border:0;border-radius:50%;background:var(--navy);color:#fff}.fresh{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 11px;font-size:10px;font-weight:700;color:#536174}.avatar{width:34px;height:34px;border-radius:50%;background:var(--tanlight);display:grid;place-items:center;font-weight:800}
+.content{padding:16px 18px 22px}.section-kicker{font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);font-weight:850}.section-title{font-size:17px;font-weight:850;margin:2px 0 0}.section-sub{font-size:11px;color:var(--muted);margin:3px 0 0}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.intel-pulse{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-bottom:12px}.pulse{background:#fff;border:1px solid var(--line);border-radius:13px;padding:10px 11px;min-height:83px;display:flex;flex-direction:column;justify-content:space-between}.pulse .top{display:flex;align-items:center;justify-content:space-between;gap:6px}.pulse .name{font-size:10.5px;font-weight:850}.pulse .state{font-size:14px;font-weight:900}.pulse small{font-size:9.5px;color:var(--muted);line-height:1.25}.tiny{display:inline-flex;align-items:center;border-radius:999px;padding:3px 6px;font-size:8px;font-weight:850}.tiny.red{background:var(--dangerSoft);color:var(--danger)}.tiny.amber{background:var(--warnSoft);color:var(--warnInk)}.tiny.green{background:var(--okSoft);color:var(--ok)}.tiny.blue{background:var(--blueSoft);color:var(--blue)}.tiny.purple{background:var(--purpleSoft);color:var(--purple)}.tiny.gray{background:#f0f2f4;color:#7c8795}
+.attention-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:9px}.attention-head .note{font-size:10px;color:var(--muted);font-weight:700}
+.top-priority-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.priority-big{border:2px solid;border-radius:20px;background:#fff;padding:15px;box-shadow:var(--shadow)}.priority-big.critical{border-color:rgba(229,72,77,.34)}.priority-big.degraded{border-color:rgba(242,176,30,.38)}
+.phead{display:flex;align-items:center;gap:8px}.rank{width:31px;height:31px;border-radius:12px;display:grid;place-items:center;color:#fff;font-size:13px;font-weight:900}.rank.red{background:var(--danger)}.rank.amber{background:var(--warn);color:var(--navy)}.phead .type{border-radius:999px;padding:4px 7px;font-size:8.5px;letter-spacing:.05em;text-transform:uppercase;font-weight:850}.type.red{background:var(--dangerSoft);color:var(--danger)}.type.amber{background:var(--warnSoft);color:var(--warnInk)}.impact{margin-left:auto;font-size:9.5px;font-weight:800}.impact.red{color:var(--danger)}.impact.amber{color:var(--warnInk)}
+.priority-big h3{font-size:15px;line-height:1.2;margin:10px 0 6px}.chips{display:flex;gap:5px;flex-wrap:wrap}.chip{background:#f2f4f7;color:#59677a;border-radius:999px;padding:4px 7px;font-size:9.5px;font-weight:750}.chip.bad{background:var(--dangerSoft);color:var(--danger)}.chip.good{background:var(--okSoft);color:var(--ok)}.priority-big p{font-size:10.5px;line-height:1.4;color:var(--muted);margin:9px 0 0}.bigbtn{width:100%;border:0;border-radius:12px;padding:9px;margin-top:11px;font-size:10.5px;font-weight:850}.bigbtn.red{background:var(--danger);color:#fff}.bigbtn.amber{background:var(--warn);color:var(--navy)}
+.compact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:9px}.priority-small{border:1px solid var(--line);border-radius:16px;background:#fff;padding:11px}.smalltop{display:flex;align-items:center;gap:7px}.smallrank{width:24px;height:24px;border-radius:9px;background:var(--navy);color:#fff;display:grid;place-items:center;font-size:10px;font-weight:900}.smalltype{font-size:8.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--tan);font-weight:850}.priority-small h4{margin:7px 0 3px;font-size:11.5px;line-height:1.25}.priority-small p{font-size:9.5px;color:var(--muted);margin:0;line-height:1.3}.priority-small button{width:100%;margin-top:8px;border:0;border-radius:10px;background:var(--navy);color:#fff;padding:7px;font-size:9.5px;font-weight:850}
+.sequence-card{margin-top:10px;padding:13px}.sequence-row{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:10px}.stepwrap{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}.stepwrap:last-child{grid-template-columns:1fr}.step{border:1px solid var(--line);border-radius:14px;padding:10px;background:#fff;min-height:93px}.step.lead{background:var(--tanlight);border-color:#ead7c8}.step .num{font-size:24px;font-weight:900;color:rgba(13,24,48,.2);line-height:1}.step.lead .num{color:var(--tan)}.step b{display:block;font-size:10.5px;margin-top:4px}.step span{display:block;font-size:9px;color:var(--muted);line-height:1.3;margin-top:2px}.arrow{font-size:18px;font-weight:900;color:#b0b8c3}
+.bottom-grid{display:grid;grid-template-columns:1.12fr .9fr .9fr;gap:10px;margin-top:10px}.panel{padding:12px}.panel h3{font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}.channel-line{display:flex;align-items:center;justify-content:space-between;gap:9px;padding:7px 0;border-bottom:1px solid #edf0f3}.channel-line:last-child{border-bottom:0}.channel-line b{font-size:10.5px}.channel-line small{display:block;font-size:8.8px;color:var(--muted);margin-top:2px}.status{border-radius:999px;padding:4px 7px;font-size:8.5px;font-weight:850}.status.red{background:var(--dangerSoft);color:var(--danger)}.status.amber{background:var(--warnSoft);color:var(--warnInk)}.status.green{background:var(--okSoft);color:var(--ok)}.status.gray{background:#eef0f3;color:#718090}.status.purple{background:var(--purpleSoft);color:var(--purple)}
+.market-strip{display:flex;gap:4px;margin-top:4px}.marketpill{display:inline-flex;align-items:center;gap:3px;border:1px solid #e5e9ef;border-radius:6px;padding:2px 4px;font-size:8px}.flag{width:14px;height:10px;border-radius:2px;overflow:hidden;border:1px solid #d6dce3}.flag svg{display:block;width:100%;height:100%}
+.change{display:flex;gap:8px;padding:7px 0;border-bottom:1px solid #edf0f3}.change:last-child{border-bottom:0}.changedot{width:7px;height:7px;border-radius:50%;margin-top:4px;flex:none}.change b{font-size:10.5px;display:block}.change span{font-size:8.8px;color:var(--muted)}
+.conflict{background:var(--navy);color:#fff}.conflict h3{color:rgba(255,255,255,.55)}.conflict-card{background:rgba(255,255,255,.08);border-radius:13px;padding:11px}.conflict-card .label{font-size:8.5px;text-transform:uppercase;letter-spacing:.08em;color:#ff8a91;font-weight:850}.conflict-card b{display:block;font-size:11px;line-height:1.3;margin-top:6px}.conflict-card p{font-size:9px;color:rgba(255,255,255,.55);margin:4px 0 0;line-height:1.35}.conflict-card button{width:100%;border:0;background:var(--tan);color:var(--navy);border-radius:10px;padding:8px;margin-top:9px;font-size:9.5px;font-weight:850}
+.footer-note{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 12px}.footer-note strong{font-size:10.5px}.footer-note span{font-size:9px;color:var(--muted)}.footer-note button{border:0;border-radius:9px;background:var(--tan);color:var(--navy);padding:8px 10px;font-size:9.5px;font-weight:850}
+@media(max-width:1350px){.intel-pulse{grid-template-columns:repeat(3,1fr)}.bottom-grid{grid-template-columns:1fr 1fr}.conflict{grid-column:1/-1}.sequence-row{grid-template-columns:1fr 1fr;gap:8px}.stepwrap,.stepwrap:last-child{grid-template-columns:1fr}.arrow{display:none}}
+@media(max-width:980px){.sidebar{width:74px}.brandname,.brandsub,.navlabel,.nav button span,.queuebox{display:none}.brand{justify-content:center;padding:0 0 20px}.nav button{justify-content:center}.main{margin-left:74px;width:calc(100% - 74px)}.topbar{align-items:flex-start;flex-direction:column}.topright{width:100%;flex-wrap:wrap}.top-priority-grid,.compact-grid,.bottom-grid{grid-template-columns:1fr}.conflict{grid-column:auto}.intel-pulse{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.intel-pulse{grid-template-columns:1fr}.sequence-row{grid-template-columns:1fr}.scope{display:none}}
+
+.business-pulse{margin-top:10px;padding:12px}
+.business-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:9px}
+.business-card{border:1px solid var(--line);border-radius:13px;padding:10px;background:#fff}
+.business-card .head{display:flex;align-items:center;justify-content:space-between;gap:7px}
+.business-card .head b{font-size:10.5px}.business-value{font-size:21px;font-weight:900;margin-top:6px}
+.business-card p{font-size:9.3px;line-height:1.35;color:var(--muted);margin:3px 0 0}
+.trend{font-size:8.5px;font-weight:900}.trend.down{color:var(--danger)}.trend.up{color:var(--ok)}.trend.flat{color:var(--blue)}
+.fulfillment-card{margin-top:10px;padding:12px}
+.fulfillment-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:9px}
+.fulfillment-item{border:1px solid var(--line);border-radius:13px;padding:10px;background:#fff}
+.fulfillment-item .fh{display:flex;align-items:center;justify-content:space-between;gap:7px}.fulfillment-item .fh b{font-size:10.5px}
+.fulfillment-item .fv{font-size:20px;font-weight:900;margin-top:7px}.fulfillment-item p{font-size:9.2px;line-height:1.35;color:var(--muted);margin:3px 0 0}
+.fulfillment-item .mini{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px}.fulfillment-item .mini span{border:1px solid #edf0f3;border-radius:999px;padding:4px 6px;font-size:8px;color:#637185}
+.secondary-card{margin-top:10px;padding:12px}.secondary-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-top:9px}
+.secondary-item{border:1px solid var(--line);border-radius:12px;padding:9px;background:#fff}.secondary-item .sihead{display:flex;justify-content:space-between;gap:6px;align-items:center}
+.secondary-item b{font-size:10px}.secondary-item p{font-size:8.8px;line-height:1.35;color:var(--muted);margin:5px 0 0}
+.scope-select{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 30px 8px 11px;font-size:10px;font-weight:800;color:#536174}
+.action-drawer{position:fixed;right:-430px;top:0;width:410px;height:100vh;background:#fff;z-index:60;box-shadow:-12px 0 35px rgba(20,31,50,.18);transition:.2s;padding:18px;overflow:auto}
+.action-drawer.open{right:0}.drawer-head{display:flex;align-items:center;justify-content:space-between;gap:8px}.drawer-head h2{margin:0;font-size:16px}.drawer-close{width:31px;height:31px;border:1px solid var(--line);background:#fff;border-radius:9px}
+.drawer-sec{border-top:1px solid var(--line);padding-top:11px;margin-top:11px}.drawer-sec h3{font-size:8.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 5px}
+.drawer-sec p,.drawer-sec li{font-size:10px;line-height:1.45;color:#506073}.drawer-sec ul{padding-left:16px}
+.payload{background:#f5f7f9;border-radius:10px;padding:9px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:8.8px;white-space:pre-wrap;color:#506073}
+@media(max-width:1350px){.business-grid,.fulfillment-grid{grid-template-columns:1fr 1fr}.secondary-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:980px){.business-grid,.fulfillment-grid,.secondary-grid{grid-template-columns:1fr}.action-drawer{width:100%;right:-100%}}
+
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><div class="brandmark">C</div><div><div class="brandname">Categra</div><div class="brandsub">Commerce intelligence</div></div></div>
+  <div class="navlabel">Workspace</div>
+  <nav class="nav">
+    <button class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 13a8 8 0 1 0 3-6"/><path d="M4 4v5h5"/><path d="M8 12h8"/><path d="M12 8v8"/></svg><span>Command Center</span></button>
+    <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>Action Center</span></button>
+    <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 4 7v10l8 4 8-4V7l-8-4Z"/><path d="m4 7 8 4 8-4M12 11v10"/></svg><span>Catalog</span></button>
+    <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8h16M6 8V5h12v3M5 8l1 11h12l1-11"/></svg><span>Inventory</span></button>
+    <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="6" y="4" width="12" height="16"/><path d="M9 8h6M9 12h6"/></svg><span>Orders</span></button>
+    <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg><span>Channels</span></button>
+  </nav>
+  <div class="navspacer"></div>
+  <div class="queuebox"><div class="k">Action Center</div><strong>6 issues routed</strong><span>Every actionable priority opens the existing work queue with scope preserved.</span></div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <div class="titleblock"><h1>Today's <span>priorities</span></h1><p>Everything critical is surfaced here — no need to open individual intelligence areas to find problems.</p></div>
+  <div class="topright">
+    <select class="scope-select" id="scopeSelect" aria-label="Command Center scope">
+      <option>All connected channels</option>
+      <option>Amazon NA · Seller A</option>
+      <option>Amazon EU · Seller A</option>
+      <option>Amazon NA · Seller B</option>
+      <option>Shopify · Glasses</option>
+      <option>Shopify · Shoes</option>
+    </select>
+    <div class="fresh">Verified 2m ago</div>
+    <div class="avatar">VV</div>
+  </div>
+</header>
+
+<div class="content">
+  <div class="intel-pulse">
+    <div class="pulse"><div class="top"><span class="name">Account Health</span><span class="tiny red">Critical</span></div><div class="state">1 account at risk</div><small>Seller A · North America</small></div>
+    <div class="pulse"><div class="top"><span class="name">Inventory</span><span class="tiny amber">74 at risk</span></div><div class="state">FBA · FBM · Shared</div><small>22 FBA · 31 FBM · 21 shared</small></div>
+    <div class="pulse"><div class="top"><span class="name">Listings</span><span class="tiny amber">11 blockers</span></div><div class="state">Needs attention</div><small>Suppression · PTD · structure</small></div>
+    <div class="pulse"><div class="top"><span class="name">Pricing</span><span class="tiny blue">5 alerts</span></div><div class="state">Review</div><small>2 Featured Offer · 3 price gaps</small></div>
+    <div class="pulse"><div class="top"><span class="name">Sales & Profit</span><span class="tiny green">Stable</span></div><div class="state">No major decline</div><small>Current: orders + revenue</small></div>
+    <div class="pulse"><div class="top"><span class="name">Advertising</span><span class="tiny gray">Future</span></div><div class="state">Ads API required</div><small>Reserved for proactive ad intelligence</small></div>
+  </div>
+
+  <!-- BUSINESS PULSE: monitoring without forcing the user to interpret raw charts -->
+  <section class="card business-pulse">
+    <div class="section-kicker">Business pulse</div>
+    <div class="section-title">What is happening to the business</div>
+    <div class="section-sub">Compact business outcomes with an explanation of why they changed. These do not replace the ranked priorities below.</div>
+    <div class="business-grid">
+      <div class="business-card"><div class="head"><b>Sales</b><span class="trend down">↓ 8.4% vs 7d</span></div><div class="business-value">$28,420</div><p><strong>Why:</strong> traffic is stable; conversion fell after Featured Offer loss on four top SKUs.</p></div>
+      <div class="business-card"><div class="head"><b>Gross margin</b><span class="trend down">↓ 2.1 pts</span></div><div class="business-value">31.6%</div><p><strong>Why:</strong> higher FBA fees and discounting explain most of the decline.</p></div>
+      <div class="business-card"><div class="head"><b>Conversion</b><span class="trend down">↓ 10.1%</span></div><div class="business-value">9.7%</div><p><strong>Why:</strong> pricing and listing issues are concentrated in high-revenue products.</p></div>
+      <div class="business-card"><div class="head"><b>Orders</b><span class="trend flat">→ +0.8%</span></div><div class="business-value">412</div><p><strong>Why:</strong> order volume is stable despite lower revenue per order.</p></div>
+    </div>
+  </section>
+
+  <div class="attention-head"><div><div class="section-kicker">Ranked by criticality</div><div class="section-title">What needs attention now</div><div class="section-sub">Categra collapses all intelligence domains into one ordered list.</div></div><div class="note">Top 2 blockers are expanded; lower priorities stay compact.</div></div>
+
+  <div class="top-priority-grid">
+    <section class="priority-big critical">
+      <div class="phead"><span class="rank red">1</span><span class="type red">Account health at risk</span><span class="impact red">Whole account exposed</span></div>
+      <h3>Account status moved to At risk on North America</h3>
+      <div class="chips"><span class="chip">Amazon · Seller A</span><span class="chip">North America</span><span class="chip">US · CA · MX · BR</span></div>
+      <p>Selling privileges could be affected. This outranks product-level listing, pricing and stock optimization.</p>
+      <button class="bigbtn red">Review → Action Center</button>
+    </section>
+
+    <section class="priority-big degraded">
+      <div class="phead"><span class="rank amber">2</span><span class="type amber">Data trust · DE only</span><span class="impact amber">Stock data untrusted</span></div>
+      <h3>Europe inventory sync stale — Germany only, 2h 18m</h3>
+      <div class="chips"><span class="chip">Amazon · Seller A</span><span class="chip">Europe</span><span class="chip bad">DE stale</span><span class="chip good">UK · FR · IT healthy</span></div>
+      <p>Categra suppresses downstream Germany inventory conclusions until the source becomes trustworthy again.</p>
+      <button class="bigbtn amber">Check connection → Action Center</button>
+    </section>
+  </div>
+
+  <div class="compact-grid">
+    <section class="priority-small"><div class="smalltop"><span class="smallrank">3</span><span class="smalltype">Inventory / oversell</span></div><h4>Shared pool low — 74 products unavailable or at risk</h4><p>FBA 22 · FBM 31 · shared stock 21</p><button>Resolve → Action Center</button></section>
+    <section class="priority-small"><div class="smalltop"><span class="smallrank">4</span><span class="smalltype">Listings / structure</span></div><h4>Product Type changed — 4 listings need remap</h4><p>Amazon Seller A · North America</p><button>Review → Action Center</button></section>
+    <section class="priority-small"><div class="smalltop"><span class="smallrank">5</span><span class="smalltype">Shopify</span></div><h4>Glasses: 4 products unpublished; Shoes inventory stale</h4><p>2 store-level problems · no marketplace flags</p><button>Resolve → Action Center</button></section>
+  </div>
+
+  <section class="card sequence-card">
+    <div class="section-kicker">Next best actions</div><div class="section-title">Recommended sequence</div><div class="section-sub">The sequence follows dependencies, so users do not fix downstream issues before restoring access or data trust.</div>
+    <div class="sequence-row">
+      <div class="stepwrap"><div class="step lead"><div class="num">1</div><b>Clear account health warning</b><span>Protect North America selling privileges first.</span></div><div class="arrow">→</div></div>
+      <div class="stepwrap"><div class="step"><div class="num">2</div><b>Reconnect Germany inventory sync</b><span>Restore trusted DE stock data.</span></div><div class="arrow">→</div></div>
+      <div class="stepwrap"><div class="step"><div class="num">3</div><b>Resolve FBA / FBM / shared-stock risk</b><span>Use the correct fulfillment-specific workflow.</span></div><div class="arrow">→</div></div>
+      <div class="stepwrap"><div class="step"><div class="num">4</div><b>Re-publish and remap</b><span>Fix Shopify publication and Amazon structure.</span></div></div>
+    </div>
+  </section>
+
+  <!-- FULFILLMENT & AVAILABILITY: same business symptom, different owners and fixes -->
+  <section class="card fulfillment-card">
+    <div class="section-kicker">Fulfillment & availability</div>
+    <div class="section-title">FBA, FBM, shared stock and Shopify inventory</div>
+    <div class="section-sub">“Out of stock” is not one problem. Categra separates the cause so the Action Center opens the correct workflow.</div>
+    <div class="fulfillment-grid">
+      <div class="fulfillment-item"><div class="fh"><b>Amazon FBA</b><span class="tiny red">Critical</span></div><div class="fv">22 OOS</div><p>Amazon-fulfilled inventory requires FBA-specific diagnosis.</p><div class="mini"><span>5 stranded</span><span>9 inbound delayed</span><span>2 unfulfillable</span><span>14 aged/excess</span></div></div>
+      <div class="fulfillment-item"><div class="fh"><b>Amazon FBM</b><span class="tiny amber">High</span></div><div class="fv">31 OOS</div><p>Merchant-fulfilled risk depends on seller stock and shipment SLAs.</p><div class="mini"><span>4 late handling</span><span>2 cancellation risk</span><span>6 qty mismatches</span></div></div>
+      <div class="fulfillment-item"><div class="fh"><b>Categra shared stock</b><span class="tiny amber">21 affected</span></div><div class="fv">3 conflicts</div><p>One physical pool protects Amazon and Shopify from overselling.</p><div class="mini"><span>2 oversell risk</span><span>2 remote mismatch</span><span>1 authority conflict</span></div></div>
+      <div class="fulfillment-item"><div class="fh"><b>Shopify stores</b><span class="tiny blue">Review</span></div><div class="fv">8 alerts</div><p>Store-level inventory and publication problems; no Amazon marketplace semantics.</p><div class="mini"><span>Glasses 3</span><span>Shoes 5</span><span>0 webhook backlog</span></div></div>
+    </div>
+  </section>
+
+  <div class="bottom-grid">
+    <section class="card panel">
+      <h3>Channel & marketplace health</h3>
+      <div class="channel-line"><div><b>Amazon · Seller A · North America</b><small>4 marketplaces</small><div class="market-strip"><span class="marketpill">US</span><span class="marketpill">CA</span><span class="marketpill">MX</span><span class="marketpill">BR</span></div></div><span class="status red">At risk</span></div>
+      <div class="channel-line"><div><b>Amazon · Seller A · Europe</b><small>DE stale; UK / FR / IT healthy</small><div class="market-strip"><span class="marketpill">UK</span><span class="marketpill">FR</span><span class="marketpill">DE</span><span class="marketpill">IT</span></div></div><span class="status purple">Degraded</span></div>
+      <div class="channel-line"><div><b>Amazon · Seller B · North America</b><small>4 marketplaces</small><div class="market-strip"><span class="marketpill">US</span><span class="marketpill">CA</span><span class="marketpill">MX</span><span class="marketpill">BR</span></div></div><span class="status green">Healthy</span></div>
+      <div class="channel-line"><div><b>Shopify · Glasses</b><small>4 products unpublished</small></div><span class="status amber">Attention</span></div>
+      <div class="channel-line"><div><b>Shopify · Shoes</b><small>Inventory sync stale 48m</small></div><span class="status purple">Degraded</span></div>
+    </section>
+
+    <section class="card panel">
+      <h3>What changed?</h3>
+      <div class="change"><span class="changedot" style="background:var(--danger)"></span><div><b>Product Type Definition changed</b><span>4 Amazon listings · 1h ago</span></div></div>
+      <div class="change"><span class="changedot" style="background:var(--warn)"></span><div><b>4 products unpublished remotely</b><span>Shopify · Glasses · 3h ago</span></div></div>
+      <div class="change"><span class="changedot" style="background:var(--stale)"></span><div><b>Shoes inventory sync degraded</b><span>48m ago</span></div></div>
+      <div class="change"><span class="changedot" style="background:var(--ok)"></span><div><b>Germany last successful sync</b><span>2h 18m ago</span></div></div>
+    </section>
+
+    <section class="card panel conflict">
+      <h3>Cross-channel conflict</h3>
+      <div class="conflict-card"><div class="label">Oversell risk</div><b>Shared pool shows 12 units — Amazon FBA currently holds 14</b><p>Selling on Amazon and Shopify may oversell by 2 units unless the shared pool is reconciled.</p><button>Resolve pool → Action Center</button></div>
+    </section>
+  </div>
+
+  <!-- SECONDARY INTELLIGENCE: useful, but not important enough to displace today's top priorities -->
+  <section class="card secondary-card">
+    <div class="section-kicker">Secondary intelligence</div>
+    <div class="section-title">Signals below the current priority threshold</div>
+    <div class="section-sub">These stay visible without competing with account risk, sellability or stale-data problems.</div>
+    <div class="secondary-grid">
+      <div class="secondary-item"><div class="sihead"><b>Returns & feedback</b><span class="tiny amber">Watch</span></div><p>Return reason “too small” is rising on 2 products. Not yet severe enough for Today's priorities.</p></div>
+      <div class="secondary-item"><div class="sihead"><b>Fees & margin</b><span class="tiny blue">$184/mo</span></div><p>FBA fee increased by $0.42/unit on 2 SKUs; estimated monthly margin impact is $184.</p></div>
+      <div class="secondary-item"><div class="sihead"><b>A+ / content</b><span class="tiny amber">7 gaps</span></div><p>Seven eligible Amazon products have no enhanced content or incomplete image coverage.</p></div>
+      <div class="secondary-item"><div class="sihead"><b>Advertising</b><span class="tiny gray">Future</span></div><p>Example future state: profitable campaign capped by budget and one wasted search-term cluster.</p></div>
+      <div class="secondary-item"><div class="sihead"><b>Permissions</b><span class="tiny purple">Required</span></div><p>One optional Amazon source cannot be evaluated because the required permission is not granted.</p></div>
+    </div>
+  </section>
+
+  <div class="footer-note"><div><strong>Single-screen rule:</strong> <span>critical items always surface here automatically; users never need to open Inventory, Pricing, Listings or other intelligence areas just to discover a problem.</span></div><button>Open Action Center →</button></div>
+</div>
+</main>
+</div>
+
+<aside class="action-drawer" id="actionDrawer">
+  <div class="drawer-head"><h2 id="drawerTitle">Action Center handoff</h2><button class="drawer-close" id="drawerClose">×</button></div>
+  <div id="drawerBody"></div>
+</aside>
+
+<script>
+/*
+  CLAUDE / IMPLEMENTATION NOTE
+  ----------------------------
+  This prototype intentionally shows:
+  - all intelligence areas on one screen;
+  - top issues ranked across domains rather than hidden behind tabs;
+  - critical / preventive-risk / monitoring / opportunity / future / permission states;
+  - multiple Amazon connections, regions and marketplaces;
+  - multiple Shopify stores with no Amazon-style marketplace flags;
+  - FBA / FBM / shared-stock / Shopify inventory separation;
+  - Action Center as the operational destination.
+
+  The sample numbers are illustrative, not production facts.
+*/
+const drawer=document.getElementById('actionDrawer');
+const drawerTitle=document.getElementById('drawerTitle');
+const drawerBody=document.getElementById('drawerBody');
+const closeDrawer=()=>drawer.classList.remove('open');
+document.getElementById('drawerClose').onclick=closeDrawer;
+
+const handoffs={
+  'Review → Action Center':{
+    title:'Account health → Action Center',
+    why:'Channel-wide risk should outrank product-level optimization.',
+    next:'Open the existing work queue scoped to Amazon Seller A / North America / Account Health.',
+    payload:{route:'/action-center',category:'ACCOUNT_HEALTH',channel:'Seller A · North America',severity:'CRITICAL'}
+  },
+  'Check connection → Action Center':{
+    title:'Germany connection → Action Center',
+    why:'Germany stock data is stale while sibling marketplaces remain healthy.',
+    next:'Open the existing connection/sync issue scoped only to DE.',
+    payload:{route:'/action-center',category:'CONNECTION',channel:'Seller A · Europe',marketplace:'DE'}
+  },
+  'Resolve → Action Center':{
+    title:'Inventory risk → Action Center',
+    why:'Command Center aggregates the business problem; Action Center contains the individual FBA, FBM and shared-stock items.',
+    next:'Open the inventory-related work queue with current scope preserved.',
+    payload:{route:'/action-center',category:'INVENTORY',severity:'HIGH'}
+  },
+  'Open Action Center →':{
+    title:'Current scope → Action Center',
+    why:'The current Command Center scope must be preserved.',
+    next:'Open the operational queue without changing Action Center UX.',
+    payload:{route:'/action-center',scope:'current'}
+  }
+};
+function openHandoff(key){
+  const h=handoffs[key]||{title:'Action Center handoff',why:'This Command Center signal routes to the existing operational workflow.',next:'Preserve the configured channel / marketplace / store scope.',payload:{route:'/action-center'}};
+  drawerTitle.textContent=h.title;
+  drawerBody.innerHTML=`<div class="drawer-sec"><h3>Why this is here</h3><p>${h.why}</p></div>
+  <div class="drawer-sec"><h3>Next step</h3><p>${h.next}</p></div>
+  <div class="drawer-sec"><h3>Illustrative handoff payload</h3><div class="payload">${JSON.stringify(h.payload,null,2)}</div></div>
+  <div class="drawer-sec"><h3>Design rule</h3><ul><li>Critical items surface automatically on Command Center.</li><li>The user does not inspect domain tabs to discover problems.</li><li>Command Center aggregates business problems.</li><li>Action Center contains the exact operational work items.</li></ul></div>`;
+  drawer.classList.add('open');
+}
+document.querySelectorAll('button').forEach(btn=>{
+  if(btn.closest('.nav')||btn.id==='drawerClose') return;
+  btn.addEventListener('click',()=>openHandoff(btn.textContent.trim()));
+});
+document.getElementById('scopeSelect').addEventListener('change',e=>{
+  const fresh=document.querySelector('.fresh');
+  fresh.textContent=e.target.value==='All connected channels'?'Verified 2m ago':'Scoped view · verified 2m ago';
+});
+</script>
+</body>
+</html>
