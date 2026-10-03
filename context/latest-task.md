@@ -1,17 +1,24 @@
-## api repo only
+## api & webapp repo only
 
-Task 1: Provide me the analysis behind the new prototype of Command Center
+Task 1: For variant, convert the 6 levels of inheritance into absolute 3 levels of normal inheritance the same way as per the parent + additional requirements
 
 ### Description
 
-- The latest prototype is given for route /command-center is categra-dataset\context\command-center\categra_command_center_full_prototype_v3.html
-  - It is not final, in case of common flows, some sections will be affected and removed where as some sections can be changed or modified as per the findings, or some sections can be introduced as well
-  - Suggest me for above as well
-- The findings we currently have that can be used places at command center are mentioned into categra-dataset\context\command-center\initial-findings.md
-- You can levarage current working of command center as well but that will no longer be used, we are about to replace it with version 2 as shared the prototype, the older version is: webapp\src\app\(index)\(menu-layout)\command-center\page.tsx
-- Provide me the full analysis, real working resources to fetch things from, approaches and other important things as requested
-- Most of the things I do not understand within the command center currently and not aware behind their purposes, so describe those things as well, you can levarage the current project major areas to get the idea about the solution
-- Many things you'll encounter whose implementation is already present within the codebase, ex. Orders count, FBA-FBM attached to amazon products/variants, some of the things are partially present and the rest need to be fetched from outside, some of the things completely need to gather from outside of the project scope -> mention all of these kind of details
+- Currently at some places, the variant is having max 6 levels of inheritance like this:
+  - Variant + Channel + current language
+  - Variant + Master + current language
+  - Product + Channel + current language
+  - Product + Master + current language
+  - Variant + Master + base language
+  - Product + Master + base language
+- This should be converted to the same way as all places like parent:
+  - Variant + Channel + current language
+  - Variant + Master + current language
+  - Variant + Master + base language
+- Remove returning parent values, parent fallback values, parent base values within GetProductAttributesWithRawQuery
+- Within details tab, stop showing the switches as well for variant's master + base language (it has some specific conditions, so stop treating variant's master + base as special and "can inherit" way, it should be exactly the same as generic (channel current -> master current -> master base) rule (regardless or product/parent) or variant)
+- On hover of inheritance switch for attributes in details tab, message should be different when I’m on master and in channel
+  - Because for channel it inherits from the same langauge but from master channels cope whereas within master, it inherits from the master's base langauge to master's current selected language
 
 ### Context
 
@@ -19,7 +26,6 @@ Task 1: Provide me the analysis behind the new prototype of Command Center
 
 ### Constraints
 
-- Create a single structured file markdown having each of the requested detail organized and dump at categra-dataset\context\command-center
-- Use live search and heavy tool usage for accurate findings, currently we have integration of amazon and shopify, but heavily focus on Amazon only
+- Need to implement this at literally every place of the project within api and webapp: during baseline calculation (if affects), readiness calculation (if affects), getting primary or group attributes for details tab (if affects), during forward sync time and other affecting places as well, no place should remain
 
 **Before implementing, clarify any ambiguity or missing detail at the feature level. Do not make assumptions about intended behavior, even for small details, if they could affect the implementation. If there is any uncertainty or multiple reasonable interpretations, ask the user for clarification before proceeding.**
