@@ -18,9 +18,9 @@ Task 1: design the route /command-center-v2 route that will be the new command c
     - 5 cards
     - Sorted by severity first, issue type second
     - severity card colors
-        1. Red → Because of this, I cannot sell.
-        2. Yellow → I can still sell, but I cannot trust or safely operate on the data.
-        3. Black → I can sell, but something needs to be fixed or completed.
+      1. Red → Because of this, I cannot sell.
+      2. Yellow → I can still sell, but I cannot trust or safely operate on the data.
+      3. Black → I can sell, but something needs to be fixed or completed.
   - Next best actions
   - Channel & marketplace health
   - What changed?
@@ -30,7 +30,7 @@ Task 1: design the route /command-center-v2 route that will be the new command c
 
 ### Context
 
-- 
+-
 
 ### Constraints
 
