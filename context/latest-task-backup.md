@@ -1,25 +1,35 @@
-## webapp & api repo only
+## api & webapp & db-migrations repo only
 
-Task 1: Explain the current command center working
+Task 1: Remove the requested stalled tables/keys from database, their legacy implementation within code
 
 ### Description
 
-- Ideally you should be covering every module/section/sub-section objectives/workings
-  - Maintain hierarchical structure at areas where it makes sense
-  - Mostly you are going to cover high level exact things but you need to include absolute low level things such as the actual routes, paths, life cycle or flow of modules
-- In case there are buttons/triggers on UI, so clicking on those will do what or redirect me at which place to do what
-- Mention what is the process of gathering the data for the corresopnding section/sub-section in high levels but do not miss any step, mention every detail
-- For every module/section/sub-section, the data involves which tables for what data -> mention high level list, do not include detailed details
-  - Additionally in case some modules include non-database entities data sources, then mention those also
+- Execute the requested things only from the planned file: context/amazon-events/amazon-events-analysis.md
+
+- Remove tbl_amazon_event_destinations as there is no scope of increasing the destinations, there will be fixed number of static entries and the destination ids are already within .env + additionally remove the code around it
+- Remove tbl_amazon_channel_subscriptions and code around it (it is legacy and not needed)
+- Follwing keys within tbl_amazon_event_subscriptions
+  - destinationId (the table itself will be removed so)
+  - accountId (as it will be derived from amazonChannel)
+  - channelId (as it will be derived from amazonChannel)
+  - notificationLabel (use the notificationType instead as label at the accessing places)
+
+- Apart from (tbl_amazon_event_raw_deliveries, tbl_amazon_event_subscriptions) -> remove other tbl_amazon_event tables out of total 21
+  - According to the analysis file, whatever dataset should be absorbed or merged should be done in that way, In case of major working feature affected due to the deletion, clarify first before actual implementation
+  - Kindly check admin portal feature explicitly, in case something major affects then also clarify first
+  
+- In case of final entities/keys removal, the related coding areas should also be removed
 
 ### Context
 
-- webapp\src\app\(index)\(menu-layout)\command-center\page.tsx
+- 
 
 ### Constraints
 
-- Do not omit anything, cover every sections/micro-sections
-- The order of the explanation file should be logical and according to the understanding, review one before writing the file and order the content properly
-- The final md file should be dump at categra-dataset\context\command-center
+- You create separate migration files for different kind of operations, but not too many, related things/entities can be grouped into one file
+- Provided instructions will be overwritten and for rest you follow the plan file for execution
+- Those suggested improvements within the analysis file which don't contain any table/key deletion should be remained later on and not part of the current task
+  - But the improvements which should be done before the requested entities/keys are deleted must be done as part of this task
+- In case something is related with webapp or admin repos then do the required cleanup from there also
 
 **Before implementing, clarify any ambiguity or missing detail at the feature level. Do not make assumptions about intended behavior, even for small details, if they could affect the implementation. If there is any uncertainty or multiple reasonable interpretations, ask the user for clarification before proceeding.**
