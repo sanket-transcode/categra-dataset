@@ -1,24 +1,23 @@
-## webapp & api repo only
+## webapp & api & db-migrations repo only
 
-Task 1: Analyse 2 sections from command center v2: 'What needs attention now', 'Recommended sequence', Suggest and do changes with human in the loop
+Task 1: Remove stalled legacy keys from the table
 
 ### Description
 
-- Observe each component, issue type wise design specs and evaluate against the objective of the section, seller UX, surrounding UI, Categra desing conventions (ex. Products related data pages)
-  - Go through each issue type and how things are presented on different scenarios
-- Both the sections should work in sync with correlation
-  - The recommended sequence section cards are having ambiguous descriptions now, they shoudl be exact that describes the action correctly without ambiguoity and in case of detailed description, you can present with an i button as well
-
-- Analyse the colors as well, you can suggest changes on those also
+- from table tbl_product_media_linkers, remove these keys that are not being used currently, they are legacy keys
+  - language_code
+  - channel_marketplace_id
+- Previously media were stored marketplace and language wise but now not, remove such code that does that way during creation/modification and access time
 
 ### Context
 
-- command center v2
+- Command Center -> What needs attention now
+- Inspiration UI: "C:\Users\Promise\Downloads\image (2).png"
 
 ### Constraints
 
-- Obvious UX improvements or UI/functionality bugs are automatically approved and do that
-- Changes that fall apart from the above category must be clarified by human before implementation
-- You are also allowed to suggest better UI systems or modifications into presenting things if they seem to provide more clear picture of the information but they require human permission before implementation
+- Create a single migration file but don't execute
+- In case of webapp is affected anyway then remove from there also
+- In case you find somewhere commented code around it that looks legacy, remove that code also
 
 **Before implementing, clarify any ambiguity or missing detail at the feature level. Do not make assumptions about intended behavior, even for small details, if they could affect the implementation. If there is any uncertainty or multiple reasonable interpretations, ask the user for clarification before proceeding.**
