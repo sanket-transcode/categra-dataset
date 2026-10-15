@@ -1,6 +1,6 @@
 # Command Center — Attention Card Types
 
-The "What needs attention now" section groups every detected problem into **one card per type** (called a *family*). There are **15 card types**. A card appears only when at least one item is affected, and its count is the number of distinct affected items (listings, channels, accounts, marketplaces).
+The "What needs attention now" section groups every detected problem into **one card per type** (called a *family*). There are **18 card types**. A card appears only when at least one item is affected, and its count is the number of distinct affected items (listings, channels, accounts, marketplaces).
 
 ## Severity and colour
 
@@ -8,8 +8,8 @@ Severity is fixed per card type. The API sends the severity; the webapp decides 
 
 | Severity | Colour | Cards of this severity |
 |---|---|---|
-| `critical` | Red | 11 |
-| `warning` | Amber | 3 |
+| `critical` | Red | 12 |
+| `warning` | Amber | 5 |
 | `info` | Blue | 1 |
 
 ## Card types
@@ -31,6 +31,9 @@ Severity is fixed per card type. The API sends the severity; the webapp decides 
 | 13 | Main image | Media | Cannot sell | critical | Red | 3 · Fix listings | An Amazon product or variant published to a channel has no main image, or its image format is one Amazon does not support, so buyers cannot view or buy it. Shopify is excluded because its products can be purchased with or without a main image. The published image is read from the sync baseline first, then from the live media. The card separates missing images from unsupported formats. |
 | 14 | Amazon listing warning | Listings | Needs fixing | warning | Amber | 4 · Improve catalog | Amazon returned non-blocking warnings on a listing. It can still sell, but the warnings should be corrected. |
 | 15 | Product type changed | Structure | Needs remap | info | Blue | 4 · Improve catalog | Amazon changed the product type of a listing, so Categra's attribute mapping no longer matches and catalog updates are paused until the new type is accepted. |
+| 16 | Buy Box lost | Pricing | Buy Box lost | warning | Amber | 4 · Improve catalog | A published Amazon listing is currently not winning the Featured Offer, while another offer holds it. This is a competitive disadvantage, but the listing may still be sellable. |
+| 17 | Buy Box at risk | Pricing | Buy Box at risk | warning | Amber | 4 · Improve catalog | A published Amazon listing currently wins the Featured Offer, but Categra's pricing or competitive signals indicate an elevated risk of losing it. |
+| 18 | Buy Box ineligible | Pricing | Buy Box excluded | critical | Red | 3 · Fix listings | Amazon indicates that a published Amazon offer is not eligible for Featured Offer consideration. The card breaks down the issues by reason, including price-related ineligibility where established. |
 
 ## Rules that shape what appears
 
@@ -42,7 +45,7 @@ Severity is fixed per card type. The API sends the severity; the webapp decides 
 - **One card per type.** Every affected channel or marketplace appears as a chip on that card instead of as a separate card.
 - **Data trust and Stock sync are always red.** Both cards are fixed at `critical`. Individual stale-data issues are still marked `warning` or `critical` internally (more serious when they have lasted more than 24 hours or affect every marketplace of a channel), but that internal level does not change the card, which is always `critical`.
 - **Data trust and Stock sync can share a root cause.** No rule dedupes them against each other: Data trust counts channels or marketplaces with a stale stock or order sync, while Stock sync counts published listings whose quantity mismatches or whose push is failing. A stale stock sync can therefore raise both cards, at channel level and at listing level. Stock sync is still subject to the stock-card exclusivity rule above.
-- **Same label, different colour.** "Inventory" covers out of stock (red) and low stock (amber). "Listings" covers blockers (red) and warnings (amber).
+- **Same label, different colour.** "Inventory" covers out of stock (red) and low stock (amber). "Listings" covers blockers (red) and warnings (amber). "Pricing" covers missing price and Buy Box ineligible (red) and Buy Box lost and at risk (amber).
 
 ## Order and the recommended sequence
 
@@ -52,10 +55,10 @@ Cards are ordered first by recommended step, then by severity, then by card type
 |---|---|---|
 | 1 | Restore access | Connection, Account health, Marketplace health, Permission required, Data trust |
 | 2 | Restore sellability | Missing price, Out of stock |
-| 3 | Fix listings | Amazon listing blocker, Amazon not searchable, Shopify not active, Main image |
-| 4 | Improve catalog | Amazon listing warning, Low stock, Stock sync, Product type changed |
+| 3 | Fix listings | Amazon listing blocker, Amazon not searchable, Shopify not active, Main image, Buy Box ineligible |
+| 4 | Improve catalog | Amazon listing warning, Low stock, Stock sync, Product type changed, Buy Box lost, Buy Box at risk |
 
-The impact of each step in "Next best actions" is its worst card severity: critical gives High, warning gives Medium, info gives Low. Because Stock sync is now `critical`, step 4 "Improve catalog" is High whenever a Stock sync card is present; otherwise it is Medium when Low stock or Amazon listing warning is present, or Low when only Product type changed is. Steps 2 and 3 are always High when present. Step 1 is High unless Permission required is its only card, in which case it is Medium.
+The impact of each step in "Next best actions" is its worst card severity: critical gives High, warning gives Medium, info gives Low. Because Stock sync is now `critical`, step 4 "Improve catalog" is High whenever a Stock sync card is present; otherwise it is Medium when Low stock, Amazon listing warning, Buy Box lost or Buy Box at risk is present, or Low when only Product type changed is. Steps 2 and 3 are always High when present. Step 1 is High unless Permission required is its only card, in which case it is Medium.
 
 ## Display limits
 
