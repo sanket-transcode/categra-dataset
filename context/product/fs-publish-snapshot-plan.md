@@ -183,7 +183,13 @@ The `sync_in_progress` flag on `tbl_product_channel_marketplaces` / `tbl_variant
 | `variant_id`            | bigint null | null = parent/standalone scope                                                                           |
 | `channel_id`            | bigint      |                                                                                                          |
 | `amazon_marketplace_id` | bigint null | null for Shopify                                                                                         |
-| `selection`             | jsonb null  | `BaselineSelectionFilter` (`incremental/interface/incrementalSync.interface.ts`); **null = full publish**  |
+| `selection`             | jsonb null  | `PublishCaptureSelection` (below); **null = full publish**                                                 |
+
+`selection` shape: `PublishCaptureSelection = { attributeIds: number[]; variantAttributes: boolean; variantStructure: boolean; media: boolean; pricing: boolean; miscTypes: string[] }`.
+
+- It is derived from `BaselineSelectionFilter` (`incremental/interface/incrementalSync.interface.ts`) **once, at registration**, with Amazon `hierarchyIds` already resolved to the `attributeIds` they cover (merged into `attributeIds`). It carries no `hierarchyIds`.
+- **Why:** the edit-time coverage check (§4.2) is then plain flag / set membership. It needs no hierarchy lookup inside the user's edit transaction, and it uses the same resolution the payload builder used when the publish was created.
+- Not indexed: it is only read for scopes already found through the flag, and only in app code.
 
 Indexes: `(product_id)`, `(task_queue_id)`. No unique index: the flag check (§4.1) and the frontend already guarantee one task per scope.
 
@@ -198,11 +204,33 @@ Not stored on purpose: `account_id` (rows are found by `product_id` or `task_que
 | `product_id`    | bigint      |                                                                                                                                   |
 | `group`         | text        | one of `GlobalEnums.SYNC_BASELINE_GROUPS`                                                                                          |
 | `row_key`       | text        | deterministic identity of the captured row/value per group (§5)                                                                    |
-| `scope`         | jsonb null  | `{variantId, channelId, amazonMarketplaceId}` for groups captured per scope (misc, pricing, variant attrs, structure, media); null for attribute rows |
-| `publish_value` | jsonb null  | the value this publish sends (as at T0); **null = the row did not exist at T0** (an add after T0)                                                               |
-| `captured_at`   | timestamptz |                                                                                                                                   |
+| `variant_id`            | bigint null | scope the value belongs to (same meaning as in `tbl_publish_inflight_scopes`); null = parent/standalone |
+| `channel_id`            | bigint null | null = master (media only)                                                                        |
+| `amazon_marketplace_id` | bigint null | null for Shopify, and for media (no marketplace level)                                            |
+| `publish_value` | jsonb null  | the value this publish sends (as at T0), in the per-group shape below. **SQL NULL only for an attribute / variant-attribute row that did not exist at T0** (an add after T0) |
 
-Unique `(task_queue_id, group, row_key)`. Captures use `INSERT … ON CONFLICT DO NOTHING`, so the **first** capture after T0 wins and later edits never overwrite it.
+The scope columns are filled for the groups captured per scope (variant attributes, variant structure, misc, pricing, media). They stay **all null for attribute rows**: a captured attribute row is a product-level source row that feeds many scopes through inheritance, so its identity lives only in `row_key`.
+
+`publish_value` format rules:
+
+1. **One typed shape per group.** A TypeScript discriminated union `PublishSnapshotValue` (keyed by `group`) in `publish-snapshot/` types. Capture, overlay and the success-step replay all use it; no untyped `any`.
+2. **Same shape as the trigger's old values.** Each group stores exactly what its baseline trigger already passes as the old value. The replay (§4.4) can then hand `publish_value` straight back to the processors, whose equality checks (`isEqualValue`, `compareChangedData`) already handle that shape: prices as strings, dates as ISO strings. This avoids fake baselines from type mismatches such as `12.5` vs `'12.50'`.
+
+   | Group | `publish_value` |
+   |---|---|
+   | ATTRIBUTES | trimmed `oldAttributes` row, or SQL NULL if the row didn't exist at T0 |
+   | VARIANT_ATTRIBUTES | the `oldRecords` item (`VariantAttributeSyncOutOfSyncRecord` value part), or SQL NULL if it didn't exist at T0 |
+   | VARIANT_STRUCTURE | `{ oldVariantAttributeIds, oldMetaData }` |
+   | MEDIA | trimmed `oldMediaRecords` array plus `wasInherited`; an empty set is `[]` |
+   | MISC | `oldValueObj` (`MiscSyncBaselinePreviousSyncValue`) |
+   | PRICING | the old `pricingDetails` object |
+
+3. **Null means only "did not exist".** For variant structure, media, misc and pricing, `publish_value` is **never** SQL NULL. It is always the group's object or array, even when the fields inside it are empty (e.g. `{ conditionType: null }`, `[]`). Never rely on `'null'::jsonb` vs SQL NULL, because Sequelize blurs the two.
+4. **Trimmed rows.** Attribute and media rows keep only what the overlay and replay need: identity columns, value columns, `isInherited`, `sequence` (media: `digitalAssetsId`, `isMainImage`, `sequence`, `amazonUrl`, `shopifyExternalId`, as in `ProductMediaSnapshot`). No `id`, no `createdAt` / `updatedAt`, no joined objects.
+
+Unique `(task_queue_id, group, row_key)`. `row_key` still carries the full identity, including variant / channel / marketplace, so uniqueness needs no null-handling on the scope columns. Captures use `INSERT … ON CONFLICT DO NOTHING`, so the **first** capture after T0 wins and later edits never overwrite it.
+
+Index `(task_queue_id, product_id, "group", variant_id, channel_id, amazon_marketplace_id)`. It serves the overlay read ("this task, this product, this group, this scope"), `finalizeScope` (same filter), and per-product release (prefix `task_queue_id, product_id`). Release by task uses the leading `task_queue_id`.
 
 Both tables are transient. Rows are deleted at task finalisation (§7) and cascade if a task row is deleted.
 
@@ -220,7 +248,7 @@ New `PublishSnapshotService` in `modules/app/sync/baselines/publish-snapshot/` (
   - Shopify → `tbl_product_channels.sync_in_progress` (`shopify-product-fs.service.ts:330`). Shopify publishes the whole product, so this one flag also covers its variants. `tbl_product_variant_channels.sync_in_progress` is not set by Shopify FS today and is not needed for this.
 - `registerInflightScopes({ req, taskQueueId, scopes: { productId, variantId, channelId, amazonMarketplaceId, selection }[], transaction })`
   - Called exactly where the flags above are set to true, and in the **same transaction** as that flag update. The flag and the registry row then become visible together. Today those flag updates run without a transaction, so each site gets one wrapping the flag update + registry insert.
-  - Amazon selection comes from `ProductPublishPlan` → `MarketplacePublishPlan` (already in hand there) mapped through `SyncSelectionService.toBaselineFilter` (`incremental/sync-selection.service.ts`).
+  - Amazon selection comes from `ProductPublishPlan` → `MarketplacePublishPlan` (already in hand there) mapped through `SyncSelectionService.toBaselineFilter` (`incremental/sync-selection.service.ts`). It is then converted to `PublishCaptureSelection` (§3.1) by resolving `hierarchyIds` → `attributeIds` in one query per registration (not per scope).
   - Shopify selection = null (Shopify carries no partial logic yet, per [incremental-publish-decisions]).
 - **Overlap rejection (D5, D9).** Before creating the task, `assertNoInflightScopes(scopes)` checks the **flags**: any requested PCM / VM (Amazon) or PC (Shopify) with `sync_in_progress = true` means the scope is being published. The API then returns `publish_already_in_progress` (new i18n key) and no task is created. Today the webapp disables the button from these same flags; this moves the same rule to the server.
 - A flag left `true` by a crashed task blocks publishing that scope until the existing orphan paths reset it (§4.5). That is the same as the webapp button today.
@@ -296,18 +324,18 @@ A scope can also be released individually, at its own finalisation (where its fl
 
 ---
 
-## 5. Per-group capture key, coverage test, overlay
+## 5. Per-group capture key, selection coverage, overlay
 
 | Group                                  | Captured from (trigger payload)                                                                | `row_key`                                                                                     | Selection covers it when                                                                     | Overlay                                                                                     |
 | -------------------------------------- | ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| ATTRIBUTES                             | `oldAttributes` (ProductAttribute rows; absent row ⇒ `publish_value = null`)                       | `pag:{pagId}\|attr:{attributeId}\|v:{variantId?}\|ch:{channelId?}\|lang:{languageCode}`         | `selection` null, or `attributeId ∈ selection.attributeIds`, or its Amazon hierarchy ∈ `selection.hierarchyIds` | replace / remove / add `ProductAttribute` rows by key; the existing inheritance logic then resolves T0 effective values |
+| ATTRIBUTES                             | `oldAttributes` (ProductAttribute rows; absent row ⇒ `publish_value = null`)                       | `pag:{pagId}\|attr:{attributeId}\|v:{variantId?}\|ch:{channelId?}\|lang:{languageCode}`         | `selection` null, or `attributeId ∈ selection.attributeIds` (hierarchies already resolved at registration) | replace / remove / add `ProductAttribute` rows by key; the existing inheritance logic then resolves T0 effective values |
 | VARIANT_ATTRIBUTES                     | `oldRecords` (per scope + `productVariantAttributeId` + language)                               | `pva:{id}\|v:{variantId}\|ch\|mp\|lang`                                                        | `selection.variantAttributes`                                                                 | replace the value for that scope                                                            |
 | VARIANT_STRUCTURE                      | `oldVariantAttributeIds` + `oldMetaData` per scope                                              | `v:{variantId}\|ch\|mp`                                                                        | `selection.variantStructure`                                                                  | replace variant-attribute ids + wrapper/theme metadata for that scope                       |
 | MEDIA                                  | `oldMediaRecords` (+ `wasInherited`) per product/variant/channel                                | `v:{variantId?}\|ch:{channelId?}` (whole media set)                                            | `selection.media`                                                                             | replace the scope's whole media linker set                                                  |
 | MISC                                   | `oldValueObj` per scope + `baselineType`                                                        | `misc:{baselineType}\|v\|ch\|mp`                                                               | `baselineType ∈ selection.miscTypes`                                                          | replace those fields on PC/PCM/VC/VM read results                                           |
 | PRICING                                | `pricingDetails` (old) per scope + `priceType`                                                  | `price:{priceType}\|v\|ch\|mp`                                                                 | `selection.pricing`                                                                           | replace `pricingDetails` used for `purchasable_offer` / `list_price` / Shopify price       |
 
-**Phase-0 verification** (before coding the capture): for every call site, confirm that the old payload is a **complete** pre-edit image for the overlay (identity + all value columns + `isInherited`/`sequence`) and that deletions/additions are represented. Where it is not complete, read the live row(s) inside the transaction **before** the write and capture that instead. Price sites also pass ORM instances today. Use ids only (as the queue plan already requires).
+**Phase-0 verification** (before coding the capture): for every call site, confirm that the old payload is a **complete** pre-edit image for the overlay (identity + all value columns + `isInherited`/`sequence`) and that deletions/additions are represented. Where it is not complete, read the live row(s) inside the transaction **before** the write and capture that instead, converted to the §3.2 `publish_value` shape. Price sites also pass ORM instances today. Use ids only (as the queue plan already requires).
 
 ---
 
@@ -332,12 +360,12 @@ The user's solution-1 rules map onto these as follows. "Create baseline + Out of
 
 1. **P0, verification (no code):** the §5 completeness check per call site; `tbl_media_deletions.created_at`; confirm every Amazon/Shopify FS terminal path in §4.5; refresh the call-site table.
 2. **P1, schema:** migration with both tables (+ media deletions `created_at` if missing); entities `PublishInflightScope`, `PublishSnapshot`; barrel export.
-3. **P2, service:** `publish-snapshot/` module with `assertNoInflightScopes`, `registerInflightScopes`, `capture`, `loadForTask`, overlay helpers (pure functions, unit tested), `finalizeScope`, `releaseTask`. JSDoc on all functions (api rule).
+3. **P2, service:** `publish-snapshot/` module with `assertNoInflightScopes`, `registerInflightScopes`, `capture`, `loadForTask`, overlay helpers (pure functions), `finalizeScope`, `releaseTask`. JSDoc on all functions (api rule).
 4. **P3, T0 wiring:** overlap rejection by `sync_in_progress` flag + registration in the same transaction as the flag update, in Amazon (`publishProducts`, `syncStandAloneProduct`, `syncVariantOnAmazon`) and Shopify `publishProducts`. Add the i18n key `publish_already_in_progress`.
 5. **P4, capture wiring:** trigger service capture-before-enqueue; move after-commit triggers before commit / add pre-write capture for no-tx sites; six restore endpoints.
 6. **P5, overlay wiring:** the §4.3 read points for Amazon (bulk, variant, standalone) and Shopify, each following the live-then-snapshot read order; media deletion `createdAt < T0` filter.
 7. **P6, finalisation:** replace `before` at the four clear sites with `finalizeScope`; add `restrictToScopes` / `restrictToSelection` to the six processors; `releaseTask` in all §4.5 paths, in the same transaction as the `syncInProgress: false` resets.
-8. **P7, tests:** unit tests for the overlay helpers and `getBaselineMetrices` replay cases S1–S6; a spec for the `capture` coverage test against `BaselineSelectionFilter`.
+8. **No test spec files.** Do not add or change any `*.spec.ts` / e2e test files for this work. Verify scenarios S1–S6 (§6) manually against a running app instead.
 
 No webapp changes (D7). Errors from the overlap rejection surface through the existing publish error toast.
 
@@ -347,7 +375,7 @@ No webapp changes (D7). Errors from the overlap rejection surface through the ex
 
 - **Uncaptured write paths.** Any write that does not go through the baseline trigger or a restore endpoint (e.g. a bulk import or AI apply path that skips the trigger) leaks into the payload. Those paths already fail to create baselines today, so this is not a new gap. P0 should list them.
 - **Async baseline jobs vs. finalisation.** A normal `sync-baseline-out-of-sync` job from an in-flight edit can run *after* `finalizeScope`. Because the replay already left the baseline at prev=T0, the processors' existing-baseline branch keeps prev=T0 and the result converges. Ordering between two jobs for the same field is still unguarded (queue plan D3), which is unchanged.
-- **Variant structure** is the riskiest group to overlay: wrapper/theme decisions are spread across `processParentProductData`. Implement and test it last.
+- **Variant structure** is the riskiest group to overlay: wrapper/theme decisions are spread across `processParentProductData`. Implement it last.
 - **Performance.** The capture guard is one indexed query per edit. Snapshot rows exist only for products that are actually in flight *and* edited.
 - **Shopify FS** runs in one transaction per product (`shopify-product-fs-queue.service.ts` :749 commits after clear + reconcile). The replay should run after that commit, or inside the same transaction if the processors are given the transaction (they open their own today).
 
