@@ -1,51 +1,4 @@
-# Action Center (v1): how it works today
-
-> **Scope:** `webapp/` and `api/` only. This document explains what the page does as the code stands (read on 2026-09-29). No code was changed.
-> **Entry file:** `webapp/src/app/(index)/(menu-layout)/actionCenter/page.tsx`
-> **Depth rules used (agreed before writing):**
-> - Two render paths exist. The **Kanban board** (the default today) is explained in full. The **Compound workspace** (behind an env flag) is summarised.
-> - Upstream pipelines (readiness, sync errors, stock, prices, orders, Amazon events): every step, but summarised. Not line by line.
-> - Also in scope: the ways into `/actionCenter`, the `/actionCenter/issue/[rowId]` page, and the product-page Action Center drawer.
-> - Files that nothing imports are listed in an appendix only.
->
-> **Legend:** 🗄️ = database table · 🧠 = in-memory / Redis cache · 🌐 = external or non-DB source · 💾 = browser storage · ⚠️ = something odd seen while reading the code (not verified at runtime)
-
----
-
-## Contents
-
-1. [What the Action Center is](#1-what-the-action-center-is)
-2. [Page map at a glance](#2-page-map-at-a-glance)
-3. [How a user gets to the page](#3-how-a-user-gets-to-the-page)
-4. [Access control (webapp + API)](#4-access-control-webapp--api)
-5. [Core concepts](#5-core-concepts)
-6. [Page lifecycle (boot → render)](#6-page-lifecycle-boot--render)
-7. [API: endpoints and the shared snapshot](#7-api-endpoints-and-the-shared-snapshot)
-8. [Top chrome: header strip, toolbar, banners](#8-top-chrome-header-strip-toolbar-banners)
-9. [Filters panel](#9-filters-panel)
-10. [Ownership filter strip](#10-ownership-filter-strip)
-11. [Channel blockers section](#11-channel-blockers-section)
-12. [The Kanban board (lanes and cards)](#12-the-kanban-board-lanes-and-cards)
-13. [The insights rail (right column)](#13-the-insights-rail-right-column)
-14. [Running a card's action (execution flow)](#14-running-a-cards-action-execution-flow)
-15. [Workflow changes: move, mark solved, snooze (API)](#15-workflow-changes-move-mark-solved-snooze-api)
-16. [Ownership: assign, unassign, bulk assign](#16-ownership-assign-unassign-bulk-assign)
-17. [Dialogs: waiting reason, snoozed items, review variants](#17-dialogs-waiting-reason-snoozed-items-review-variants)
-18. [Empty, loading and error states](#18-empty-loading-and-error-states)
-19. [Issue detail page (`/actionCenter/issue/[rowId]`)](#19-issue-detail-page-actioncenterissuerowid)
-20. [Compound workspace (flag-gated, summary)](#20-compound-workspace-flag-gated-summary)
-21. [Product-page Action Center drawer](#21-product-page-action-center-drawer)
-22. [Upstream pipelines that produce the data](#22-upstream-pipelines-that-produce-the-data)
-23. [Reference: tables per section](#23-reference-tables-per-section)
-24. [Reference: non-DB sources, caches, flags, browser storage](#24-reference-non-db-sources-caches-flags-browser-storage)
-25. [Reference: every click target](#25-reference-every-click-target)
-26. [Observations seen while reading the code](#26-observations)
-27. [Appendix: files nothing imports](#27-appendix-files-nothing-imports)
-28. [File index](#28-file-index)
-
----
-
-## 1. What the Action Center is
+## 1. Core objective
 
 The Action Center (`/actionCenter`) is the **operational work queue**. The Command Center tells you *that* something is wrong. The Action Center lists each problem as a **ticket** (a "card") and lets the team work through it:
 
@@ -63,121 +16,66 @@ Key facts:
 - The page itself **does not fix data**. Its buttons **navigate** to the place where the fix happens (Pricing tab, Stock tab, Channel tab, Details tab, Sync errors tab, Channel Management).
 - It **does change workflow state**: moving cards between lanes, marking solved, snoozing, and assigning owners. These are stored in 🗄️ `tbl_action_center_issue_workflows`, 🗄️ `tbl_action_center_issue_assignments` and 🗄️ `tbl_action_center_lifecycle_events`.
 - The tickets are **computed on every read** from live catalog/channel data (SQL over products, listings, stock, prices, errors). There is no ticket table: a ticket exists while the problem exists. The workflow tables only remember *what the team did* with it.
-- The live page always runs in **Sales Operations** mode (`SALES_OPERATIONS`). A second mode, **Catalog Preparation**, exists in the API and is used by the product-page drawer (§21), but the page never switches to it.
+- The live page always runs in **Sales Operations** mode (`SALES_OPERATIONS`). A second mode, **Catalog Preparation**, exists in the API and is used by the product-page drawer (§9.2), but the page never switches to it.
+
+**Legend:** 🗄️ = database table · 🧠 = in-memory / Redis cache · 🌐 = external or non-DB source · 💾 = browser storage · ⚠️ = something odd seen while reading the code (not verified at runtime)
 
 ---
 
-## 2. Page map at a glance
+## 2. End-to-end flow (high level)
+
+The whole process in one pass, from the data that creates a ticket to the history that records its clearing.
 
 ```
-/actionCenter  (page.tsx → ActionCenterPermissionGate → ActionCenterMain in main.tsx)
-│
-├─ Sticky header strip
-│    ├─ "Workflow view" pill + one-line utility copy
-│    └─ ActionCenterViewToolbar
-│         ├─ Saved views menu (system + your own)            §8.2
-│         ├─ Refresh scope                                    §8.2
-│         ├─ Ownership switch: All / Mine / Unassigned        §8.2 (team accounts only)
-│         ├─ Teammate owner dropdown                          §8.2 (team accounts only)
-│         ├─ Filters (count badge)  → opens Filters panel     §9
-│         ├─ Active category chip (×)                         §8.2
-│         ├─ Snoozed (count)       → Snoozed dialog           §17.2
-│         └─ Export to CSV                                    §8.2
-│
-├─ RestrictedModeBanner (area = action-center)               §8.3
-├─ Filters panel (when open)                                 §9
-├─ Ownership filter strip (when an ownership filter is on)   §10
-├─ Channel blockers section (channel-level problems)         §11
-│
-└─ Body (one of):
-     ├─ Loading skeletons / setup empty state / error state  §18
-     └─ ActionCenterKanbanBoard                               §12
-          ├─ Lane: To do                  (OPEN)
-          ├─ Lane: In progress / waiting  (IN_PROGRESS)
-          ├─ Lane: Pending verification   (PENDING_VERIFICATION)
-          └─ Insights rail                                    §13
-               ├─ Category breakdown (ring + issue types list)
-               ├─ Resolution velocity (7 days)
-               ├─ Recently cleared (5)
-               └─ Recent activity (5, "See all" dialog)
-
-Overlays: waiting-reason dialog §17.1 · snoozed dialog §17.2 · review-variants modal §17.3 · assign-teammate dialog §16.3
-
-/actionCenter/issue/[rowId]?issueType=…&languageCode=…   → Issue detail page §19
+ Upstream pipelines (sync, stock, prices, readiness, orders, Amazon events)
+        │  write signals into catalog / channel tables                       §6.1
+        ▼
+ User opens /actionCenter ──► webapp gate, button permissions, API gates     §4
+        │
+        ▼
+ Page boot: restore view → POST workspace-shell → 3 × POST workflow-lane     §7.2
+        │
+        ▼
+ API builds the base snapshot (one shared build, cached 15 s)                §6.3
+   raw scope SQL → issue detection → one row per issue → score & sort
+   → workflow projection (reconcile stored status vs live data)
+   → assignment projection → Amazon event rows
+        │
+        ▼
+ Browser applies filters and renders blockers, 3 lanes, insights rail        §7.4–§7.7
+        │
+        ▼
+ User acts on a card                                                         §8
+   ├─ run action → auto-move to In progress → navigate to product tab /
+   │              channel settings (product page opens the drawer §9.2)
+   ├─ move / mark solved / snooze → workflow + lifecycle tables
+   └─ assign / unassign           → assignment table
+        │  snapshot cache cleared, silent reload
+        ▼
+ Later reads reconcile: issue gone → Cleared · still there → To do           §8.2.4
+        │
+        ▼
+ Lifecycle events feed Recently cleared, Resolution velocity, Recent activity §7.7
 ```
 
-When env `ACTION_CENTER_COMPOUND_PROJECTION_ENABLED` is on, the body is replaced by the **Compound workspace** (§20). It is off in `api/.env` today.
+| # | Stage | What happens | Details |
+|---|---|---|---|
+| 1 | Signals are produced | Sync, stock, pricing, readiness, order and Amazon-event pipelines write to catalog and channel tables. The Action Center only reads them. | §6.1 |
+| 2 | User enters | Sidebar, Command Center links, issue page or direct URL. Four access layers must pass. | §4 |
+| 3 | Page boots | Saved view or last context is restored, URL filters win, the shell loads, then the three lanes and the rail loaders run in parallel. | §7.2 |
+| 4 | Tickets are computed | SQL over listings, stock, prices, errors and readiness → one row per (product × scope × issue type) → priority score → sort. There is no ticket table. | §6.3 |
+| 5 | Stored state is overlaid | Lane status, personal snoozes and owners are projected onto the rows, and stale statuses are reconciled against live data. | §6.3.4 |
+| 6 | Page renders | Client-side filters, channel blockers, Kanban lanes and the insights rail. | §7.4–§7.7 |
+| 7 | User acts | Run the fix route, move between lanes, mark solved, snooze, assign. | §8 |
+| 8 | Verification loop | Next reads move Pending → Cleared or back to To do, reopen cleared tickets, and log lifecycle events for the rail. | §8.2.4 |
 
 ---
 
-## 3. How a user gets to the page
+## 3. Core concepts
 
-| From | Code | What is passed |
-|---|---|---|
-| **Sidebar** item "Action Center" | `webapp/src/app/(index)/(menu-layout)/_components/nav-container.tsx` (route `/actionCenter`, `permissions: ACTION_CENTER_ACCESS_PERMISSIONS`, `optional: true`) | Nothing. Shown when the user has `actionCenter.*` or `actionCenter.view` (any one is enough), or is owner/admin. |
-| **Command Center: NOW row** | `command-center/main.tsx` → `openActionCenter()` | `/actionCenter?mode=…&issueType=…&channelId=…&marketplaceId=…&languageCode=…&canonicalGroupKey=…` plus drill-down fields. Empty values are dropped. |
-| **Command Center: NEXT "Review"** | same | Same as NOW, plus `workflowStatus=OPEN`. |
-| **Command Center: STOCK rows** | same | `issueType=OUT_OF_STOCK` or `LOW_STOCK`, optional `channelId`, `marketplaceId`. |
-| **Issue detail page** "Back to Action Center" / breadcrumb | `action-center-issue-detail-page.tsx` | `/actionCenter` (plus any drill-down params that were on the URL). Also writes a "return target" so the board scrolls back to the same card (§6.6). |
-| **Coming back from a product page** | Browser back, or any link | A "return target" in 💾 `sessionStorage` is consumed and the card is re-focused (§6.6). |
-| **Direct URL** | — | Any of the URL params in §6.2. |
+The vocabulary the rest of the document uses.
 
-The Command Center's own explainer (`categra-dataset/context/command-center/command-center-v1-explained.md`, §10–§15) describes how those params are built.
-
-The page also changes some global chrome:
-- `TrialExpiredBanner` hides itself on `/actionCenter` and `/actionCenter/*`.
-- `BillingHeaderStatus` shows its payment/billing alerts in the header on this page.
-- The sidebar uses a different "desktop expanded" breakpoint on `/actionCenter*` (`sidebar.tsx`).
-
----
-
-## 4. Access control (webapp + API)
-
-There are four layers. All four must pass.
-
-### 4.1 Webapp gate: `ActionCenterPermissionGate`
-
-File: `actionCenter/_components/action-center-permission-gate.tsx`. Wraps both `/actionCenter` and `/actionCenter/issue/[rowId]`.
-
-1. Waits until `authStatus === 'ready'` and the user object is resolved. Renders nothing before that.
-2. `hasActionCenterAccessPermission(user)` (`webapp/src/lib/action-center-permissions.ts`): true for owner or administrator, or if the permissions list contains `actionCenter.*` or `actionCenter.view`.
-3. No access → `router.replace()` to the first page the user *can* open (`useNavigationViaPermission().findPath`).
-4. Inactive subscription (`getSubscriptionAccessUiState(packageResources).isInactiveAccount`) → renders `InactiveSubscriptionFeatureBlockedState feature="action-center"` instead of the page and sets the navbar title/breadcrumb.
-5. Otherwise renders the page.
-
-### 4.2 Webapp per-button permissions
-
-`main.tsx` removes buttons the user could not follow (`sanitizeQuickActionForPermissions`). A removed action falls back to the next route option, or to "Review issue".
-
-| Action type | Hidden unless the user has |
-|---|---|
-| `EDIT_PRICE` | `products.pricing` or `products.*` |
-| `UPDATE_STOCK`, `ADD_STOCK_IN_WAREHOUSE` | `stock.list` or `stock.*` |
-| `OPEN_ACCOUNT_CONNECTION_SETTINGS` | `channels.list` or `channels.*` |
-| `OPEN_CHANNEL_TAB` | `products.channels` or `products.*` |
-| `OPEN_ERROR_DETAILS` | `products.*` |
-| `FIX_IN_MASTER` | master (all-channel) access **and** `products.details` or `products.*` |
-| Fallback "open product overview" | `products.overview` or `products.*` |
-
-### 4.3 API gates (every endpoint)
-
-Controller: `api/apps/api-main/src/modules/app/system/operations/action-center/action-center.controller.ts`, mounted at `/action-center`.
-
-1. **`JwtAuthGuard`**: validates the token and also checks that the route is in the user's role routes. The route lists are in `api/.../common/security/permissions.data.ts`:
-   - `actionCenter.view` → overview, workspace-shell, workflow-lane, insights, recently-cleared, resolution-velocity, row-variants, **workflow**, remediation groups (GET + validate), lifecycle-candidate(s), listing-issue-detail, sync-correlation (and the Command Center endpoints).
-   - `actionCenter.assign` → **assignment**, and remediation **variant-operational-values** (the save).
-2. **`@RequiresSubscriptionCapabilities`**:
-   - `ACTION_CENTER_VIEW` on every read.
-   - `ACTION_CENTER_MUTATE` on `workflow`, `assignment`, and the remediation save. This capability is denied in restricted modes (trial expired, "phase 2A" hard-deny, inactive account). `updateWorkflow`/`updateAssignment` also re-assert it inside the service.
-   - A denial returns 403 with `data.code = 'SUBSCRIPTION_CAPABILITY_DENIED'`. The webapp swallows this code silently (no toast) and shows empty data.
-3. **Channel access scope** (`ActionCenterService.getChannelAccessScope` → `ChannelService.getUserWiseChannels`, 🧠 cached per user): `{ allowAllChannels, allowedChannelIds, canAccessMaster }`. Every SQL query adds `AND c.id IN (:allowedChannels)` (or `1 = 0` when the list is empty). Only master-access users can use Catalog Preparation mode or see source-data issues.
-4. **Ownership rules** (`resolveActionCenterCollaborationState`), see §16.1.
-
----
-
-## 5. Core concepts
-
-### 5.1 Modes
+### 3.1 Modes
 
 | Mode | Used by | What a row is |
 |---|---|---|
@@ -186,15 +84,15 @@ Controller: `api/apps/api-main/src/modules/app/system/operations/action-center/a
 
 `autoMode` is always `SALES_OPERATIONS`. A non-master user asking for Catalog Preparation silently gets Sales Operations.
 
-### 5.2 A row (ticket)
+### 3.2 A row (ticket)
 
-A row (`ScopeItem` in the API, `ActionCenterRow` in the webapp) is one **(product × scope × issue type)**. In Sales Operations each "separate" issue type gets its **own** row (see §7.4 step 7), so one product in one marketplace can produce several cards (e.g. *Missing price* and *Out of stock*).
+A row (`ScopeItem` in the API, `ActionCenterRow` in the webapp) is one **(product × scope × issue type)**. In Sales Operations each "separate" issue type gets its **own** row (see §6.3.2 step 8), so one product in one marketplace can produce several cards (e.g. *Missing price* and *Out of stock*).
 
 Row id: `productId:channelId|catalog:marketplaceId|base`, e.g. `812:4:1`. The same id is shared by the rows of different issue types, so the webapp keys rows by `id + topIssueType + languageCode`.
 
 Durable ticket identity (`buildActionCenterDurableTicketIdentity` in `actionCenter.lifecycle.ts`): account, mode, scope level (CHANNEL / PRODUCT / VARIANT), lifecycle family/subtype, product, channel, marketplace, variant, language, joined with `|`. Used to link workflow state and history.
 
-### 5.3 Issue types
+### 3.3 Issue types
 
 Defined in `ISSUE_PRIORITY` (`action-center.service.ts` ~L1332). Health comes from `BLOCKED_ISSUE_TYPES` / `AT_RISK_ISSUE_TYPES`. Priority group comes from `actionCenter.priority-ordering.ts`. The verification policy comes from `actionCenter.lifecycle.ts`.
 
@@ -226,15 +124,15 @@ Defined in `ISSUE_PRIORITY` (`action-center.service.ts` ~L1332). Health comes fr
 | `LOW_READINESS` | Low readiness | Needs attention | Readiness / content | Fix in master | Local runtime |
 | `SOURCE_DATA` | Source-data advisory | Needs attention | Informational advisory | Fix in master | Local runtime |
 
-- The three `BUY_BOX_*` / `PRICE_POLICY_BLOCKED` rows come **only** from Amazon events (§7.6).
+- The three `BUY_BOX_*` / `PRICE_POLICY_BLOCKED` rows come **only** from Amazon events (§6.5).
 - Source-data types (last five) appear only when `includeSourceDataIssues` is true (master access). The live page does **not** request them, so in practice the board shows channel issues only.
 - Labels can be overridden per target area by `getActionCenterOperationalIssueLabel` (`presentation/actionCenterPresentation.ts`) and by the Action Engine issue catalog.
 
-### 5.4 Health
+### 3.4 Health
 
 `BLOCKED` > `AT_RISK` > `NEEDS_ATTENTION` > `HEALTHY`. A row's health is the worst health of its issue types. Cards show it as a coloured left border and a severity chip.
 
-### 5.5 Workflow statuses
+### 3.5 Workflow statuses
 
 Two layers are stored in the same table 🗄️ `tbl_action_center_issue_workflows`:
 
@@ -255,9 +153,9 @@ The webapp shows **legacy names**:
 
 State can be kept **per variant**. For a row with variants, each affected variant can have its own status. The row then carries counts (`workflow.openCount / inProgressCount / pendingVerificationCount / closedCount / snoozedCount / totalCount`), and its displayed status is the first non-zero of: open → in progress → pending → closed → snoozed (`getPrimaryWorkflowStatusForRow`).
 
-### 5.6 Routing (where a button goes)
+### 3.6 Routing (where a button goes)
 
-Every row gets a `quickAction` (from the issue table in §5.3) and a `routing` object:
+Every row gets a `quickAction` (from the issue table in §3.3) and a `routing` object:
 
 1. Classify the top issue into a **target area** (e.g. PRICE, STOCK, LISTING) and a **responsible team**, using the Action Engine settings (`runtimeSettings.routing.legacyIssueClassifications`).
 2. Look up the target area's **CTA mapping**: primary, secondary and fallback **CTA templates**.
@@ -265,9 +163,9 @@ Every row gets a `quickAction` (from the issue table in §5.3) and a `routing` o
 4. Remove duplicates. The first available option is the **primary action**. The old `quickAction` is added as a **LEGACY_FALLBACK** option if it is different.
 5. If a configured option is unavailable: `fallbackNote` = "One configured route is not available in this scope yet…".
 
-The webapp re-runs the same resolution on the client (`_lib/cta-routing.ts`) and then applies §4.2 permission filtering.
+The webapp re-runs the same resolution on the client (`_lib/cta-routing.ts`) and then applies §4.2.2 permission filtering.
 
-### 5.7 Runtime settings (Action Engine)
+### 3.7 Runtime settings (Action Engine)
 
 `ActionEngineSettingsResolver.resolveSettingsOverview(accountId)` merges **platform defaults**, 🗄️ `tbl_action_engine_settings` rows with `scopeType = 'GLOBAL'`, and rows with `scopeType = 'ACCOUNT'`. They are edited from the admin backend (`modules/admin/action-engine`). If resolving fails, code defaults are used. The payload gives:
 
@@ -282,122 +180,174 @@ The webapp re-runs the same resolution on the client (`_lib/cta-routing.ts`) and
 
 ---
 
-## 6. Page lifecycle (boot → render)
+## 4. Access and entry points
 
-### 6.1 Mount order
+### 4.1 Ways into the page
 
-1. `page.tsx` sets metadata title "Action Center" and renders `ActionCenterPermissionGate` → `ActionCenterMain`.
-2. `ActionCenterMain` sets the navbar title and breadcrumb to "Action Center".
-3. It parses **URL filters** (§6.2) and the **operational drill-down** (`parseOperationalDrilldownContext`: `canonicalGroupKey` / `opGroupKey`, `opChannelId`, `opMarketplaceId`, `opProductId`, `opVariantId`, `opVariantSKU`, `languageCode`).
-4. It **restores UI state** from 💾 storage (§6.5), keyed by the user's profile link:
-   - active saved view → apply its snapshot, otherwise
-   - last context (filters, ownership filter, layout) → apply, otherwise
-   - defaults (no filters, ownership "All").
-   It also consumes any **return target** (§6.6). Then `initialUiStateReady = true`.
-5. If the URL carries filters, they **win** over restored state (`mergeActionCenterFiltersWithUrlSeed`) and the active saved view is cleared.
-6. `loadOverview()` runs (§6.3).
-
-### 6.2 URL params the page reads
-
-| Param | Effect |
-|---|---|
-| `channelId`, `marketplaceId` | Pre-set those filters |
-| `issueGroupKey` or `category` | Pre-set the issue **group** filter (clears `issueType`) |
-| `issueType` | Pre-set issue type (only if no group key); the group key is derived from it |
-| `health` | `BLOCKED` / `AT_RISK` / `NEEDS_ATTENTION` / `HEALTHY` |
-| `workflowStatus` | `OPEN` / `IN_PROGRESS` / `PENDING_VERIFICATION` |
-| `canonicalGroupKey` (+ `op*`) | Operational drill-down: only rows whose operational grouping matches are shown; passed on to product pages when a card is opened |
-
-`mode` from the Command Center link is ignored by the board (it always loads `SALES_OPERATIONS`).
-
-### 6.3 `loadOverview()`: the loading sequence
-
-```
-POST /action-center/workspace-shell  { mode: SALES_OPERATIONS }
-   │   (light: account state, permissions, collaboration, filter metadata,
-   │    runtime settings, channel blocker rows, empty-state hint, feature flags)
-   │
-   ├─ setup empty state? (no products / no connected channels and no blocker rows)
-   │     → show setup empty state, stop                                   §18
-   │
-   ├─ featureFlags.compoundProjection && !forceLegacyWorkspace ?
-   │     → POST /action-center/overview → Compound workspace              §20
-   │
-   └─ otherwise (default):
-         progressiveBoardEnabled = true
-         in parallel:
-           POST /action-center/workflow-lane { status: OPEN }
-           POST /action-center/workflow-lane { status: IN_PROGRESS }
-           POST /action-center/workflow-lane { status: PENDING_VERIFICATION }
-         each lane fills independently (own loading / error / retry)
-```
-
-After the shell arrives, three side loaders fire (effects on `overview` + applied filters):
-
-| Loader | Endpoint | Body | Re-runs when |
-|---|---|---|---|
-| `loadInsightsPanel` | `POST /action-center/insights` | mode, channelId, marketplaceId, issueType, includeSourceDataIssues | filters change |
-| `loadRecentlyCleared` | `POST /action-center/recently-cleared` | same + `assigneeUserId` (from ownership filter) + `limit: 5` | filters or ownership filter change |
-| `loadResolutionVelocity` | `POST /action-center/resolution-velocity` | mode, channelId, marketplaceId, assigneeUserId | channel/market or ownership filter change |
-
-Each loader uses a request-id ref, so a late response from an older request is dropped. All requests are "passive" (`ACTION_CENTER_PASSIVE_REQUEST_OPTIONS`). A 403 capability denial clears the section silently.
-
-**Filters are applied in the browser.** The lane requests carry no filters. Channel, market, issue type, health, workflow and category filters all run on the loaded rows (§9).
-
-### 6.4 Refresh triggers
-
-| Trigger | What happens |
-|---|---|
-| **Refresh scope** button | `loadOverview({ silent: true })` + toast "Action Center scope refreshed using persisted data". |
-| Window **focus** or tab becomes **visible** | Silent reload, at most once every 1.5 s. |
-| The current user's **profile link** changes | Silent reload. |
-| After any move, snooze, mark solved or assignment | Silent reload ("reconcile"). |
-| Lane error **Retry** | Reloads that one lane. |
-| Rail card **Retry** | Reloads that rail card's endpoint. |
-
-The API keeps a 🧠 15-second in-process snapshot cache (§7.3), so rapid reloads are cheap. Any successful workflow, assignment or remediation save **clears that cache**.
-
-### 6.5 What is remembered in the browser
-
-| Key | Storage | Holds |
+| From | Code | What is passed |
 |---|---|---|
-| `categra:action-center-saved-workflow-views:v1` | 💾 localStorage | Per user (profile-link scope key): your saved views + which view is active |
-| `categra:action-center-last-context:v1` | 💾 localStorage | Per user: last filters, ownership filter, selected owner, layout |
-| `categra:action-center-return-target:v1` | 💾 sessionStorage | Card to re-focus on return: rowId, issueType, languageCode, surface (`BOARD` / `REVIEW_ISSUE` / `ISSUE_DETAIL`) |
+| **Sidebar** item "Action Center" | `webapp/src/app/(index)/(menu-layout)/_components/nav-container.tsx` (route `/actionCenter`, `permissions: ACTION_CENTER_ACCESS_PERMISSIONS`, `optional: true`) | Nothing. Shown when the user has `actionCenter.*` or `actionCenter.view` (any one is enough), or is owner/admin. |
+| **Command Center: NOW row** | `command-center/main.tsx` → `openActionCenter()` | `/actionCenter?mode=…&issueType=…&channelId=…&marketplaceId=…&languageCode=…&canonicalGroupKey=…` plus drill-down fields. Empty values are dropped. |
+| **Command Center: NEXT "Review"** | same | Same as NOW, plus `workflowStatus=OPEN`. |
+| **Command Center: STOCK rows** | same | `issueType=OUT_OF_STOCK` or `LOW_STOCK`, optional `channelId`, `marketplaceId`. |
+| **Issue detail page** "Back to Action Center" / breadcrumb | `action-center-issue-detail-page.tsx` | `/actionCenter` (plus any drill-down params that were on the URL). Also writes a "return target" so the board scrolls back to the same card (§7.2.7). |
+| **Coming back from a product page** | Browser back, or any link | A "return target" in 💾 `sessionStorage` is consumed and the card is re-focused (§7.2.7). |
+| **Direct URL** | — | Any of the URL params in §7.2.2. |
 
-### 6.6 Return target (coming back to the same card)
+The Command Center's own explainer (`categra-dataset/context/command-center/command-center-v1-explained.md`, §10–§15) describes how those params are built.
 
-Before any navigation away (running an action, opening the issue page), the page writes a return target. On the next load, once lanes have finished loading:
+The page also changes some global chrome:
+- `TrialExpiredBanner` hides itself on `/actionCenter` and `/actionCenter/*`.
+- `BillingHeaderStatus` shows its payment/billing alerts in the header on this page.
+- The sidebar uses a different "desktop expanded" breakpoint on `/actionCenter*` (`sidebar.tsx`).
 
-- `ISSUE_DETAIL` → `router.replace()` back to that issue page.
-- `REVIEW_ISSUE` and the row has variants → reopens the review-variants modal (§17.3).
-- `BOARD` → scrolls the card (`[data-action-center-row-key]`) into the centre and focuses it.
-- If the row no longer exists but it is in "Recently cleared", the review modal opens on a synthetic row built from the history item.
+### 4.2 Access control (webapp + API)
 
-### 6.7 Body modes
+There are four layers. All four must pass.
 
-`bodyMode` decides what is drawn:
+#### 4.2.1 Webapp gate: `ActionCenterPermissionGate`
 
-| Mode | When | Rendered |
-|---|---|---|
-| `bootstrap-loading` | UI state not restored yet | Header skeleton + setup loading state |
-| `setup-decision-pending` | No overview yet, still loading | same |
-| `setup-empty` | No products, or no connected channels | Setup empty state (§18) |
-| `workflow-loading` | Any lane still loading | Toolbar + 3-lane skeleton |
-| `workflow-empty` | Various empty cases | Toolbar + an empty-state panel (§18) |
-| `workflow-ready` | Rows to show | Toolbar + board |
-| `error` | Load failed | `ActionCenterUnavailableState` |
+File: `actionCenter/_components/action-center-permission-gate.tsx`. Wraps both `/actionCenter` and `/actionCenter/issue/[rowId]`.
+
+1. Waits until `authStatus === 'ready'` and the user object is resolved. Renders nothing before that.
+2. `hasActionCenterAccessPermission(user)` (`webapp/src/lib/action-center-permissions.ts`): true for owner or administrator, or if the permissions list contains `actionCenter.*` or `actionCenter.view`.
+3. No access → `router.replace()` to the first page the user *can* open (`useNavigationViaPermission().findPath`).
+4. Inactive subscription (`getSubscriptionAccessUiState(packageResources).isInactiveAccount`) → renders `InactiveSubscriptionFeatureBlockedState feature="action-center"` instead of the page and sets the navbar title/breadcrumb.
+5. Otherwise renders the page.
+
+#### 4.2.2 Webapp per-button permissions
+
+`main.tsx` removes buttons the user could not follow (`sanitizeQuickActionForPermissions`). A removed action falls back to the next route option, or to "Review issue".
+
+| Action type | Hidden unless the user has |
+|---|---|
+| `EDIT_PRICE` | `products.pricing` or `products.*` |
+| `UPDATE_STOCK`, `ADD_STOCK_IN_WAREHOUSE` | `stock.list` or `stock.*` |
+| `OPEN_ACCOUNT_CONNECTION_SETTINGS` | `channels.list` or `channels.*` |
+| `OPEN_CHANNEL_TAB` | `products.channels` or `products.*` |
+| `OPEN_ERROR_DETAILS` | `products.*` |
+| `FIX_IN_MASTER` | master (all-channel) access **and** `products.details` or `products.*` |
+| Fallback "open product overview" | `products.overview` or `products.*` |
+
+#### 4.2.3 API gates (every endpoint)
+
+Controller: `api/apps/api-main/src/modules/app/system/operations/action-center/action-center.controller.ts`, mounted at `/action-center`.
+
+1. **`JwtAuthGuard`**: validates the token and also checks that the route is in the user's role routes. The route lists are in `api/.../common/security/permissions.data.ts`:
+   - `actionCenter.view` → overview, workspace-shell, workflow-lane, insights, recently-cleared, resolution-velocity, row-variants, **workflow**, remediation groups (GET + validate), lifecycle-candidate(s), listing-issue-detail, sync-correlation (and the Command Center endpoints).
+   - `actionCenter.assign` → **assignment**, and remediation **variant-operational-values** (the save).
+2. **`@RequiresSubscriptionCapabilities`**:
+   - `ACTION_CENTER_VIEW` on every read.
+   - `ACTION_CENTER_MUTATE` on `workflow`, `assignment`, and the remediation save. This capability is denied in restricted modes (trial expired, "phase 2A" hard-deny, inactive account). `updateWorkflow`/`updateAssignment` also re-assert it inside the service.
+   - A denial returns 403 with `data.code = 'SUBSCRIPTION_CAPABILITY_DENIED'`. The webapp swallows this code silently (no toast) and shows empty data.
+3. **Channel access scope** (`ActionCenterService.getChannelAccessScope` → `ChannelService.getUserWiseChannels`, 🧠 cached per user): `{ allowAllChannels, allowedChannelIds, canAccessMaster }`. Every SQL query adds `AND c.id IN (:allowedChannels)` (or `1 = 0` when the list is empty). Only master-access users can use Catalog Preparation mode or see source-data issues.
+4. **Ownership rules** (`resolveActionCenterCollaborationState`), see §8.3.1.
 
 ---
 
-## 7. API: endpoints and the shared snapshot
+## 5. Tables involved
 
-### 7.1 Module wiring
+Every table the Action Center reads or writes, grouped by purpose. Only the first group belongs to the Action Center. All other tables are owned by other features and are read only, except the three remediation-save writes noted (§9.2.4).
+
+### 5.1 Ticket state (owned by the Action Center)
+
+| Table | Why it is used | Access |
+|---|---|---|
+| 🗄️ `tbl_action_center_issue_workflows` | Shared lane status per ticket (`scope_user_id = 0`) and personal snoozes (`scope_user_id` = user). Raw SQL only, no entity. | Read / write |
+| 🗄️ `tbl_action_center_issue_assignments` | Ticket owner (`assignee_user_id`, `assigned_by`) per row or variant. Deleted when a ticket is cleared. | Read / write |
+| 🗄️ `tbl_action_center_lifecycle_events` | One row per shared status change (`from_status` → `to_status`, actor). Feeds the history rail and "Resolved" variants. | Read / write |
+| 🗄️ `tbl_amazon_event_action_center_materializations` | Buy Box and price-policy tickets produced by the Amazon events pipeline (§6.5). | Read (written by Amazon events) |
+| 🗄️ `tbl_action_engine_settings` | GLOBAL and ACCOUNT runtime settings: thresholds, reason catalogs, priority order, routing (§3.7). | Read (written by admin) |
+
+### 5.2 Selling scope and channels
+
+| Table | Why it is used | Access |
+|---|---|---|
+| 🗄️ `tbl_channels` | The account's Amazon/Shopify channels. Connection and mapping status produce channel blockers; also the channel filter. | Read |
+| 🗄️ `tbl_amazon_channels`, `tbl_amazon_channel_marketplaces`, `tbl_amazon_marketplaces` | Which Amazon marketplaces are connected and active: marketplace filter and Amazon scope rows. | Read |
+| 🗄️ `tbl_shopify_channels` | Shopify default currency for the price check. | Read |
+| 🗄️ `tbl_product_channels` | A product listed on a channel: Shopify scope rows, sync status and errors, `auto_publish_price`. | Read |
+| 🗄️ `tbl_product_channel_marketplaces` | A product listed in an Amazon marketplace: listing status, listing errors, searchable state. | Read |
+| 🗄️ `tbl_product_variant_channels` | Variants in a channel scope; Shopify `external_stock`. | Read / write (stock save) |
+| 🗄️ `tbl_variant_marketplaces` | Variants in an Amazon marketplace; `amazon_stock`. | Read / write (stock save) |
+
+### 5.3 Issue signals
+
+| Table | Why it is used | Access |
+|---|---|---|
+| 🗄️ `tbl_product_variant_prices` | Missing-price detection (sale, else offer price; channel-specific first, then master). | Read / write (price save) |
+| 🗄️ `tbl_currencies` | Currency of each scope's price. | Read |
+| 🗄️ `tbl_channel_product_warehouses`, `tbl_warehouse`, `tbl_warehouse_products` | Stock from mapped non-FBA warehouses. The low-stock threshold applies only when warehouses are mapped. | Read |
+| 🗄️ `tbl_amazon_fba_inventories` | FBA fulfillable stock. | Read |
+| 🗄️ `tbl_channel_product_errors` | Unresolved, not-ignored sync/listing errors → sync failed, listing issues, warnings; also the listing issue detail. | Read |
+| 🗄️ `tbl_readiness_values` | Readiness per scope → low readiness and content issues. | Read |
+| 🗄️ `tbl_readiness_configurations` | Minimum image count from the master "Primary media" rule (missing media). | Read |
+| 🗄️ `tbl_orders`, `tbl_order_items` | 7 d / 30 d sales for the business-impact boost only. | Read |
+
+### 5.4 Card content
+
+| Table | Why it is used | Access |
+|---|---|---|
+| 🗄️ `tbl_products` | Product count (setup empty state) and the filtered product set. | Read |
+| 🗄️ `tbl_product_attribute_groups`, `tbl_product_attributes`, `tbl_attributes` | Name, SKU and description on cards, missing-content checks, listing issue detail. | Read |
+| 🗄️ `tbl_product_variant_attributes`, `tbl_amazon_attribute_hierarchies` | Attribute context in the listing issue detail. | Read |
+| 🗄️ `tbl_product_categories`, `tbl_categories`, `tbl_category_translations` | Category name; a missing category counts as missing content. | Read |
+| 🗄️ `tbl_product_media_linkers`, `tbl_digital_assets` | Card thumbnail and media count. | Read |
+| 🗄️ `tbl_product_variants` | Variant counts and variant-level signals (issue page). | Read |
+| 🗄️ `tbl_account_configurations` | Account base language (default `en_US`). | Read |
+
+### 5.5 Users and access
+
+| Table | Why it is used | Access |
+|---|---|---|
+| 🗄️ `tbl_user_accounts`, `tbl_users`, `tbl_roles` | Team size (collaboration mode), fresh assign permission, assignee candidates, actor names. | Read |
+| 🗄️ `tbl_user_channels`, `tbl_role_channels` | Channels a teammate can access, to pick eligible assignees. | Read |
+| 🗄️ `tbl_attachments` | Owner and actor avatars. | Read |
+
+### 5.6 Drawer, sync and event detail
+
+| Table | Why it is used | Access |
+|---|---|---|
+| 🗄️ `tbl_task_queues` | Syncs started from the drawer carry `actionCenterSyncContext` in `raw_data` → sync correlation and lifecycle candidates. | Read |
+| 🗄️ `tbl_amazon_event_scope_identities`, `tbl_amazon_event_occurrences`, `tbl_amazon_event_normalized_observations`, `tbl_amazon_event_raw_messages` | Amazon event evidence in the listing issue detail and sync correlation. | Read |
+
+### 5.7 Compound workspace only
+
+| Table | Why it is used | Access |
+|---|---|---|
+| 🗄️ `tbl_channel_error_definitions` | Classifies provider errors into compound issue families. | Read |
+| 🗄️ `tbl_product_current_offers` | Buy Box evidence (price gap, Prime/FBA edge, freshness). | Read |
+
+---
+
+## 6. Backend: how tickets are computed
+
+### 6.1 Upstream pipelines that produce the data
+
+The Action Center only **reads** these. A short lifecycle for each:
+
+| Signal | Written by | Read as |
+|---|---|---|
+| **Channel connection & mapping** | Channel connect / OAuth, token refresh, attribute mapping flows | `tbl_channels.connection_status`, `attribute_mapping_status` → channel blockers |
+| **Product/variant listings** | Forward sync (Amazon JSON Listings Feed, Shopify FS) and backward sync (BS) | `tbl_product_channels`, `tbl_product_channel_marketplaces`, `tbl_product_variant_channels`, `tbl_variant_marketplaces` (`sync_status`, `has_sync_errors`, `external_status`, `listing_errors`, `asin`, `is_data_updated`) |
+| **Sync/listing errors** | Sync pipelines persist provider errors | `tbl_channel_product_errors` (severity, `mark_as_resolved`, `is_ignored`) |
+| **Stock** | Warehouse stock updates, FBA inventory sync, channel stock fetch | `tbl_warehouse_products`, `tbl_channel_product_warehouses`, `tbl_amazon_fba_inventories`, `amazon_stock` / `external_stock` |
+| **Prices** | Pricing tab edits, BS imports, Action Center remediation | `tbl_product_variant_prices` (`pricing_details` JSON) |
+| **Readiness** | Readiness engine (worker), triggered by product edits | `tbl_readiness_values` (+ `tbl_readiness_configurations`) |
+| **Orders** | Amazon/Shopify order sync | `tbl_orders`, `tbl_order_items` (business-impact boost only) |
+| **Amazon events** | SP-API notifications → raw → scope → projection → `AmazonEventsActionCenterMaterializationService.evaluateProjectionGenerationContext` (needs `AMAZON_EVENTS_ACTION_CENTER_MATERIALIZER_ENABLED`). Writes materializations and may also update `tbl_action_center_issue_workflows` / `tbl_action_center_lifecycle_events` | §6.5 |
+| **Sync correlation** | Syncs started from the drawer carry `actionCenterSyncContext` into `tbl_task_queues.raw_data` | `sync-correlation`, `lifecycle-candidate(s)` |
+| **Buy Box** (Compound) | Buy Box / offers fetch | `tbl_product_current_offers` |
+| **Action Engine settings** | Admin backend | `tbl_action_engine_settings` |
+
+### 6.2 Module, endpoints and errors
+
+#### 6.2.1 Module wiring
 
 - `ActionCenterModule` (`system/operations/action-center/action-center.module.ts`) provides `ActionCenterService`, `ActionCenterSyncCorrelationService`, `ActionCenterSyncEvaluationService`. It imports Channel, TaskQueue, BuyBox, ActionEngineSettings, AccountSubscriptions, SubscriptionCapability and Readiness modules.
 - `ActionCenterService` is also used by the Command Center (`getSalesOperationsSnapshot`) and by the Amazon events scope/materialization services.
 
-### 7.2 Endpoint list
+#### 6.2.2 Endpoint list
 
 All are under `/action-center`. All reads are `POST` (except one `GET`).
 
@@ -421,15 +371,17 @@ All are under `/action-center`. All reads are `POST` (except one `GET`).
 
 Response envelope: `{ status: 'success' | 'error', data, message }` (via `GlobalResponses.formatResponse`). On error the controller returns the `HttpException` status (or 500) with `data: null`.
 
-### 7.3 Caching
+#### 6.2.3 Error envelope and messages
 
-- 🧠 `progressiveSnapshotCache` (in-process `Map`, TTL **15 s**) holds the *base snapshot*. It is keyed by account, user, mode, search, channel, marketplace, product, health, issueType, includeSourceDataIssues, smartReview and the channel-access scope. An in-flight map stops duplicate builds, so the three lane requests share one build.
-- The cache is **cleared** after any successful workflow, assignment or remediation save.
-- Table-existence checks (`to_regclass`) for the workflow, assignment and lifecycle tables are cached for 15 s. If a table is missing, workflow features turn off gracefully (only the To do lane is offered).
+- Unknown errors → 500 with a fixed fallback text per endpoint ("Failed to load Action Center lane.").
+- Missing tables → 503 with "…unavailable until the latest database migration is applied."
+- Remediation errors also log the upstream payload and return `data: { upstreamStatus, error: 'upstream_error' }`.
 
-### 7.4 Building the base snapshot (`buildOverviewBaseSnapshot`)
+### 6.3 Building the base snapshot (`buildOverviewBaseSnapshot`)
 
 This is the core. Every read endpoint (overview, shell, lane, insights, detail) goes through it.
+
+#### 6.3.1 Context, metadata and channel blockers (steps 1–5)
 
 **Step 1: resolve request context.** Account, user, search, channel, marketplace, product, health, issueType, smartReview. Mode (non-master forced to Sales Operations). `includeSourceDataIssues` (master only; defaults to true only for Catalog Preparation). Compound flag (env + Sales mode).
 
@@ -440,19 +392,21 @@ This is the core. Every read endpoint (overview, shell, lane, insights, detail) 
 | `getAccountState` | 🗄️ `tbl_products`, `tbl_product_channels`, `tbl_channels`, `tbl_account_configurations` | products count, sales channels count, **connected** sales channels count (Amazon/Shopify only), base language (default `en_US`) |
 | `getFilterMetadata` | 🗄️ `tbl_channels`, `tbl_amazon_channels`, `tbl_amazon_channel_marketplaces`, `tbl_amazon_marketplaces` | channel list (active Amazon/Shopify), marketplace list (connected Amazon, active marketplaces) |
 | `getPrimaryMediaMinimum` | 🗄️ `tbl_readiness_configurations`, `tbl_attributes` | Min images from the account's master "Primary media" readiness rule |
-| `resolveActionCenterRuntimeSettings` | 🗄️ `tbl_action_engine_settings` | §5.7 |
-| `resolveActionCenterCollaborationState` | subscription (🌐 `AccountSubscriptionsService`), 🗄️ `tbl_user_accounts`, `tbl_users`, `tbl_roles` | §16.1 |
+| `resolveActionCenterRuntimeSettings` | 🗄️ `tbl_action_engine_settings` | §3.7 |
+| `resolveActionCenterCollaborationState` | subscription (🌐 `AccountSubscriptionsService`), 🗄️ `tbl_user_accounts`, `tbl_users`, `tbl_roles` | §8.3.1 |
 
 If ownership is readable, `getActionCenterAssigneeCandidates` is also loaded (🗄️ `tbl_user_accounts`, `tbl_users`, `tbl_roles`, `tbl_attachments`, `tbl_user_channels`, `tbl_role_channels`).
 
-**Step 3: filter metadata** gets modes, health states, the issue-type list (§5.3, relabelled), and workflow statuses (only "Open" if the workflow table is missing).
+**Step 3: filter metadata** gets modes, health states, the issue-type list (§3.3, relabelled), and workflow statuses (only "Open" if the workflow table is missing).
 
-**Step 4: channel blocker rows** (Sales mode, no product filter): see §11.1.
+**Step 4: channel blocker rows** (Sales mode, no product filter): see §7.5.1.
 
 **Step 5: stop early if the account has 0 products.**
 
+#### 6.3.2 Raw scope rows and issue detection (steps 6–8)
+
 **Step 6: raw scope rows.**
-- Sales Operations → `getSalesScopeRows`: one Shopify SQL and one Amazon SQL in parallel (§7.5), results concatenated.
+- Sales Operations → `getSalesScopeRows`: one Shopify SQL and one Amazon SQL in parallel (§6.4), results concatenated.
 - Catalog Preparation → `getCatalogScopeRows` (`buildCatalogQuery`): product name/SKU/description/category/identity, readiness (master, base language), media count, variant count, thumbnail.
 
 **Step 7: decorate each raw row** (`decorateScopeItem`):
@@ -462,10 +416,12 @@ If ownership is readable, `getActionCenterAssigneeCandidates` is also loaded (�
 - `missingAttributes` = low readiness and neither of the above.
 - **Shopify:** `missingPrice` (any priced item missing), `outOfStock` (any stock ≤ 0), `lowStock` (not out of stock and any stock ≤ threshold), `syncFailed` (sync status ERROR, `has_sync_errors`, or an unresolved product error), `outOfSync`, `channelWarning`.
 - **Amazon:** the same plus `amazonError` (listing errors / marketplace error rows), `amazonWarning`, `amazonNotSearchable` (not `DISCOVERABLE`), `amazonMissingOffer` (missing price **and** not `BUYABLE` **and** no Amazon error and not sync-failed), and `outOfSync` only once Amazon has reported a status.
-- Build `issueTypes` (§5.3 order). Drop the row if it has no operational issue and source-data issues are off.
+- Build `issueTypes` (§3.3 order). Drop the row if it has no operational issue and source-data issues are off.
 - Compute health, top issue (lowest issue rank within the priority group order), root-cause label (e.g. "Amazon - Germany", channel name, or "Fix in source data"), quick action, quick-win flag, **affected item count** (missing-price count, missing-stock count, low-stock count, or active variant count), and a **priority score**.
 
-**Step 8: split into one row per issue** (`expandDecoratedScopeItemRows`, Sales only). Each of the 14 "separate" sales issue types (§5.3 rows `MISSING_PRICE` … `AMAZON_MISSING_OFFER`) becomes its own row with its own health, count, ASIN list and score. Leftover (source-data) types are bundled into one extra row.
+**Step 8: split into one row per issue** (`expandDecoratedScopeItemRows`, Sales only). Each of the 14 "separate" sales issue types (§3.3 rows `MISSING_PRICE` … `AMAZON_MISSING_OFFER`) becomes its own row with its own health, count, ASIN list and score. Leftover (source-data) types are bundled into one extra row.
+
+#### 6.3.3 Scoring, sorting and filtering (steps 9–11)
 
 **Step 9: business-impact boost** (`applyBusinessImpactBoost`), if enabled in settings. Rows in the configured priority groups (never critical connection blockers) with sales > 0 get a boost by **percentile** of the chosen metric (orders, revenue or units; 7 d, 30 d, or 7 d + 30 d):
 
@@ -480,27 +436,31 @@ If ownership is readable, `getActionCenterAssigneeCandidates` is also loaded (�
 
 **Step 10: sort** (`sortScopeItems`): quick wins first only when `smartReview` is true (the page never sends it) → priority score ↓ → affected count ↓ → updated time ↓ → readiness ↑ → product name.
 
-**Step 11: filter** by requested issueType (matches the row's top issue) and health. Attach durable identity keys and runtime routing (§5.6).
+**Step 11: filter** by requested issueType (matches the row's top issue) and health. Attach durable identity keys and runtime routing (§3.6).
+
+#### 6.3.4 Workflow and assignment projection (steps 12–13)
 
 **Step 12: workflow projection** (`applyWorkflowProjection`), if the workflow table exists:
 1. Delete this user's **expired personal snoozes** (`snooze_until <= NOW()`).
 2. Load all overlays for the account + mode (shared rows + this user's snoozes).
 3. **Reconcile** each shared overlay against current truth:
-   - Overlay's issue no longer produces a row (or the variant is no longer affected): Pending → **Cleared**; Waiting → run the "likely fix" rules (§15.3); Cleared stays cleared. Personal/snooze overlays for vanished issues are **deleted**.
+   - Overlay's issue no longer produces a row (or the variant is no longer affected): Pending → **Cleared**; Waiting → run the "likely fix" rules (§8.2.3); Cleared stays cleared. Personal/snooze overlays for vanished issues are **deleted**.
    - Row still present but its evidence (`updatedAt`) is newer than the overlay, or a Pending overlay is **stale** (older than 6 h for sync issues or 12 h for provider issues): Pending → **To do** (issue still there) or **Cleared**; Cleared + issue back → **To do** (reopened).
-   - Every change is written in one transaction and logged as a lifecycle event (§15.4).
+   - Every change is written in one transaction and logged as a lifecycle event (§8.2.4).
 4. For rows with variants and variant-level overlays, load affected variants (`resolveRowVariantItemsInternal`) and count statuses per variant.
 5. Set each row's `workflow` counts, `workflowStatus`, `workflowUpdatedAt`, `workflowActor` (who made the last shared change; 🗄️ `tbl_users`, `tbl_attachments`), waiting reason code/note, and the personal snooze fields.
 
 **Step 13: assignment projection** (`applyAssignmentProjectionToRows`): reads 🗄️ `tbl_action_center_issue_assignments` for the rows and sets `ownerState` (UNASSIGNED / ASSIGNED / MIXED when variants have different owners), `owner`, `ownerAssignedBy`, `ownerAssignedAt`, `ownerWasReassigned`.
 
-**Step 14: Amazon event rows** (Sales mode, when enabled): §7.6. They are appended and the lists re-sorted.
+#### 6.3.5 Amazon event rows and per-endpoint output (steps 14–15)
+
+**Step 14: Amazon event rows** (Sales mode, when enabled): §6.5. They are appended and the lists re-sorted.
 
 **Step 15: per endpoint.**
 - `workflow-lane`: `filterProjectedRowsByStatus`: OPEN → `openCount > 0`, IN_PROGRESS → `inProgressCount > 0`, PENDING → `pendingVerificationCount > 0`. A row with mixed variant statuses can therefore appear in more than one lane.
 - `overview`: adds `summary` (counts per health, quick wins, …), `breakdowns` (per health / issue type / channel), `priorityActions` (top 10 by score), `recentActivity`, `emptyState` (`NO_PRODUCTS` / `NO_CHANNELS` / `NO_ISSUES` / `NO_RESULTS`). Channel blocker rows are included only for the OPEN/TODO status.
 
-### 7.5 What the sales SQL reads
+### 6.4 What the sales SQL reads
 
 Both queries share CTEs: base language, **filtered products** (account, not deleted/archived, accessible through an allowed channel, optional search on SKU / product name / product ASIN / variant ASIN), product attributes, category, media counts, main image, variant counts, and sales impact.
 
@@ -518,7 +478,7 @@ Both queries share CTEs: base language, **filtered products** (account, not dele
 | **ASIN lists** | — | Per-issue ASIN lists (missing price, stock, …) for card display |
 | **Sales impact** | `tbl_orders` × `tbl_order_items`: orders, units, revenue for 7 d and 30 d | same |
 
-### 7.6 Amazon event rows (`loadAmazonEventMaterializedRows`)
+### 6.5 Amazon event rows (`loadAmazonEventMaterializedRows`)
 
 Only when **all** of these are true (all default **off**): env `AMAZON_EVENTS_LIVE_ENABLED`, `AMAZON_EVENTS_ACTION_CENTER_ENABLED`, `AMAZON_EVENTS_ACTION_CENTER_RENDER_ENABLED`. Optional account and channel allowlists apply, and per-family flags (default on).
 
@@ -528,33 +488,182 @@ Only when **all** of these are true (all default **off**): env `AMAZON_EVENTS_LI
 4. Apply workflow and assignment projection.
 5. **Duplicate guard:** skip a Buy Box row if the same scope already shows a Buy Box duplicate/blocker issue type, and skip a price-policy row if a price-policy blocker is already visible. Order: price policy → excluded → lost.
 
-### 7.7 Error envelope and messages
+### 6.6 Caching
 
-- Unknown errors → 500 with a fixed fallback text per endpoint ("Failed to load Action Center lane.").
-- Missing tables → 503 with "…unavailable until the latest database migration is applied."
-- Remediation errors also log the upstream payload and return `data: { upstreamStatus, error: 'upstream_error' }`.
+- 🧠 `progressiveSnapshotCache` (in-process `Map`, TTL **15 s**) holds the *base snapshot*. It is keyed by account, user, mode, search, channel, marketplace, product, health, issueType, includeSourceDataIssues, smartReview and the channel-access scope. An in-flight map stops duplicate builds, so the three lane requests share one build.
+- The cache is **cleared** after any successful workflow, assignment or remediation save.
+- Table-existence checks (`to_regclass`) for the workflow, assignment and lifecycle tables are cached for 15 s. If a table is missing, workflow features turn off gracefully (only the To do lane is offered).
 
 ---
 
-## 8. Top chrome: header strip, toolbar, banners
+## 7. The page (webapp)
 
-### 8.1 Header strip
+### 7.1 Page map at a glance
+
+```
+/actionCenter  (page.tsx → ActionCenterPermissionGate → ActionCenterMain in main.tsx)
+│
+├─ Sticky header strip
+│    ├─ "Workflow view" pill + one-line utility copy
+│    └─ ActionCenterViewToolbar
+│         ├─ Saved views menu (system + your own)            §7.3.2
+│         ├─ Refresh scope                                    §7.3.2
+│         ├─ Ownership switch: All / Mine / Unassigned        §7.3.2 (team accounts only)
+│         ├─ Teammate owner dropdown                          §7.3.2 (team accounts only)
+│         ├─ Filters (count badge)  → opens Filters panel     §7.4.1
+│         ├─ Active category chip (×)                         §7.3.2
+│         ├─ Snoozed (count)       → Snoozed dialog           §8.4.2
+│         └─ Export to CSV                                    §7.3.2
+│
+├─ RestrictedModeBanner (area = action-center)               §7.3.3
+├─ Filters panel (when open)                                 §7.4.1
+├─ Ownership filter strip (when an ownership filter is on)   §7.4.2
+├─ Channel blockers section (channel-level problems)         §7.5
+│
+└─ Body (one of):
+     ├─ Loading skeletons / setup empty state / error state  §7.8
+     └─ ActionCenterKanbanBoard                               §7.6
+          ├─ Lane: To do                  (OPEN)
+          ├─ Lane: In progress / waiting  (IN_PROGRESS)
+          ├─ Lane: Pending verification   (PENDING_VERIFICATION)
+          └─ Insights rail                                    §7.7
+               ├─ Category breakdown (ring + issue types list)
+               ├─ Resolution velocity (7 days)
+               ├─ Recently cleared (5)
+               └─ Recent activity (5, "See all" dialog)
+
+Overlays: waiting-reason dialog §8.4.1 · snoozed dialog §8.4.2 · review-variants modal §8.4.3 · assign-teammate dialog §8.3.3
+
+/actionCenter/issue/[rowId]?issueType=…&languageCode=…   → Issue detail page §9.1
+```
+
+When env `ACTION_CENTER_COMPOUND_PROJECTION_ENABLED` is on, the body is replaced by the **Compound workspace** (§9.3). It is off in `api/.env` today.
+
+### 7.2 Page lifecycle (boot → render)
+
+#### 7.2.1 Mount order
+
+1. `page.tsx` sets metadata title "Action Center" and renders `ActionCenterPermissionGate` → `ActionCenterMain`.
+2. `ActionCenterMain` sets the navbar title and breadcrumb to "Action Center".
+3. It parses **URL filters** (§7.2.2) and the **operational drill-down** (`parseOperationalDrilldownContext`: `canonicalGroupKey` / `opGroupKey`, `opChannelId`, `opMarketplaceId`, `opProductId`, `opVariantId`, `opVariantSKU`, `languageCode`).
+4. It **restores UI state** from 💾 storage (§7.2.6), keyed by the user's profile link:
+   - active saved view → apply its snapshot, otherwise
+   - last context (filters, ownership filter, layout) → apply, otherwise
+   - defaults (no filters, ownership "All").
+   It also consumes any **return target** (§7.2.7). Then `initialUiStateReady = true`.
+5. If the URL carries filters, they **win** over restored state (`mergeActionCenterFiltersWithUrlSeed`) and the active saved view is cleared.
+6. `loadOverview()` runs (§7.2.3).
+
+#### 7.2.2 URL params the page reads
+
+| Param | Effect |
+|---|---|
+| `channelId`, `marketplaceId` | Pre-set those filters |
+| `issueGroupKey` or `category` | Pre-set the issue **group** filter (clears `issueType`) |
+| `issueType` | Pre-set issue type (only if no group key); the group key is derived from it |
+| `health` | `BLOCKED` / `AT_RISK` / `NEEDS_ATTENTION` / `HEALTHY` |
+| `workflowStatus` | `OPEN` / `IN_PROGRESS` / `PENDING_VERIFICATION` |
+| `canonicalGroupKey` (+ `op*`) | Operational drill-down: only rows whose operational grouping matches are shown; passed on to product pages when a card is opened |
+
+`mode` from the Command Center link is ignored by the board (it always loads `SALES_OPERATIONS`).
+
+#### 7.2.3 `loadOverview()`: the loading sequence
+
+```
+POST /action-center/workspace-shell  { mode: SALES_OPERATIONS }
+   │   (light: account state, permissions, collaboration, filter metadata,
+   │    runtime settings, channel blocker rows, empty-state hint, feature flags)
+   │
+   ├─ setup empty state? (no products / no connected channels and no blocker rows)
+   │     → show setup empty state, stop                                   §7.8
+   │
+   ├─ featureFlags.compoundProjection && !forceLegacyWorkspace ?
+   │     → POST /action-center/overview → Compound workspace              §9.3
+   │
+   └─ otherwise (default):
+         progressiveBoardEnabled = true
+         in parallel:
+           POST /action-center/workflow-lane { status: OPEN }
+           POST /action-center/workflow-lane { status: IN_PROGRESS }
+           POST /action-center/workflow-lane { status: PENDING_VERIFICATION }
+         each lane fills independently (own loading / error / retry)
+```
+
+After the shell arrives, three side loaders fire (effects on `overview` + applied filters):
+
+| Loader | Endpoint | Body | Re-runs when |
+|---|---|---|---|
+| `loadInsightsPanel` | `POST /action-center/insights` | mode, channelId, marketplaceId, issueType, includeSourceDataIssues | filters change |
+| `loadRecentlyCleared` | `POST /action-center/recently-cleared` | same + `assigneeUserId` (from ownership filter) + `limit: 5` | filters or ownership filter change |
+| `loadResolutionVelocity` | `POST /action-center/resolution-velocity` | mode, channelId, marketplaceId, assigneeUserId | channel/market or ownership filter change |
+
+Each loader uses a request-id ref, so a late response from an older request is dropped. All requests are "passive" (`ACTION_CENTER_PASSIVE_REQUEST_OPTIONS`). A 403 capability denial clears the section silently.
+
+**Filters are applied in the browser.** The lane requests carry no filters. Channel, market, issue type, health, workflow and category filters all run on the loaded rows (§7.4.1).
+
+#### 7.2.4 Body modes
+
+`bodyMode` decides what is drawn:
+
+| Mode | When | Rendered |
+|---|---|---|
+| `bootstrap-loading` | UI state not restored yet | Header skeleton + setup loading state |
+| `setup-decision-pending` | No overview yet, still loading | same |
+| `setup-empty` | No products, or no connected channels | Setup empty state (§7.8) |
+| `workflow-loading` | Any lane still loading | Toolbar + 3-lane skeleton |
+| `workflow-empty` | Various empty cases | Toolbar + an empty-state panel (§7.8) |
+| `workflow-ready` | Rows to show | Toolbar + board |
+| `error` | Load failed | `ActionCenterUnavailableState` |
+
+#### 7.2.5 Refresh triggers
+
+| Trigger | What happens |
+|---|---|
+| **Refresh scope** button | `loadOverview({ silent: true })` + toast "Action Center scope refreshed using persisted data". |
+| Window **focus** or tab becomes **visible** | Silent reload, at most once every 1.5 s. |
+| The current user's **profile link** changes | Silent reload. |
+| After any move, snooze, mark solved or assignment | Silent reload ("reconcile"). |
+| Lane error **Retry** | Reloads that one lane. |
+| Rail card **Retry** | Reloads that rail card's endpoint. |
+
+The API keeps a 🧠 15-second in-process snapshot cache (§6.6), so rapid reloads are cheap. Any successful workflow, assignment or remediation save **clears that cache**.
+
+#### 7.2.6 What is remembered in the browser
+
+| Key | Storage | Holds |
+|---|---|---|
+| `categra:action-center-saved-workflow-views:v1` | 💾 localStorage | Per user (profile-link scope key): your saved views + which view is active |
+| `categra:action-center-last-context:v1` | 💾 localStorage | Per user: last filters, ownership filter, selected owner, layout |
+| `categra:action-center-return-target:v1` | 💾 sessionStorage | Card to re-focus on return: rowId, issueType, languageCode, surface (`BOARD` / `REVIEW_ISSUE` / `ISSUE_DETAIL`) |
+
+#### 7.2.7 Return target (coming back to the same card)
+
+Before any navigation away (running an action, opening the issue page), the page writes a return target. On the next load, once lanes have finished loading:
+
+- `ISSUE_DETAIL` → `router.replace()` back to that issue page.
+- `REVIEW_ISSUE` and the row has variants → reopens the review-variants modal (§8.4.3).
+- `BOARD` → scrolls the card (`[data-action-center-row-key]`) into the centre and focuses it.
+- If the row no longer exists but it is in "Recently cleared", the review modal opens on a synthetic row built from the history item.
+
+### 7.3 Top chrome: header strip, toolbar, banners
+
+#### 7.3.1 Header strip
 
 A sticky rounded bar. Left: "Workflow view" pill + one line of copy (`ACTION_CENTER_UTILITY_STRIP_COPY`). Right: the toolbar.
 
-### 8.2 `ActionCenterViewToolbar`
+#### 7.3.2 `ActionCenterViewToolbar`
 
 File: `_components/action-center-view-toolbar.tsx`.
 
 | Control | Visible when | Click → |
 |---|---|---|
 | **Saved views** menu (`action-center-saved-views-menu.tsx`) | Always | Lists **Default workflow views** (system) and **Your saved views**. Selecting one applies its snapshot (filters + ownership + layout) and toasts "{label} applied". "Save current view" opens a name dialog (placeholder "My Amazon blockers") → a new user view in 💾 localStorage. "Update current saved view" / "Delete current saved view" only for your own views. |
-| **Refresh scope** | Always | Silent reload + toast (§6.4). |
-| **Ownership switch**: All / Mine / Unassigned | Team accounts where ownership is readable (§16.1) | Client-side ownership filter; also passed as `assigneeUserId` to Recently cleared and Resolution velocity. |
+| **Refresh scope** | Always | Silent reload + toast (§7.2.5). |
+| **Ownership switch**: All / Mine / Unassigned | Team accounts where ownership is readable (§8.3.1) | Client-side ownership filter; also passed as `assigneeUserId` to Recently cleared and Resolution velocity. |
 | **Teammate owner dropdown** | Same | "All owners" or a teammate → shows only that teammate's cards. |
-| **Filters** (count badge) | Always | Opens/closes the Filters panel (§9). |
+| **Filters** (count badge) | Always | Opens/closes the Filters panel (§7.4.1). |
 | **Category chip** with × | A category is focused (from the rail or the URL) | × clears the category filter. |
-| **Snoozed** (count) | `runtimeSettings.visibilityRail.snoozedAccessMode === 'RAIL_ACCESS'` | Opens the Snoozed dialog (§17.2). |
+| **Snoozed** (count) | `runtimeSettings.visibilityRail.snoozedAccessMode === 'RAIL_ACCESS'` | Opens the Snoozed dialog (§8.4.2). |
 | **Export to CSV** | At least one visible card | Downloads `action-center-workflow.csv` of the **visible** cards: Product, SKU, Identifier, Channel, Market, Issue, Health, Workflow, Listing status, Searchable, Suggested action, Updated. Built in the browser. |
 
 **System saved views** (`buildSystemSavedWorkflowViews`):
@@ -571,14 +680,14 @@ File: `_components/action-center-view-toolbar.tsx`.
 
 If the current state stops matching the active view's snapshot, the view is unmarked (it stays saved).
 
-### 8.3 Banners
+#### 7.3.3 Banners
 
-- **`RestrictedModeBanner area="action-center"`** (`components/restricted-mode/restricted-mode-banner.tsx`): shown in restricted subscription states. The copy says the Action Center stays visible but is read-only, or cleanup-only. Mutations fail with the capability denial (§4.3).
+- **`RestrictedModeBanner area="action-center"`** (`components/restricted-mode/restricted-mode-banner.tsx`): shown in restricted subscription states. The copy says the Action Center stays visible but is read-only, or cleanup-only. Mutations fail with the capability denial (§4.2.3).
 - **Header billing alerts** (`BillingHeaderStatus`): payment-failed and other subscription alerts.
 
----
+### 7.4 Filtering
 
-## 9. Filters panel
+#### 7.4.1 Filters panel
 
 File: `_components/action-center-filters-panel.tsx`. Opens under the header.
 
@@ -594,26 +703,22 @@ File: `_components/action-center-filters-panel.tsx`. Opens under the header.
 Buttons: **Clear all** (resets the draft only) and **Apply filters** (applies the draft, closes the panel, clears the active saved view, saves the last context).
 
 How filters apply (all client-side, `redesign.ts`):
-- Cards: `filterWorkflowRows` (channel, market, issue type, health, workflow) → drill-down filter (§6.2) → ownership filter (§10) → category filter (issue group).
+- Cards: `filterWorkflowRows` (channel, market, issue type, health, workflow) → drill-down filter (§7.2.2) → ownership filter (§7.4.2) → category filter (issue group).
 - Channel blockers: `filterChannelIssueRows`. **Any market filter hides all blockers**, and a workflow filter other than To do hides them.
 - Snoozed dialog: `filterSnoozedRows` (same filters, no workflow).
 - After each shell load, filter values that no longer exist (channel gone, market gone, unknown issue type) are dropped automatically.
 
----
-
-## 10. Ownership filter strip
+#### 7.4.2 Ownership filter strip
 
 Shown when ownership is readable and a filter other than "All" is on. Text examples: "Showing only workflow items currently assigned to you", "…unassigned…", "…owned by {teammate}". If nothing matches it also says so. **Clear ownership filter** resets to All.
 
 Filter logic (`filterRowsByOwnership` in `_lib/ownership-helpers.ts`): Mine = the owner is you. Unassigned = no owner. Teammate = the owner is that user.
 
----
-
-## 11. Channel blockers section
+### 7.5 Channel blockers section
 
 File: `_components/action-center-channel-blockers-section.tsx`. Title "Channel blockers" + count. Shown above the board whenever there are matching blocker rows.
 
-### 11.1 How the rows are built (API `getChannelIssueRows`)
+#### 7.5.1 How the rows are built (API `getChannelIssueRows`)
 
 1. Skipped when a marketplace is requested or the status is not OPEN/TODO.
 2. SQL on 🗄️ `tbl_channels` (account, not deleted, active, Amazon/Shopify, allowed) where connection is `NOT_CONNECTED`, `CONNECTION_LOST`, or `CONNECTED` with `attribute_mapping_status = INCOMPLETE`.
@@ -622,22 +727,20 @@ File: `_components/action-center-channel-blockers-section.tsx`. Title "Channel b
 
 These rows are **not workflow-managed**: always "Open", no drag, no owner.
 
-### 11.2 UI and click
+#### 7.5.2 UI and click
 
-Each row shows the channel icon/name, the current state ("Not connected", "Connection error", "Mapping incomplete"), a Blocked badge, and the button **Open connection settings** → `/channelManagement?channelId={id}`. The button is hidden without `channels.list`/`channels.*` (§4.2).
+Each row shows the channel icon/name, the current state ("Not connected", "Connection error", "Mapping incomplete"), a Blocked badge, and the button **Open connection settings** → `/channelManagement?channelId={id}`. The button is hidden without `channels.list`/`channels.*` (§4.2.2).
 
----
-
-## 12. The Kanban board (lanes and cards)
+### 7.6 The Kanban board (lanes and cards)
 
 File: `_components/action-center-kanban-board.tsx` (`ActionCenterKanbanBoard`). Uses `react-dnd` (HTML5 backend).
 
-### 12.1 Layout
+#### 7.6.1 Layout
 
 - **≥ 1680 px**: three equal lanes + a 320 px rail on the right. The board height is fitted to the window (minimum 540 px), and each lane scrolls on its own.
 - **< 1680 px**: lanes are 336 px wide and scroll sideways. The rail goes below.
 
-### 12.2 Lanes
+#### 7.6.2 Lanes
 
 | Lane | Status | Note under the title | Colour |
 |---|---|---|---|
@@ -645,7 +748,7 @@ File: `_components/action-center-kanban-board.tsx` (`ActionCenterKanbanBoard`). 
 | **In progress / waiting** | `IN_PROGRESS` | "Already being handled" | amber |
 | **Pending verification** | `PENDING_VERIFICATION` | "Waiting for sync check" | slate |
 
-Lane header: title, card count, "Loading" pill while loading, and **Assign visible lane** (only if you can assign and there are eligible teammates, §16.3).
+Lane header: title, card count, "Loading" pill while loading, and **Assign visible lane** (only if you can assign and there are eligible teammates, §8.3.3).
 
 Lane body:
 - Loading with no cards → skeleton. Error with no cards → error message + **Retry** (reloads that lane).
@@ -656,7 +759,7 @@ Lane body:
 - To do: cards never moved (no `workflowUpdatedAt`) first, by priority score ↓. Then cards moved back to To do, oldest move first.
 - Other lanes: oldest last change first, then priority score ↓.
 
-### 12.3 Card anatomy (`KanbanCardSurface`)
+#### 7.6.3 Card anatomy (`KanbanCardSurface`)
 
 ```
 ┌▌───────────────────────────────────────────────── [⋮] ┐   ▌ left border = health colour
@@ -671,7 +774,7 @@ Lane body:
 | Part | Content / source |
 |---|---|
 | Thumbnail | Main product image (`256x256_` from 🗄️ `tbl_digital_assets` via `tbl_product_media_linkers`), else a placeholder |
-| Issue badge | Display label of the top issue (§5.3), coloured by category |
+| Issue badge | Display label of the top issue (§3.3), coloured by category |
 | Variant count chip | "N variants" when the drill-down count is > 1 |
 | Info popover (i) | SKU, ASIN (or a list for several ASINs, with copy buttons), owner, ownership activity, last updated (absolute + relative) |
 | Product name | `productName`, clamped to 2 lines |
@@ -679,60 +782,76 @@ Lane body:
 | Footer left | Team account: avatar + owner name (or "Unassigned" / "Mixed owners") + relative time. Clicking opens the **ownership menu** (Assign to me / Assign to teammate / Unassign). Solo account: generic icon + "Unassigned" / "Mixed owners" / "Team activity". |
 | Primary CTA | Label of the routing primary action ("Edit price", "Update stock", "Open error details", …) |
 | ▾ **More routes** | The other available routing options + **Review issue** (only for rows with variants) |
-| ⋮ **Workflow menu** | §12.4 |
+| ⋮ **Workflow menu** | §7.6.4 |
 
-### 12.4 Card interactions
+#### 7.6.4 Card interactions
 
 | Interaction | Result |
 |---|---|
-| **Click the card** (or Enter/Space) | Row has variants → opens the **issue detail page** `/actionCenter/issue/{rowId}?issueType=…&languageCode=…` (§19). Otherwise → runs the primary action (§14). |
-| **Primary CTA** | Runs the primary action (§14). |
-| **More routes → option** | Runs that route's action (§14). |
-| **More routes → Review issue** | Issue detail page (§19). |
-| **Drag and drop** to another lane | Allowed only to lanes in `getAllowedWorkflowStatusesForRow` (Pending verification only if the row has a channel). Calls `handleMoveRow` (§15.1). While hovering, a "Drop here" slot marks the position (visual only; order is not saved). |
+| **Click the card** (or Enter/Space) | Row has variants → opens the **issue detail page** `/actionCenter/issue/{rowId}?issueType=…&languageCode=…` (§9.1). Otherwise → runs the primary action (§8.1). |
+| **Primary CTA** | Runs the primary action (§8.1). |
+| **More routes → option** | Runs that route's action (§8.1). |
+| **More routes → Review issue** | Issue detail page (§9.1). |
+| **Drag and drop** to another lane | Allowed only to lanes in `getAllowedWorkflowStatusesForRow` (Pending verification only if the row has a channel). Calls `handleMoveRow` (§8.2.1). While hovering, a "Drop here" slot marks the position (visual only; order is not saved). |
 | **⋮ → primary action** | Same as the CTA. |
-| **⋮ → Move to {lane}** | Move to **In progress** opens the **waiting-reason dialog** (§17.1). Other lanes move directly (§15.1). |
-| **⋮ → Mark solved** / "Mark all affected as solved" | Only in To do → `MARK_SOLVED` (§15.3). |
-| **⋮ → Snooze for me** | To do or Pending only. Presets from runtime settings (fallback 1, 2, 3, 7 days) or **Pick date** (calendar, not in the past) → `SNOOZE` (§15.5). |
+| **⋮ → Move to {lane}** | Move to **In progress** opens the **waiting-reason dialog** (§8.4.1). Other lanes move directly (§8.2.1). |
+| **⋮ → Mark solved** / "Mark all affected as solved" | Only in To do → `MARK_SOLVED` (§8.2.3). |
+| **⋮ → Snooze for me** | To do or Pending only. Presets from runtime settings (fallback 1, 2, 3, 7 days) or **Pick date** (calendar, not in the past) → `SNOOZE` (§8.2.5). |
 | **⋮ → Unsnooze** | Only when snoozed → `UNSNOOZE`. |
-| **⋮ → Ownership** | Assign to me / Assign to teammate (dialog, §16.3) / Unassign. |
+| **⋮ → Ownership** | Assign to me / Assign to teammate (dialog, §8.3.3) / Unassign. |
 
 Busy cards (a request in flight) are disabled.
 
----
-
-## 13. The insights rail (right column)
+### 7.7 The insights rail (right column)
 
 File: `_components/action-center-insights-panel.tsx`. Order from top: Category breakdown → Resolution velocity → Recently cleared → Recent activity.
 
-### 13.1 Category breakdown
+#### 7.7.1 Category breakdown
 
 - **Data:** the board rows after the filters and ownership filter, **before** the category filter (`breakdownRows = ownershipFilteredRows`). Computed in the browser.
 - **Ring chart**: each row's top issue is mapped to a category (`getActionCenterIssueCategory`: Pricing, Stock, Sync/"Verification", Listing, Media, Content) and shown as percentages.
 - **Issue types list**: groups by issue label (`getActionCenterIssueGroup`), with count, % of visible cards, and a bar.
 - **Click an issue type** → `handleSelectBreakdownIssueType`: toggles the **category filter** (`issueGroupKey`) on the board. Clicking again clears it. The toolbar chip appears. This is saved in the last context.
 
-### 13.2 Resolution velocity
+#### 7.7.2 Resolution velocity
 
 - **API** (`buildResolutionVelocity`): counts 🗄️ `tbl_action_center_lifecycle_events` with `to_status = 'CLEARED'`, grouped by UTC day. Covers 7 days up to today, plus the 7 days before. Filtered by allowed channels, channel, marketplace, and assignee (when an ownership filter is on and ownership is readable; else 403).
 - **UI**: "Cleared today N", a small daily bar chart, and a trend vs the previous period (delta and %; 100 % when the previous period is 0 and the current is > 0).
 - If both periods are 0: "No clears yet". Error → **Retry velocity**.
 
-### 13.3 Recently cleared
+#### 7.7.3 Recently cleared
 
 - **API** (`buildRecentlyClearedItems`): for each durable ticket, takes the **latest** lifecycle event. Keeps tickets whose latest event is `CLEARED` within the last **7 days**. Joined with product name/image/SKU, variant label, channel and marketplace names. Filters: mode, issue type, source-data exclusion, channel, marketplace, assignee. The page asks for **5**.
 - **UI**: up to 5 entries: issue label, product, SKU, scope, "from {previous status}", "Cleared by {actor}", time. Client-side also filters by category and ownership.
-- **Click** → opens the review-variants modal (§17.3) for the live row if it still exists, otherwise for a synthetic row built from the history item.
+- **Click** → opens the review-variants modal (§8.4.3) for the live row if it still exists, otherwise for a synthetic row built from the history item.
 
-### 13.4 Recent activity
+#### 7.7.4 Recent activity
 
 - **API** (`buildRecentActivity`, via `/insights`): lifecycle events from the last 7 days for the visible rows (and up to 96 recently cleared tickets), newest first, **max 96**. Each event has a status and an actor.
 - **UI**: 5 newest. Headlines: "{actor} moved {item} to In progress", "…to Pending", "cleared …", "returned … to To do". **See all** opens a dialog with up to 24.
 - **Click** → review-variants modal for the live row, else for the matching recently cleared item, else toast "This item is no longer available in the current review view".
 
+### 7.8 Empty, loading and error states
+
+| State | Trigger | Title | Buttons → |
+|---|---|---|---|
+| **No products** (setup) | 0 products | "Build your catalog foundation", with preview cards (pricing gaps, stock blockers, channel issues) and a 3-step checklist | **Create product** → `/products`; **Import from Amazon or Shopify** → `/channelManagement` |
+| **No channels** (setup) | Products exist, 0 connected sales channels, no blocker rows | "No sales channels are connected yet" | **Connect a sales channel** → `/channelManagement`; **Go to channels** → `/channelManagement` |
+| **No results** | Rows exist but the filters match none | "No workflow items match this view" | **Clear filters**; **Adjust filters** (opens panel); **Refresh scope** |
+| **No workflow rows** | Filters match, but every item is cleared or snoozed | "No workflow items need attention right now" | **Open snoozed** (if any) or **Review filters**; **Refresh scope** |
+| **No issues** (clean) | Nothing actionable | "Nothing needs attention right now" | **Refresh scope**; **Review filters** |
+| **Ownership no match** | Ownership filter hides everything | "No workflow items are assigned to you" (etc.) | **Show all work**; **Adjust filters**; **Refresh scope** |
+| **Category no match** | Category focus hides everything | "No visible cards match {category}" | **Show all categories** |
+| **Lane loading** | Lanes in flight | 3-lane skeleton + rail skeleton | — |
+| **Unavailable** (`ActionCenterUnavailableState`) | Shell load failed | "Action Center is taking a moment to reconnect", with reassurance copy (no catalog data changed; persisted data only) | **Try again** → `loadOverview()`; **Open Command Center** → `/command-center` |
+
+Empty states are skipped while the history rail still has content; the board is shown instead.
+
 ---
 
-## 14. Running a card's action (execution flow)
+## 8. Acting on tickets
+
+### 8.1 Running a card's action (execution flow)
 
 Entry points: card click (no variants), primary CTA, More routes option, variant row button, and the issue detail page buttons. All call `executeRowEntryPoint` (`main.tsx`).
 
@@ -743,10 +862,10 @@ Entry points: card click (no variants), primary CTA, More routes option, variant
 5. **Load issue detail** for `FIX_IN_MASTER`, `OPEN_CHANNEL_TAB` and `OPEN_ERROR_DETAILS`: `POST /action-center/listing-issue-detail` (no technical details). Its `fixSurface` can send you to a **different tab** than the action type suggests (e.g. an "Open channel tab" whose real fix is on the Details tab).
 6. **Build the remediation context** (`buildActionCenterRemediationContextFromInputs`) and the **operational drill-down** (from the row's `operationalGrouping` canonical key).
 7. **Guard:** stock/price actions on a row with **several** affected variants need a canonical group key. Without it: toast "stock/price remediation context unavailable", stop.
-8. **Resolve the href** (`getActionCenterQuickActionHref`, table in §14.1). No href → fall back to `/products/{id}?q=overview` if allowed, else toast "You do not have permission to open this destination".
-9. **Save the return target** (§6.6) and `router.push(href + ac*/op* params)`.
+8. **Resolve the href** (`getActionCenterQuickActionHref`, table in §8.1.1). No href → fall back to `/products/{id}?q=overview` if allowed, else toast "You do not have permission to open this destination".
+9. **Save the return target** (§7.2.7) and `router.push(href + ac*/op* params)`.
 
-### 14.1 Where each action type goes
+#### 8.1.1 Where each action type goes
 
 | Action type | Destination |
 |---|---|
@@ -765,13 +884,11 @@ Extra params added to the product URL:
 - `ac*` (remediation context): `acSource=action-center`, `acIssueKey`, `acIssueCorrelationKey`, `acRowId`, `acProductId`, `acChannelId`, `acMarketplaceId`, `acIssueType`, `acIssueDomain`, `acFixSurface`, `acVariantIds`, `acSkus`, `acAsins`, `acFields`, `acMediaSlots`, `acAffectedCount`, `acIssueTitle`, `acEvidenceSources`, `acEventPurposes`, `acFocus`, `acHighlight`, `acSession` (lists capped at 20 values).
 - `op*` (operational drill-down): `opGroupKey`, `opChannelId`, `opMarketplaceId`, `opProductId`, `opVariantId`, `opVariantSKU`.
 
-The product page uses these to highlight the fields and open the Action Center drawer (§21).
+The product page uses these to highlight the fields and open the Action Center drawer (§9.2).
 
----
+### 8.2 Workflow changes: move, mark solved, snooze (API)
 
-## 15. Workflow changes: move, mark solved, snooze (API)
-
-### 15.1 Webapp side: moving a card (`handleMoveRow`)
+#### 8.2.1 Webapp side: moving a card (`handleMoveRow`)
 
 1. Check the target lane is allowed. Otherwise toast "This item does not require pending verification".
 2. **Optimistic update:** the card jumps to the new lane immediately and is marked busy.
@@ -780,7 +897,7 @@ The product page uses these to highlight the fields and open the Action Center d
 5. `updated = 0` → revert, reload, toast ("cannot move…" / "cannot move to pending verification").
 6. Success → toast ("Moved to In progress / waiting", "Moved to pending verification", "Moved to To do"), then a silent reload to reconcile.
 
-### 15.2 API side: `updateWorkflow`
+#### 8.2.2 API side: `updateWorkflow`
 
 Body: `mode`, `action` (`MOVE` | `MARK_SOLVED` | `SNOOZE` | `UNSNOOZE`), `targets[]` (rowId, productId, issueType, variantId, channelId, marketplaceId, languageCode), `status`, `snoozeUntil`, `etaAt`, `reasonCode`, `note`, `referenceCode`, `assignToSelfIfUnassigned`.
 
@@ -796,10 +913,10 @@ Body: `mode`, `action` (`MOVE` | `MARK_SOLVED` | `SNOOZE` | `UNSNOOZE`), `target
 6. For each target:
    - **Can apply?** Sales mode: the channel must be accessible and active. Catalog mode: master access.
    - **Still present?** The issue (or the variant) must still be produced by the current data. Otherwise it is skipped.
-   - Then per action (§15.3–15.5), each inside a DB transaction.
+   - Then per action (§8.2.3–§8.2.5), each inside a DB transaction.
 7. If anything was updated → clear the snapshot cache.
 
-### 15.3 `MOVE` and `MARK_SOLVED`
+#### 8.2.3 `MOVE` and `MARK_SOLVED`
 
 **MOVE to a lane** (TODO / WAITING_BLOCKED / PENDING_VERIFICATION):
 - Pending is only allowed in Sales mode, with a channel, and not for stock issues unless a reason is given (`canUsePendingVerificationStep`).
@@ -807,7 +924,7 @@ Body: `mode`, `action` (`MOVE` | `MARK_SOLVED` | `SNOOZE` | `UNSNOOZE`), `target
 - If `assignToSelfIfUnassigned` and ownership is readable and there is no current owner → insert an assignment to self.
 - `transitionSharedWorkflowOverlay`: upsert the shared row (`scope_user_id = 0`) with the status, reason code/note (waiting/pending only), ETA and reference (waiting only), and `created_by`. Remove duplicates. If the status really changed, write a lifecycle event.
 
-**MARK_SOLVED** ("likely fix", `resolveWorkflowLikelyFixResolution`) uses the issue's verification policy (§5.3):
+**MARK_SOLVED** ("likely fix", `resolveWorkflowLikelyFixResolution`) uses the issue's verification policy (§3.3):
 
 | Policy | Issue still present? | Result |
 |---|---|---|
@@ -822,28 +939,26 @@ When the result is Cleared, the ticket's **assignments are deleted**.
 
 The webapp toast says "Marked solved and moved to pending verification" whenever the row has a channel. That is a client guess; the real result shows after the reload.
 
-### 15.4 Lifecycle events and later reconciliation
+#### 8.2.4 Lifecycle events and later reconciliation
 
-Every shared status change inserts a row into 🗄️ `tbl_action_center_lifecycle_events`: account, mode, durable identity, lifecycle family/subtype, issue type, row id, product/variant/channel/marketplace/language, `from_status`, `to_status`, actor, assignee, `occurred_at`. These rows feed the rail (§13) and the "Resolved" variants (§19).
+Every shared status change inserts a row into 🗄️ `tbl_action_center_lifecycle_events`: account, mode, durable identity, lifecycle family/subtype, issue type, row id, product/variant/channel/marketplace/language, `from_status`, `to_status`, actor, assignee, `occurred_at`. These rows feed the rail (§7.7) and the "Resolved" variants (§9.1).
 
-On every later read, the projection (§7.4 step 12) keeps statuses honest:
+On every later read, the projection (§6.3.4 step 12) keeps statuses honest:
 - **Pending verification** → **Cleared** when the issue disappears. → **To do** when it is still there after the stale window (6 h sync, 12 h provider) or when newer evidence arrives.
 - **Cleared** → **To do** (reopened) if the same issue comes back with newer evidence.
 - **Waiting** whose issue vanished → likely-fix rules.
 - Reconciliation changes use the original overlay's creator as the actor.
 
-### 15.5 `SNOOZE` / `UNSNOOZE`
+#### 8.2.5 `SNOOZE` / `UNSNOOZE`
 
 - **Snooze** is **personal**: an overlay with `scope_user_id = you`, status `SNOOZED`, `snooze_until`, optional reason/note. Your card leaves your lanes (its snoozed count equals its total). Teammates still see it.
 - Allowed from To do or Pending (webapp rule).
 - **Unsnooze** deletes your overlay for that target. Snoozes also end by themselves: expired ones are deleted on the next read or write.
 - Webapp toasts: "Snoozed", "Returned from snooze".
 
----
+### 8.3 Ownership: assign, unassign, bulk assign
 
-## 16. Ownership: assign, unassign, bulk assign
-
-### 16.1 When ownership exists (`resolveActionCenterCollaborationState`)
+#### 8.3.1 When ownership exists (`resolveActionCenterCollaborationState`)
 
 | Mode | Condition | Ownership |
 |---|---|---|
@@ -855,7 +970,7 @@ On every later read, the projection (§7.4 step 12) keeps statuses honest:
 - `assignmentAvailable` = readable **and** (owner, admin, or `actionCenter.*` / `actionCenter.assign`) → you can also assign others, unassign others, and bulk assign. The permission is re-read fresh from 🗄️ `tbl_user_accounts` / `tbl_roles` (a suspended or uninvited user gets none).
 - **Assignee candidates:** active users of the account who have master access (owner, admin role, user/role master flag) or at least one channel (`tbl_user_channels` / `tbl_role_channels`).
 
-### 16.2 API `updateAssignment`
+#### 8.3.2 API `updateAssignment`
 
 Body: `mode`, `action` (`ASSIGN` | `ASSIGN_TO_SELF` | `UNASSIGN`), `assigneeUserId`, `targets[]`.
 
@@ -866,7 +981,7 @@ Body: `mode`, `action` (`ASSIGN` | `ASSIGN_TO_SELF` | `UNASSIGN`), `assigneeUser
 5. Per target: `UNASSIGN` → delete the assignment(s). Otherwise, if the issue is still present for the assignee → upsert the assignment (`assignee_user_id`, `assigned_by`).
 6. Clear the snapshot cache.
 
-### 16.3 Webapp flows
+#### 8.3.3 Webapp flows
 
 | Action | Where | Request |
 |---|---|---|
@@ -875,13 +990,11 @@ Body: `mode`, `action` (`ASSIGN` | `ASSIGN_TO_SELF` | `UNASSIGN`), `assigneeUser
 | Assign to teammate | Same → **dialog** | Dialog lists **eligible** teammates (computed from the card's targets: `filterAssignmentCandidatesForTargets`). Shows the card context. **Assign teammate** → `ASSIGN`, toast "Assigned to {name}" |
 | Assign visible lane | Lane header → **dialog** | Same dialog for all visible cards of that lane → `ASSIGN` with all targets, toast "Assigned visible lane to {name}" |
 
-Targets are resolved as in §15.1 step 3. The update is optimistic (owner shown at once), then reconciled with a silent reload.
+Targets are resolved as in §8.2.1 step 3. The update is optimistic (owner shown at once), then reconciled with a silent reload.
 
----
+### 8.4 Dialogs: waiting reason, snoozed items, review variants
 
-## 17. Dialogs: waiting reason, snoozed items, review variants
-
-### 17.1 Waiting-reason dialog (`ActionCenterPreActionDialog`)
+#### 8.4.1 Waiting-reason dialog (`ActionCenterPreActionDialog`)
 
 Opened by **⋮ → Move to In progress / waiting** (board), by "Move to waiting" in the review modal, and by the issue detail page.
 
@@ -893,43 +1006,27 @@ Opened by **⋮ → Move to In progress / waiting** (board), by "Move to waiting
 
 The reason and note show on the card later (`workflowReasonCode` / `workflowReasonNote`).
 
-### 17.2 Snoozed dialog (`ActionCenterSnoozedDialog`)
+#### 8.4.2 Snoozed dialog (`ActionCenterSnoozedDialog`)
 
 Opened from the toolbar **Snoozed** button, or from the "No workflow rows" empty state. It lists **your** snoozed cards (`workflow.snoozedCount > 0` and `personalSnoozeUntil` set, current filters applied). Each shows product, issue, scope, owner, when snoozed, "returns {time}" / until date, reason and note. **Resume now** → `UNSNOOZE`.
 
-### 17.3 Review-variants modal (`ActionCenterVariantsModal`)
+#### 8.4.3 Review-variants modal (`ActionCenterVariantsModal`)
 
-Opened from **Recently cleared** / **Recent activity** clicks and by the return target (`REVIEW_ISSUE`). (A normal card click goes to the issue detail page instead, §19.)
+Opened from **Recently cleared** / **Recent activity** clicks and by the return target (`REVIEW_ISSUE`). (A normal card click goes to the issue detail page instead, §9.1.)
 
 - Loads `POST /action-center/row-variants` (forced reload).
 - Shows "What needs attention", the issue source, target area, "Best handled by" (responsible team), the recommended next step, counts (affected / active variants / ASINs), and the variant list (Active / Resolved).
-- Buttons: the primary fix route (**Open product** etc.), **More routes**, **Move to waiting** (opens §17.1). Variant rows have their own action buttons → §14 with that variant's action.
+- Buttons: the primary fix route (**Open product** etc.), **More routes**, **Move to waiting** (opens §8.4.1). Variant rows have their own action buttons → §8.1 with that variant's action.
 
 ---
 
-## 18. Empty, loading and error states
+## 9. Related surfaces
 
-| State | Trigger | Title | Buttons → |
-|---|---|---|---|
-| **No products** (setup) | 0 products | "Build your catalog foundation", with preview cards (pricing gaps, stock blockers, channel issues) and a 3-step checklist | **Create product** → `/products`; **Import from Amazon or Shopify** → `/channelManagement` |
-| **No channels** (setup) | Products exist, 0 connected sales channels, no blocker rows | "No sales channels are connected yet" | **Connect a sales channel** → `/channelManagement`; **Go to channels** → `/channelManagement` |
-| **No results** | Rows exist but the filters match none | "No workflow items match this view" | **Clear filters**; **Adjust filters** (opens panel); **Refresh scope** |
-| **No workflow rows** | Filters match, but every item is cleared or snoozed | "No workflow items need attention right now" | **Open snoozed** (if any) or **Review filters**; **Refresh scope** |
-| **No issues** (clean) | Nothing actionable | "Nothing needs attention right now" | **Refresh scope**; **Review filters** |
-| **Ownership no match** | Ownership filter hides everything | "No workflow items are assigned to you" (etc.) | **Show all work**; **Adjust filters**; **Refresh scope** |
-| **Category no match** | Category focus hides everything | "No visible cards match {category}" | **Show all categories** |
-| **Lane loading** | Lanes in flight | 3-lane skeleton + rail skeleton | — |
-| **Unavailable** (`ActionCenterUnavailableState`) | Shell load failed | "Action Center is taking a moment to reconnect", with reassurance copy (no catalog data changed; persisted data only) | **Try again** → `loadOverview()`; **Open Command Center** → `/command-center` |
-
-Empty states are skipped while the history rail still has content; the board is shown instead.
-
----
-
-## 19. Issue detail page (`/actionCenter/issue/[rowId]`)
+### 9.1 Issue detail page (`/actionCenter/issue/[rowId]`)
 
 Files: `actionCenter/issue/[rowId]/page.tsx` → `ActionCenterPermissionGate` → `ActionCenterIssueDetailPage` (`_components/action-center-issue-detail-page.tsx`). Metadata title from the `Review_Issue` translation.
 
-### 19.1 Data loading
+#### 9.1.1 Data loading
 
 1. Read `rowId` (path), `issueType` and `languageCode` (query), and any drill-down params.
 2. `POST /action-center/overview { mode: SALES_OPERATIONS }` (the **full** overview, not lanes).
@@ -940,46 +1037,28 @@ Files: `actionCenter/issue/[rowId]/page.tsx` → `ActionCenterPermissionGate` �
    - Each variant gets its own routing.
 5. Navbar title = product name. Breadcrumb: Action Center → this issue.
 
-### 19.2 UI
+#### 9.1.2 UI
 
 - **Header card**: back arrow (**Back to Action Center**), product thumbnail, product name, issue label, market flag, SKU and ASIN identifiers, variant/scope label ("N variants" or "Product-level scope"), workflow status.
-- **Buttons**: primary fix action; **Move to waiting** (dialog §17.1); **More routes** (other routes); **Refresh scope** (reload + toast "Issue detail refreshed").
+- **Buttons**: primary fix action; **Move to waiting** (dialog §8.4.1); **More routes** (other routes); **Refresh scope** (reload + toast "Issue detail refreshed").
 - **Affected variants panel** (`ActionCenterAffectedVariantsPanel`): filter chips **All / Active / Resolved** with counts. Each variant shows a thumbnail, name, SKU/ASIN, "Updated / Resolved {time}", its primary action, and **More routes**. Loading, error (**Retry**), stale-data warning, "no affected variants" and "no variants in this view" (**Show all variants**) states.
 - **Not found** (row no longer in scope): "Issue no longer in current Action Center scope", with **Back to Action Center** and **Refresh scope**.
 - **Load error**: "Issue detail unavailable" + **Back to Action Center**.
 
-### 19.3 Actions here
+#### 9.1.3 Actions here
 
-Same engine as the board (§14–§16): primary/variant actions (auto-move to In progress, navigate), move to waiting, assign/unassign. Back and navigation write a return target (surface `ISSUE_DETAIL` or `BOARD`), so the board can re-focus the card (§6.6).
+Same engine as the board (§8.1–§8.3): primary/variant actions (auto-move to In progress, navigate), move to waiting, assign/unassign. Back and navigation write a return target (surface `ISSUE_DETAIL` or `BOARD`), so the board can re-focus the card (§7.2.7).
 
----
-
-## 20. Compound workspace (flag-gated, summary)
-
-Enabled only when env `ACTION_CENTER_COMPOUND_PROJECTION_ENABLED` is `1/true/yes` (API) **and** mode is Sales Operations **and** the user has not picked the "Standard" layout in a saved view.
-
-**What changes:** the page calls `POST /action-center/overview` once and draws `ActionCenterCompoundWorkspace` (board `action-center-compound-board.tsx` + drawer `action-center-compound-drawer.tsx`) instead of the lanes and rail.
-
-**How the projection is built** (`buildCompoundProjection`):
-1. Load external evidence (Shopify/Amazon errors with 🗄️ `tbl_channel_product_errors` + `tbl_channel_error_definitions`) and Buy Box evidence (🗄️ `tbl_product_current_offers` via `BuyBoxService`).
-2. Create **child targets** from evidence (specific families such as missing/invalid required attributes, invalid media/content, listing rejected, compliance restriction) and from the normal scope rows (price, stock, sync…). The 26 families are listed in `COMPOUND_ISSUE_FAMILIES` (`actionCenter.compound.ts`).
-3. Apply workflow and assignment state, stock routing (preferred warehouse), and operational grouping.
-4. Group children into **parents** (per product/scope; competitive-pricing parents grouped separately). Compute parent health, status, owner summary and summary counts.
-
-**UI:** three lanes **TODO / WAITING_BLOCKED / PENDING_VERIFICATION** of parent cards. A drawer shows the parent checklist (visible targets, unresolved count, Buy Box competitor details: gap, Prime/FBA edge, data freshness). The same actions exist at parent level: move, clear, snooze/unsnooze, assign to me, assign to user, unassign, bulk-assign a lane, and run a child target (navigation as in §14.1). The toolbar hides export, snoozed access and the ownership switch in this mode.
-
----
-
-## 21. Product-page Action Center drawer
+### 9.2 Product-page Action Center drawer
 
 Files: `products/[product]/_components/action-center/` (`ProductActionCenterIssueDrawerLauncher.tsx`, `ProductActionCenterIssueDrawer.tsx` (~16.8k lines), `…EdgeTrigger.tsx`, `ProductActionContextActiveDestination.tsx`, `productActionContextLocalReadiness.ts`). Mounted on `/products/[product]` (`page.tsx` → `ProductActionCenterIssueDrawerLauncher`).
 
-### 21.1 Opening
+#### 9.2.1 Opening
 
 - An **edge trigger** on the product page shows three counters: **actions**, **signals**, **sync**. Hovering preloads the drawer code. Clicking opens it.
 - It **auto-opens** when the URL has an active remediation context (`acActive*`) or an operational drill-down (`op*` / `canonicalGroupKey`), i.e. when you arrived from an Action Center card. `ac*` params alone only preload it.
 
-### 21.2 Data it loads
+#### 9.2.2 Data it loads
 
 | Purpose | Request |
 |---|---|
@@ -994,11 +1073,11 @@ Files: `products/[product]/_components/action-center/` (`ProductActionCenterIssu
 | "Did the last sync fix it?" | `POST action-center/lifecycle-candidates` (batch) |
 | Sync the affected scope | `POST sync/product-syncing/sync-product-to-channel` with an `actionCenterSyncContext`, then opens the task manager |
 
-### 21.3 UI (high level)
+#### 9.2.3 UI (high level)
 
 Scope heading and counter chips; an **active remediation banner** (which card you came from, progress through targets, skip/next); issue context cards with **Next best action**; **Affected items** (sub-item cards per variant/SKU/ASIN); a **read-only / editable operational remediation panel** for stock and price groups; **Supporting details** and **Technical details** (collapsed); **Sync** / **Sync affected** / **Auto sync** with states "Sync required", "Syncing…", "Submitted, awaiting provider". 💾 sessionStorage keeps skipped targets and progress (`categra:product-action-context:*`).
 
-### 21.4 Remediation save (API `saveRemediationVariantOperationalValues`)
+#### 9.2.4 Remediation save (API `saveRemediationVariantOperationalValues`)
 
 1. Parse the canonical group key (`channel=…|marketplace=…|language=…|capability=…|issue=…|scope=variant`). Only `inventory/out-of-stock` and `pricing/missing-price` at variant scope are supported.
 2. Resolve the affected variants and their current values. Validate the drafts (numbers, stale-value check via `valueVersion` / `evidenceUpdatedAt`).
@@ -1009,70 +1088,42 @@ Scope heading and counter chips; an **active remediation banner** (which card yo
 5. Reload targets and return the refreshed context plus a save summary (saved / failed / stale / skipped / validation errors / remaining). The publish message depends on `auto_publish_price` (`tbl_product_channels` / `tbl_product_channel_marketplaces`).
 6. Log an audit JSON line and clear the snapshot cache.
 
----
+### 9.3 Compound workspace (flag-gated, summary)
 
-## 22. Upstream pipelines that produce the data
+Enabled only when env `ACTION_CENTER_COMPOUND_PROJECTION_ENABLED` is `1/true/yes` (API) **and** mode is Sales Operations **and** the user has not picked the "Standard" layout in a saved view.
 
-The Action Center only **reads** these. A short lifecycle for each:
+**What changes:** the page calls `POST /action-center/overview` once and draws `ActionCenterCompoundWorkspace` (board `action-center-compound-board.tsx` + drawer `action-center-compound-drawer.tsx`) instead of the lanes and rail.
 
-| Signal | Written by | Read as |
-|---|---|---|
-| **Channel connection & mapping** | Channel connect / OAuth, token refresh, attribute mapping flows | `tbl_channels.connection_status`, `attribute_mapping_status` → channel blockers |
-| **Product/variant listings** | Forward sync (Amazon JSON Listings Feed, Shopify FS) and backward sync (BS) | `tbl_product_channels`, `tbl_product_channel_marketplaces`, `tbl_product_variant_channels`, `tbl_variant_marketplaces` (`sync_status`, `has_sync_errors`, `external_status`, `listing_errors`, `asin`, `is_data_updated`) |
-| **Sync/listing errors** | Sync pipelines persist provider errors | `tbl_channel_product_errors` (severity, `mark_as_resolved`, `is_ignored`) |
-| **Stock** | Warehouse stock updates, FBA inventory sync, channel stock fetch | `tbl_warehouse_products`, `tbl_channel_product_warehouses`, `tbl_amazon_fba_inventories`, `amazon_stock` / `external_stock` |
-| **Prices** | Pricing tab edits, BS imports, Action Center remediation | `tbl_product_variant_prices` (`pricing_details` JSON) |
-| **Readiness** | Readiness engine (worker), triggered by product edits | `tbl_readiness_values` (+ `tbl_readiness_configurations`) |
-| **Orders** | Amazon/Shopify order sync | `tbl_orders`, `tbl_order_items` (business-impact boost only) |
-| **Amazon events** | SP-API notifications → raw → scope → projection → `AmazonEventsActionCenterMaterializationService.evaluateProjectionGenerationContext` (needs `AMAZON_EVENTS_ACTION_CENTER_MATERIALIZER_ENABLED`). Writes materializations and may also update `tbl_action_center_issue_workflows` / `tbl_action_center_lifecycle_events` | §7.6 |
-| **Sync correlation** | Syncs started from the drawer carry `actionCenterSyncContext` into `tbl_task_queues.raw_data` | `sync-correlation`, `lifecycle-candidate(s)` |
-| **Buy Box** (Compound) | Buy Box / offers fetch | `tbl_product_current_offers` |
-| **Action Engine settings** | Admin backend | `tbl_action_engine_settings` |
+**How the projection is built** (`buildCompoundProjection`):
+1. Load external evidence (Shopify/Amazon errors with 🗄️ `tbl_channel_product_errors` + `tbl_channel_error_definitions`) and Buy Box evidence (🗄️ `tbl_product_current_offers` via `BuyBoxService`).
+2. Create **child targets** from evidence (specific families such as missing/invalid required attributes, invalid media/content, listing rejected, compliance restriction) and from the normal scope rows (price, stock, sync…). The 26 families are listed in `COMPOUND_ISSUE_FAMILIES` (`actionCenter.compound.ts`).
+3. Apply workflow and assignment state, stock routing (preferred warehouse), and operational grouping.
+4. Group children into **parents** (per product/scope; competitive-pricing parents grouped separately). Compute parent health, status, owner summary and summary counts.
+
+**UI:** three lanes **TODO / WAITING_BLOCKED / PENDING_VERIFICATION** of parent cards. A drawer shows the parent checklist (visible targets, unresolved count, Buy Box competitor details: gap, Prime/FBA edge, data freshness). The same actions exist at parent level: move, clear, snooze/unsnooze, assign to me, assign to user, unassign, bulk-assign a lane, and run a child target (navigation as in §8.1.1). The toolbar hides export, snoozed access and the ownership switch in this mode.
 
 ---
 
-## 23. Reference: tables per section
+## 10. Reference
 
-| Section | Tables |
-|---|---|
-| Access & context (§4, §7.4 step 2) | `tbl_user_accounts`, `tbl_users`, `tbl_roles`, `tbl_user_channels`, `tbl_role_channels`, `tbl_attachments`; subscription via service |
-| Account state / filters | `tbl_products`, `tbl_product_channels`, `tbl_channels`, `tbl_account_configurations`, `tbl_amazon_channels`, `tbl_amazon_channel_marketplaces`, `tbl_amazon_marketplaces` |
-| Card content (name, SKU, image, category) | `tbl_product_attribute_groups`, `tbl_product_attributes`, `tbl_attributes`, `tbl_product_categories`, `tbl_categories`, `tbl_category_translations`, `tbl_product_media_linkers`, `tbl_digital_assets`, `tbl_product_variants` |
-| Issue detection (sales) | `tbl_product_channels`, `tbl_product_channel_marketplaces`, `tbl_product_variant_channels`, `tbl_variant_marketplaces`, `tbl_shopify_channels`, `tbl_currencies`, `tbl_product_variant_prices`, `tbl_channel_product_warehouses`, `tbl_warehouse`, `tbl_warehouse_products`, `tbl_amazon_fba_inventories`, `tbl_channel_product_errors`, `tbl_readiness_values`, `tbl_readiness_configurations` |
-| Business impact | `tbl_orders`, `tbl_order_items` |
-| Channel blockers (§11) | `tbl_channels` |
-| Workflow state (§15) | `tbl_action_center_issue_workflows` |
-| Ownership (§16) | `tbl_action_center_issue_assignments` (+ user tables above) |
-| History rail (§13), resolved variants (§19) | `tbl_action_center_lifecycle_events` (+ product/channel tables for labels) |
-| Runtime settings | `tbl_action_engine_settings` |
-| Amazon event rows (§7.6) | `tbl_amazon_event_action_center_materializations` |
-| Listing issue detail | `tbl_channel_product_errors`, `tbl_product_attributes`, `tbl_product_variant_attributes`, `tbl_attributes`, `tbl_amazon_attribute_hierarchies`, `tbl_product_channel_marketplaces`, `tbl_variant_marketplaces`, `tbl_amazon_event_action_center_materializations`, `tbl_amazon_event_scope_identities`, `tbl_amazon_event_occurrences`, `tbl_amazon_event_normalized_observations`, `tbl_amazon_event_raw_messages` |
-| Sync correlation / lifecycle candidates | `tbl_task_queues` (+ Amazon event tables) |
-| Remediation save (§21.4) | `tbl_variant_marketplaces`, `tbl_product_variant_channels`, `tbl_product_variant_prices`, `tbl_product_channels`, `tbl_product_channel_marketplaces`, `tbl_currencies` |
-| Compound only (§20) | `tbl_channel_error_definitions`, `tbl_product_current_offers` |
-
----
-
-## 24. Reference: non-DB sources, caches, flags, browser storage
+### 10.1 Non-DB sources, caches, flags, browser storage
 
 | Kind | Name | Effect |
 |---|---|---|
-| 🌐 env (API) | `ACTION_CENTER_COMPOUND_PROJECTION_ENABLED` | Turns on the Compound workspace (§20) |
-| 🌐 env (API) | `AMAZON_EVENTS_LIVE_ENABLED`, `AMAZON_EVENTS_ACTION_CENTER_ENABLED`, `AMAZON_EVENTS_ACTION_CENTER_RENDER_ENABLED`, `…_MATERIALIZER_ENABLED`, `…_ACCOUNT_ALLOWLIST`, `…_CHANNEL_ALLOWLIST`, per-family flags | Amazon event rows (§7.6, §22) |
+| 🌐 env (API) | `ACTION_CENTER_COMPOUND_PROJECTION_ENABLED` | Turns on the Compound workspace (§9.3) |
+| 🌐 env (API) | `AMAZON_EVENTS_LIVE_ENABLED`, `AMAZON_EVENTS_ACTION_CENTER_ENABLED`, `AMAZON_EVENTS_ACTION_CENTER_RENDER_ENABLED`, `…_MATERIALIZER_ENABLED`, `…_ACCOUNT_ALLOWLIST`, `…_CHANNEL_ALLOWLIST`, per-family flags | Amazon event rows (§6.5, §6.1) |
 | 🧠 API memory | `progressiveSnapshotCache` (15 s) + in-flight map | Shares one snapshot build between lane/insight requests (per API process) |
 | 🧠 API memory | table-availability checks (15 s) | Graceful behaviour when a migration is missing |
-| 🧠 Redis (via ChannelService) | user channel scope | Channel access (§4.3) |
+| 🧠 Redis (via ChannelService) | user channel scope | Channel access (§4.2.3) |
 | 🌐 service | `AccountSubscriptionsService`, `SubscriptionCapabilityService` | Team capability, capability gates |
 | 🌐 service | `ActionEngineSettingsResolver` | Runtime settings (+ code defaults) |
 | 🌐 service | `ReadinessTriggerService` | Readiness recalculation after a remediation save |
 | 💾 localStorage | `categra:action-center-saved-workflow-views:v1`, `categra:action-center-last-context:v1` | Saved views, last context |
 | 💾 sessionStorage | `categra:action-center-return-target:v1` | Return target |
-| 💾 sessionStorage | `categra:product-action-context:skipped-targets:*`, `…:target-progress:*`, `…:variant-workflow:*` | Drawer progress (§21) |
+| 💾 sessionStorage | `categra:product-action-context:skipped-targets:*`, `…:target-progress:*`, `…:variant-workflow:*` | Drawer progress (§9.2) |
 | Client state | Zustand `auth.store` (user, permissions, profile link), `global.store` (package resources), `navbar.store` (title/breadcrumbs) | Gates, avatars, chrome |
 
----
-
-## 25. Reference: every click target
+### 10.2 Every click target
 
 | # | Element | Where | Result |
 |---|---|---|---|
@@ -1088,7 +1139,7 @@ The Action Center only **reads** these. A short lifecycle for each:
 | 10 | Clear ownership filter | Ownership strip | Ownership = All |
 | 11 | Open connection settings | Channel blockers | `/channelManagement?channelId=` |
 | 12 | Card click | Board | Variants → issue page; else run action |
-| 13 | Primary CTA / More routes option | Card | §14 → product tab or channel management |
+| 13 | Primary CTA / More routes option | Card | §8.1 → product tab or channel management |
 | 14 | More routes → Review issue | Card | `/actionCenter/issue/{rowId}?issueType=&languageCode=` |
 | 15 | Drag to lane / ⋮ Move to | Card | `POST workflow MOVE` (In progress via menu → reason dialog) |
 | 16 | ⋮ Mark solved | Card (To do) | `POST workflow MARK_SOLVED` |
@@ -1108,11 +1159,30 @@ The Action Center only **reads** these. A short lifecycle for each:
 | 30 | Back to Action Center | Issue page | `/actionCenter` (+ return target) |
 | 31 | Move to waiting | Issue page, review modal, ⋮ | Reason dialog → `MOVE WAITING_BLOCKED` |
 | 32 | All / Active / Resolved | Issue page variants | Client filter |
-| 33 | Variant action / More routes | Issue page, review modal | §14 with the variant's action |
+| 33 | Variant action / More routes | Issue page, review modal | §8.1 with the variant's action |
+
+### 10.3 File index
+
+**Webapp**
+- Route: `webapp/src/app/(index)/(menu-layout)/actionCenter/page.tsx`, `main.tsx`, `issue/[rowId]/page.tsx`
+- Components (live): `_components/action-center-permission-gate.tsx`, `-view-toolbar.tsx`, `-saved-views-menu.tsx`, `-filters-panel.tsx`, `-channel-blockers-section.tsx`, `-kanban-board.tsx`, `-workflow-menu.tsx`, `-ownership-trigger.tsx`, `-value-popover.tsx`, `-inline-identifier.tsx`, `-asin-identifier.tsx`, `-product-thumbnail.tsx`, `-metadata-chip.tsx`, `-insights-panel.tsx`, `-pre-action-dialog.tsx`, `-snoozed-dialog.tsx`, `-variants-modal.tsx`, `-affected-variants-panel.tsx`, `-issue-detail-page.tsx`, `-empty-state.tsx`, `-unavailable-state.tsx`, `-compound-workspace.tsx`, `-compound-board.tsx`, `-compound-drawer.tsx`, `-compound-status-badge.tsx`, `health-badge.tsx`, `section-card.tsx`
+- Lib: `_lib/types.ts`, `redesign.ts`, `navigation.ts`, `cta-routing.ts`, `cta-display.ts`, `execution-gate.ts`, `issue-detail-route.ts`, `continuity-state.ts`, `workflow-saved-views.ts`, `ownership-helpers.ts`, `affected-variants-modal.ts`, `snooze-presets.ts`, `presentation.ts`, `presentation-contract.ts`, `compound-presentation.ts`, `pending-reason-options.ts`, `avatar.ts`, `dropdown-interactions.ts`
+- Shared: `webapp/src/lib/api.ts` (`GET_ACTION_CENTER_*`, `UPDATE_ACTION_CENTER_*`), `webapp/src/lib/action-center-permissions.ts`, `webapp/src/lib/action-center-remediation-navigation.ts`, `webapp/src/lib/subscription-restricted-mode.ts`, `webapp/src/components/restricted-mode/restricted-mode-banner.tsx`, `webapp/src/app/(index)/(menu-layout)/_components/nav-container.tsx`
+- Product drawer: `webapp/src/app/(index)/(menu-layout)/products/[product]/_components/action-center/*`
+- Entry from Command Center: `webapp/src/app/(index)/(menu-layout)/command-center/main.tsx` (`openActionCenter`)
+
+**API** (`api/apps/api-main/src/`)
+- `modules/app/system/operations/action-center/action-center.controller.ts`, `action-center.service.ts`, `action-center.module.ts`, `dto/action-center.dto.ts`
+- `actionCenter.lifecycle.ts` (statuses, verification policies, identity), `actionCenter.priority-ordering.ts` (groups), `actionCenter.compound.ts` (families), `presentation/actionCenterPresentation.ts` (labels)
+- `action-center-listing-issue-read-model.service.ts`, `action-center-remediation-policy.service.ts`, `action-center-sync-correlation.service.ts`, `action-center-sync-evaluation.service.ts`, `actionCenterSyncContext.ts`
+- `modules/app/system/operations/configuration/action-engine-settings/*` (runtime settings)
+- `modules/app/platforms/amazon/amazon-events-action-center-materialization/*`
+- `common/security/permissions.data.ts` (route permissions), `modules/app/commerce/billing/subscription-capabilities/*`
+- Entities: `actionCenterIssueAssignment.entity.ts`, `actionCenterLifecycleEvent.entity.ts`, `amazonEventActionCenterMaterialization*.entity.ts`, `ActionEngineSettings` (`tbl_action_engine_settings`). `tbl_action_center_issue_workflows` has **no entity** (raw SQL only; created by `db-migrations/src/database/migrations/20260327114000-create-action-center-issue-workflows.js`).
 
 ---
 
-## 26. Observations
+## 11. Observations
 
 ⚠️ = seen while reading, not verified at runtime.
 
@@ -1124,14 +1194,14 @@ The Action Center only **reads** these. A short lifecycle for each:
 6. ⚠️ **Hard-coded URL**: the drawer posts to `'action-center/lifecycle-candidates'` directly. That endpoint is not in `webapp/src/lib/api.ts` (the monorepo rule says URLs belong there).
 7. ⚠️ **Permission split**: moving, snoozing and marking solved need only `actionCenter.view`. The remediation value save needs `actionCenter.assign` (route list), although it is a data edit, not an assignment.
 8. ⚠️ `buildWorkspaceShellPayload` has a ternary whose two branches are identical (`channelIssueRows`).
-9. ⚠️ The "Marked solved and moved to pending verification" toast is decided on the client (row has a channel). The server may instead clear the ticket or return it to To do (§15.3).
+9. ⚠️ The "Marked solved and moved to pending verification" toast is decided on the client (row has a channel). The server may instead clear the ticket or return it to To do (§8.2.3).
 10. ⚠️ `lifecycle-candidates` (plural) returns 500 for every error, including bad input. The other endpoints map `HttpException` statuses.
 11. ⚠️ **Mixed variant statuses collapse to one card.** When a row's variants are in different statuses, the API returns it in several lane responses (lane filtering uses per-status counts > 0). The webapp then keeps one copy (`dedupeWorkflowRows`) and places it by the row's display status (first non-zero of open → in progress → pending). Example: 2 variants in To do and 1 In progress show as one To do card. The In-progress variant has no card of its own on the board and is only visible on the issue page.
 12. ⚠️ The live page never sends `includeSourceDataIssues`, so readiness/content issues never reach the board for any user. Only the drawer requests them.
 
 ---
 
-## 27. Appendix: files nothing imports
+## 12. Appendix: files nothing imports
 
 These files exist under `actionCenter/` but nothing in `webapp/src` imports them (so they never render):
 
@@ -1155,24 +1225,3 @@ These files exist under `actionCenter/` but nothing in `webapp/src` imports them
 | `_lib/saved-views.ts` | Old saved-views helper |
 
 Only used by the files above (so also never rendered): `_components/action-center-variant-drilldown.tsx`. `redesign.ts` also still exports list-view helpers (`sortRowsForActionList`, `partitionRowsForViews`, `buildBacklogGroups`, `buildContextualSavedViews`, `exportBacklogRowsToCsv`), and `normalizeActionCenterSubview` forces `KANBAN` ("List view is intentionally hidden for now").
-
----
-
-## 28. File index
-
-**Webapp**
-- Route: `webapp/src/app/(index)/(menu-layout)/actionCenter/page.tsx`, `main.tsx`, `issue/[rowId]/page.tsx`
-- Components (live): `_components/action-center-permission-gate.tsx`, `-view-toolbar.tsx`, `-saved-views-menu.tsx`, `-filters-panel.tsx`, `-channel-blockers-section.tsx`, `-kanban-board.tsx`, `-workflow-menu.tsx`, `-ownership-trigger.tsx`, `-value-popover.tsx`, `-inline-identifier.tsx`, `-asin-identifier.tsx`, `-product-thumbnail.tsx`, `-metadata-chip.tsx`, `-insights-panel.tsx`, `-pre-action-dialog.tsx`, `-snoozed-dialog.tsx`, `-variants-modal.tsx`, `-affected-variants-panel.tsx`, `-issue-detail-page.tsx`, `-empty-state.tsx`, `-unavailable-state.tsx`, `-compound-workspace.tsx`, `-compound-board.tsx`, `-compound-drawer.tsx`, `-compound-status-badge.tsx`, `health-badge.tsx`, `section-card.tsx`
-- Lib: `_lib/types.ts`, `redesign.ts`, `navigation.ts`, `cta-routing.ts`, `cta-display.ts`, `execution-gate.ts`, `issue-detail-route.ts`, `continuity-state.ts`, `workflow-saved-views.ts`, `ownership-helpers.ts`, `affected-variants-modal.ts`, `snooze-presets.ts`, `presentation.ts`, `presentation-contract.ts`, `compound-presentation.ts`, `pending-reason-options.ts`, `avatar.ts`, `dropdown-interactions.ts`
-- Shared: `webapp/src/lib/api.ts` (`GET_ACTION_CENTER_*`, `UPDATE_ACTION_CENTER_*`), `webapp/src/lib/action-center-permissions.ts`, `webapp/src/lib/action-center-remediation-navigation.ts`, `webapp/src/lib/subscription-restricted-mode.ts`, `webapp/src/components/restricted-mode/restricted-mode-banner.tsx`, `webapp/src/app/(index)/(menu-layout)/_components/nav-container.tsx`
-- Product drawer: `webapp/src/app/(index)/(menu-layout)/products/[product]/_components/action-center/*`
-- Entry from Command Center: `webapp/src/app/(index)/(menu-layout)/command-center/main.tsx` (`openActionCenter`)
-
-**API** (`api/apps/api-main/src/`)
-- `modules/app/system/operations/action-center/action-center.controller.ts`, `action-center.service.ts`, `action-center.module.ts`, `dto/action-center.dto.ts`
-- `actionCenter.lifecycle.ts` (statuses, verification policies, identity), `actionCenter.priority-ordering.ts` (groups), `actionCenter.compound.ts` (families), `presentation/actionCenterPresentation.ts` (labels)
-- `action-center-listing-issue-read-model.service.ts`, `action-center-remediation-policy.service.ts`, `action-center-sync-correlation.service.ts`, `action-center-sync-evaluation.service.ts`, `actionCenterSyncContext.ts`
-- `modules/app/system/operations/configuration/action-engine-settings/*` (runtime settings)
-- `modules/app/platforms/amazon/amazon-events-action-center-materialization/*`
-- `common/security/permissions.data.ts` (route permissions), `modules/app/commerce/billing/subscription-capabilities/*`
-- Entities: `actionCenterIssueAssignment.entity.ts`, `actionCenterLifecycleEvent.entity.ts`, `amazonEventActionCenterMaterialization*.entity.ts`, `ActionEngineSettings` (`tbl_action_engine_settings`). `tbl_action_center_issue_workflows` has **no entity** (raw SQL only; created by `db-migrations/src/database/migrations/20260327114000-create-action-center-issue-workflows.js`).
