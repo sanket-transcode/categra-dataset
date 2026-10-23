@@ -1,0 +1,805 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Action Center V2 Solutions</title>
+<style>
+:root {
+	--bg: #0b0d12;
+	--surface: #12151c;
+	--surface-2: #181c25;
+	--surface-3: #1f2430;
+	--text: #e8eaf0;
+	--muted: #a3a9b6;
+	--faint: #6f7685;
+	--border: #242a36;
+	--border-strong: #323949;
+	--accent: #8b8cff;
+	--accent-2: #5eead4;
+	--accent-soft: #23244a;
+	--accent-text: #c9c8ff;
+	--code-bg: #1d212b;
+	--code-text: #f5a8d4;
+	--diagram-bg: #080a0e;
+	--red: #ff8a80; --red-bg: #3a1618; --red-line: #ff5b4f;
+	--yellow: #f7c56b; --yellow-bg: #33270c; --yellow-line: #f0a929;
+	--blue: #8db6ff; --blue-bg: #14264a; --blue-line: #4b8bff;
+	--green: #77dba3; --green-bg: #0f2f1e;
+	--violet: #c4a8ff; --violet-bg: #2a1c4a;
+	--slate: #b3bccb; --slate-bg: #252a34;
+	--shadow: 0 1px 2px rgba(0,0,0,.35), 0 8px 28px rgba(0,0,0,.28);
+	color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+body {
+	margin: 0; background: var(--bg); color: var(--text);
+	font: 15px/1.65 Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+	-webkit-font-smoothing: antialiased;
+}
+body::before {
+	content: ""; position: fixed; inset: 0; pointer-events: none; z-index: -1;
+	background:
+		radial-gradient(900px 500px at 85% -10%, rgba(139,140,255,.10), transparent 60%),
+		radial-gradient(700px 400px at -10% 30%, rgba(94,234,212,.05), transparent 60%);
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+#progress { position: fixed; top: 0; left: 0; height: 3px; width: 0; background: linear-gradient(90deg, var(--accent), var(--accent-2)); z-index: 50; }
+
+.layout { display: grid; grid-template-columns: 290px minmax(0, 1fr); min-height: 100vh; }
+aside {
+	position: sticky; top: 0; height: 100vh; overflow-y: auto; border-right: 1px solid var(--border);
+	background: rgba(18,21,28,.85); backdrop-filter: blur(8px); padding: 22px 14px 40px;
+}
+.brand { display: flex; align-items: center; gap: 10px; padding: 0 8px 18px; }
+.brand-mark {
+	width: 32px; height: 32px; border-radius: 9px; color: #0b0d12; font-weight: 800; font-size: 13px;
+	display: grid; place-items: center; background: linear-gradient(135deg, var(--accent), var(--accent-2));
+}
+.brand-name { font-weight: 700; font-size: 14px; line-height: 1.2; }
+.brand-sub { color: var(--faint); font-size: 12px; }
+nav ul { list-style: none; margin: 0; padding: 0; }
+nav a { display: flex; gap: 8px; padding: 5px 8px; border-radius: 7px; color: var(--muted); font-size: 13px; line-height: 1.4; }
+nav a:hover { background: var(--surface-2); color: var(--text); text-decoration: none; }
+nav .num { color: var(--faint); min-width: 26px; font-size: 12px; padding-top: 1px; font-variant-numeric: tabular-nums; }
+.toc-l1 > a { font-weight: 600; color: var(--text); margin-top: 3px; }
+.toc-l1 > ul { padding-left: 12px; margin: 2px 0 6px 8px; border-left: 1px solid var(--border); }
+nav a.active { background: var(--accent-soft); color: var(--accent-text); }
+nav a.active .num { color: var(--accent-text); }
+
+main { padding: 40px clamp(16px, 4vw, 56px) 120px; max-width: 1160px; width: 100%; }
+.hero {
+	background: linear-gradient(160deg, #161a24, #11141b); border: 1px solid var(--border); border-radius: 20px;
+	padding: 34px 36px; box-shadow: var(--shadow); margin-bottom: 26px; position: relative; overflow: hidden;
+}
+.hero::after {
+	content: ""; position: absolute; right: -90px; top: -90px; width: 300px; height: 300px; border-radius: 50%;
+	background: radial-gradient(circle, rgba(139,140,255,.22), transparent 70%); pointer-events: none;
+}
+.eyebrow { text-transform: uppercase; letter-spacing: .09em; font-size: 12px; font-weight: 650; color: var(--accent-2); }
+.hero h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.15; margin: 8px 0 10px; letter-spacing: -.02em; }
+.hero p { color: var(--muted); max-width: 760px; margin: 0 0 18px; font-size: 16px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { border: 1px solid var(--border); background: var(--surface-2); border-radius: 999px; padding: 4px 11px; font-size: 12.5px; color: var(--muted); }
+.chip b { color: var(--text); font-weight: 600; }
+
+.verdicts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 0 0 26px; }
+.verdict {
+	background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px 20px 18px;
+	box-shadow: var(--shadow); position: relative; overflow: hidden;
+}
+.verdict::before { content: ""; position: absolute; left: 0; top: 0; right: 0; height: 3px; background: var(--vc, var(--accent)); }
+.verdict .q { font-size: 12px; text-transform: uppercase; letter-spacing: .07em; color: var(--faint); font-weight: 650; }
+.verdict .a { font-size: 18px; font-weight: 700; margin: 6px 0 8px; line-height: 1.3; }
+.verdict p { color: var(--muted); font-size: 13.5px; margin: 0 0 10px; }
+.verdict a { font-size: 13px; font-weight: 600; }
+
+.doc-section {
+	background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 30px 36px 26px;
+	margin-bottom: 24px; box-shadow: var(--shadow);
+}
+h2, h3, h4 { letter-spacing: -.01em; }
+h2 { font-size: 25px; line-height: 1.25; margin: 0 0 16px; display: flex; align-items: center; gap: 12px; }
+h2 .num {
+	color: #0b0d12; border-radius: 10px; min-width: 36px; height: 36px; padding: 0 8px;
+	display: inline-grid; place-items: center; font-size: 15px; font-weight: 800;
+	background: linear-gradient(135deg, var(--accent), var(--accent-2));
+}
+h3 { font-size: 18.5px; margin: 34px 0 12px; padding-top: 22px; border-top: 1px solid var(--border); display: flex; gap: 10px; align-items: baseline; }
+h3 .num { color: var(--accent); font-weight: 700; font-size: 15px; }
+h4 { font-size: 15.5px; margin: 24px 0 10px; display: flex; gap: 9px; align-items: baseline; }
+h4 .num { color: var(--accent-text); background: var(--accent-soft); border-radius: 6px; padding: 1px 7px; font-size: 12px; font-weight: 600; }
+.lead { color: var(--muted); font-size: 15.5px; margin-top: -6px; }
+
+p { margin: 0 0 14px; }
+ul, ol { margin: 0 0 16px; padding-left: 22px; }
+li { margin: 4px 0; }
+li::marker { color: var(--faint); }
+strong { font-weight: 650; color: #f3f4f8; }
+code {
+	font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Consolas, monospace; font-size: .84em;
+	background: var(--code-bg); color: var(--code-text); padding: 1.5px 5px; border-radius: 5px; overflow-wrap: anywhere;
+}
+a.ref { font-size: .86em; font-weight: 600; background: var(--accent-soft); color: var(--accent-text); padding: 1px 6px; border-radius: 5px; white-space: nowrap; }
+a.ref:hover { text-decoration: none; filter: brightness(1.1); }
+
+.table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; margin: 6px 0 20px; }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; line-height: 1.5; }
+th {
+	text-align: left; background: var(--surface-2); color: var(--muted); font-weight: 600; font-size: 11.5px;
+	text-transform: uppercase; letter-spacing: .05em; padding: 10px 14px; border-bottom: 1px solid var(--border); white-space: nowrap;
+}
+td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+tbody tr:hover td { background: rgba(255,255,255,.015); }
+td:first-child { font-weight: 500; }
+td code { overflow-wrap: normal; }
+td.win { color: var(--green); }
+td.lose { color: var(--muted); }
+
+.pill { display: inline-block; padding: 1px 9px; border-radius: 999px; font-size: 12px; font-weight: 650; white-space: nowrap; }
+.pill-red { background: var(--red-bg); color: var(--red); }
+.pill-yellow { background: var(--yellow-bg); color: var(--yellow); }
+.pill-blue { background: var(--blue-bg); color: var(--blue); }
+.pill-green { background: var(--green-bg); color: var(--green); }
+.pill-violet { background: var(--violet-bg); color: var(--violet); }
+.pill-slate { background: var(--slate-bg); color: var(--slate); }
+
+.callout { border: 1px solid var(--border-strong); background: var(--surface-2); border-radius: 12px; padding: 14px 16px; margin: 4px 0 18px; font-size: 14px; }
+.callout.rec { border-color: rgba(94,234,212,.35); background: rgba(94,234,212,.06); }
+.callout.warn { border-color: rgba(240,169,41,.4); background: rgba(240,169,41,.07); }
+.callout .t { font-weight: 700; display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: .05em; }
+.callout.rec .t { color: var(--accent-2); }
+.callout.warn .t { color: var(--yellow); }
+.callout p:last-child, .callout ul:last-child { margin-bottom: 0; }
+
+pre.diagram {
+	background: var(--diagram-bg); color: #d9dde6; border: 1px solid var(--border); border-radius: 12px;
+	padding: 18px 20px; overflow-x: auto; font: 12.8px/1.6 "JetBrains Mono", ui-monospace, Consolas, monospace; margin: 6px 0 20px;
+}
+pre.diagram .k { color: var(--accent-2); }
+pre.diagram .r { color: var(--red); }
+pre.diagram .y { color: var(--yellow); }
+pre.diagram .b { color: var(--blue); }
+pre.diagram .m { color: var(--faint); }
+pre.diagram .v { color: var(--violet); }
+
+.keybox {
+	background: var(--diagram-bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin: 6px 0 18px;
+	font: 13px/1.7 "JetBrains Mono", ui-monospace, Consolas, monospace; overflow-x: auto; white-space: nowrap;
+}
+.keybox .seg { color: var(--text); }
+.keybox .sep { color: var(--faint); }
+.keybox .val { color: var(--accent-2); }
+
+/* lane + card mocks */
+.lanes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 8px 0 20px; }
+.lane { background: var(--surface-2); border: 1px solid var(--border); border-radius: 14px; padding: 12px; }
+.lane-h { display: flex; align-items: center; justify-content: space-between; font-weight: 700; font-size: 13.5px; margin-bottom: 4px; }
+.lane-h .cnt { font-size: 12px; color: var(--muted); background: var(--surface-3); border-radius: 999px; padding: 0 8px; }
+.lane-s { color: var(--faint); font-size: 12px; margin-bottom: 10px; }
+.lane-tag { font-size: 11px; font-weight: 650; color: var(--muted); margin-bottom: 8px; }
+
+.cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 8px 0 20px; }
+.card {
+	background: var(--surface-2); border: 1px solid var(--border); border-left: 3px solid var(--pl, var(--red-line));
+	border-radius: 12px; padding: 12px 12px 10px; height: 168px; display: flex; flex-direction: column;
+}
+.card .top { display: flex; gap: 10px; }
+.thumb { width: 44px; height: 44px; border-radius: 8px; flex: none; background: linear-gradient(135deg, #2a3040, #1c212c); border: 1px solid var(--border-strong); }
+.card .name { font-weight: 650; font-size: 13px; line-height: 1.35; }
+.card .ctx { color: var(--faint); font-size: 11.5px; }
+.card .badges { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0 auto; }
+.card .foot { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 8px; margin-top: 8px; }
+.card .who { color: var(--muted); font-size: 11.5px; }
+.btn { font-size: 12px; font-weight: 650; border-radius: 8px; padding: 4px 10px; border: 1px solid var(--border-strong); background: var(--surface-3); color: var(--text); white-space: nowrap; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #0b0d12; }
+.btn.go { background: var(--accent-2); border-color: var(--accent-2); color: #0b0d12; }
+.btn.dis { opacity: .55; }
+.ctxbar {
+	background: var(--diagram-bg); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; margin: 4px 0 18px;
+	font-size: 13px; display: flex; gap: 18px; flex-wrap: wrap; align-items: center;
+}
+.ctxbar .lbl { color: var(--faint); font-size: 11.5px; text-transform: uppercase; letter-spacing: .05em; margin-right: 6px; }
+
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 6px 0 18px; }
+.box { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+.box h5 { margin: 0 0 6px; font-size: 14px; }
+.box p, .box ul { font-size: 13.5px; color: var(--muted); margin-bottom: 0; }
+
+#to-top {
+	position: fixed; right: 22px; bottom: 22px; width: 40px; height: 40px; border-radius: 12px; border: 1px solid var(--border-strong);
+	background: var(--surface-2); color: var(--muted); cursor: pointer; opacity: 0; pointer-events: none; transition: opacity .2s;
+}
+#to-top.show { opacity: 1; pointer-events: auto; }
+
+@media (max-width: 1000px) {
+	.layout { grid-template-columns: 1fr; }
+	aside { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--border); }
+	.verdicts, .lanes, .cards, .grid2 { grid-template-columns: 1fr; }
+	.doc-section, .hero { padding: 22px 18px; }
+}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div class="layout">
+<aside>
+	<div class="brand">
+		<div class="brand-mark">AC</div>
+		<div><div class="brand-name">Action Center V2</div><div class="brand-sub">Solutions for 3 design forks</div></div>
+	</div>
+	<nav id="toc">
+		<ul>
+			<li class="toc-l1"><a href="#p1"><span class="num">1</span>Computed vs stored tickets</a>
+				<ul>
+					<li><a href="#p1-verdict"><span class="num">1.1</span>Verdict</a></li>
+					<li><a href="#p1-why"><span class="num">1.2</span>Why: management needs</a></li>
+					<li><a href="#p1-id"><span class="num">1.3</span>Ticket identity</a></li>
+					<li><a href="#p1-tax"><span class="num">1.4</span>Issue taxonomy &amp; priority</a></li>
+					<li><a href="#p1-tables"><span class="num">1.5</span>Tables</a></li>
+					<li><a href="#p1-eval"><span class="num">1.6</span>The evaluator</a></li>
+					<li><a href="#p1-triggers"><span class="num">1.7</span>Evaluation triggers</a></li>
+					<li><a href="#p1-ops"><span class="num">1.8</span>Managing a ticket</a></li>
+					<li><a href="#p1-read"><span class="num">1.9</span>Read path</a></li>
+				</ul>
+			</li>
+			<li class="toc-l1"><a href="#p2"><span class="num">2</span>Are 3 lanes needed?</a>
+				<ul>
+					<li><a href="#p2-verdict"><span class="num">2.1</span>Verdict</a></li>
+					<li><a href="#p2-lanes"><span class="num">2.2</span>The three lanes</a></li>
+					<li><a href="#p2-moves"><span class="num">2.3</span>Moves: user and system</a></li>
+					<li><a href="#p2-alt"><span class="num">2.4</span>Alternatives rejected</a></li>
+					<li><a href="#p2-ui"><span class="num">2.5</span>Lane behaviour in the UI</a></li>
+				</ul>
+			</li>
+			<li class="toc-l1"><a href="#p3"><span class="num">3</span>External vs local state</a>
+				<ul>
+					<li><a href="#p3-verdict"><span class="num">3.1</span>Verdict</a></li>
+					<li><a href="#p3-published"><span class="num">3.2</span>What "published" means</a></li>
+					<li><a href="#p3-states"><span class="num">3.3</span>The fix state</a></li>
+					<li><a href="#p3-family"><span class="num">3.4</span>Per issue type</a></li>
+					<li><a href="#p3-ui"><span class="num">3.5</span>How it looks</a></li>
+					<li><a href="#p3-readtime"><span class="num">3.6</span>Why read-time</a></li>
+				</ul>
+			</li>
+			<li class="toc-l1"><a href="#edge"><span class="num">4</span>Edge cases</a></li>
+			<li class="toc-l1"><a href="#confirm"><span class="num">5</span>Points to confirm</a></li>
+			<li class="toc-l1"><a href="#removed"><span class="num">6</span>Appendix: what is removed</a></li>
+		</ul>
+	</nav>
+</aside>
+
+<main>
+<header class="hero">
+	<div class="eyebrow">Categra · Operations · Design</div>
+	<h1>Action Center V2: three decisions</h1>
+	<p>The recommended answer to each of the three open questions in the V2 brief, with the design behind it: ticket storage, workflow lanes, and how a ticket can show the live channel state without confusing a user who has already fixed the issue in Categra.</p>
+	<div class="chips">
+		<span class="chip"><b>Scope</b> api · webapp · db-migrations</span>
+		<span class="chip"><b>Baseline</b> action-center-v1-explained.html</span>
+		<span class="chip"><b>Taxonomy</b> Command Center attention families</span>
+		<span class="chip"><b>Date</b> 2026-10-23</span>
+	</div>
+</header>
+
+<div class="verdicts">
+	<div class="verdict" style="--vc: var(--accent)">
+		<div class="q">1 · Computed or stored?</div>
+		<div class="a">Store tickets in a table. Keep detection computed.</div>
+		<p>A shared evaluator works out the issues from the external state and writes the result to <code>tbl_action_center_tickets</code>. Statuses, assignees, snoozes and the audit trail are stored next to the ticket, not projected over it.</p>
+		<a href="#p1">Design →</a>
+	</div>
+	<div class="verdict" style="--vc: var(--accent-2)">
+		<div class="q">2 · Three lanes?</div>
+		<div class="a">Yes: To do · In progress · Awaiting channel.</div>
+		<p>Lanes stop meaning "is it solved" (only the system decides that). They now mean "who is the ticket waiting on": us, a teammate, or Amazon/Shopify.</p>
+		<a href="#p2">Design →</a>
+	</div>
+	<div class="verdict" style="--vc: var(--yellow-line)">
+		<div class="q">3 · External vs local</div>
+		<div class="a">The channel decides if a ticket exists. Categra adds a fix state.</div>
+		<p>Each ticket item gets a read-time state: <em>Not fixed</em> → <em>Ready to publish</em> → <em>Publishing</em>. The badge and the primary button follow it, so "I already added the price" is answered on the card.</p>
+		<a href="#p3">Design →</a>
+	</div>
+</div>
+
+<!-- ============================== 1 ============================== -->
+<section class="doc-section" id="p1">
+<h2><span class="num">1</span>Tickets: computed or a managed table</h2>
+<p class="lead">Today a ticket exists only while a SQL pass over the catalog produces it, and three side tables try to remember what the team did with it. V2 needs a ticket to be a real record.</p>
+
+<h3 id="p1-verdict"><span class="num">1.1</span>Verdict</h3>
+<div class="callout rec">
+	<span class="t">Recommendation</span>
+	<p><strong>Computed detection, stored tickets.</strong> One evaluator (a pure function over the external state, built on the Command Center SQL backbone) runs for a <em>scope</em> whenever a system event touches that scope. It diffs its result against the stored tickets of the scope: it creates new ones, updates the ones still present, and deletes the ones that are gone. The user-owned fields (stage, assignee, snoozes) live on the ticket row and its side tables. The evaluator never rewrites them.</p>
+</div>
+<pre class="diagram"><span class="m">  system event (publish result, import, stock/price publish, notification, sweep)</span>
+          │  <span class="m">scope = account × channel × marketplace × [products] × [issue types]</span>
+          ▼
+   <span class="k">ActionCenterEvaluator.evaluateScope()</span>      <span class="m">reads external state only (§3.2)</span>
+          │  <span class="m">current issue set for the scope</span>
+          ▼
+   diff vs <span class="v">tbl_action_center_tickets</span> (same scope)
+     ├─ new key           → INSERT ticket + items   → event <span class="b">CREATED</span> / <span class="b">REAPPEARED</span>
+     ├─ key still present → UPDATE items, counts     → event <span class="b">ITEMS_CHANGED</span> (if the count changed)
+     └─ key gone          → DELETE ticket (cascade)  → event <span class="b">CLEARED</span>
+          │
+          ▼
+   user acts on stored rows: stage · assignee · snooze   → events <span class="b">STATUS_CHANGED</span> / <span class="b">ASSIGNEE_CHANGED</span></pre>
+
+<h3 id="p1-why"><span class="num">1.2</span>Why: the management needs decide it</h3>
+<p>Every requirement in the brief needs one of two things: a stable record to attach state to, or a moment when something changed. Computing tickets on every read gives neither. The v1 code has to work around this on every read: it reconciles overlays against live rows, guesses clearances, writes lifecycle events from a read path, and keeps a 15-second in-process cache so three lane requests don't each rebuild the snapshot.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Need</th><th>Computed on read (v1)</th><th>Stored table (V2)</th></tr></thead>
+<tbody>
+<tr><td>Change status</td><td class="lose">Overlay row keyed by a fragile durable identity. It must be reconciled with live data on every read (§6.3.4 of v1).</td><td class="win">One column on the ticket row, updated by id.</td></tr>
+<tr><td>Assignment</td><td class="lose">Separate table, per row or per variant, which produces "Mixed owners".</td><td class="win">One assignee per ticket. The ticket already holds the parent and all its variants.</td></tr>
+<tr><td>Snooze per user</td><td class="lose">Shared with the workflow table (<code>scope_user_id</code>). Expired rows are deleted from read paths.</td><td class="win">Its own table, FK to the ticket, cascade-deleted when the ticket clears.</td></tr>
+<tr><td>System clearance</td><td class="lose">Inferred: "the row stopped appearing on this read". Reads become writes.</td><td class="win">An explicit DELETE inside the evaluation of the event that fixed it, with the trigger recorded.</td></tr>
+<tr><td>Re-appearance</td><td class="lose">Cleared overlay vs newer <code>updatedAt</code> evidence. Easy to miss or flap.</td><td class="win">The key is absent from the table but has a past <code>CLEARED</code> event, so the evaluator logs <code>REAPPEARED</code>.</td></tr>
+<tr><td>Audit</td><td class="lose">Lifecycle events written as a side-effect of reads, actor guessed from the overlay creator.</td><td class="win">Written in the same transaction as the change, with the actor (user or system) and the source event.</td></tr>
+<tr><td>Sorting / pagination / counts</td><td class="lose">Full snapshot in memory, sorted and filtered in the browser. Lanes request everything.</td><td class="win">Indexed SQL order and <code>LIMIT/OFFSET</code> per lane. Counts come from <code>GROUP BY status</code>.</td></tr>
+<tr><td>Command Center hand-off</td><td class="lose">Issue types differ (<code>AMAZON_ERROR</code> vs <code>AMAZON_LISTING_BLOCKER</code>), so filters only approximate.</td><td class="win">Ticket <code>issue_type</code> <em>is</em> the CC family, so the filter is exact.</td></tr>
+<tr><td>CSV export</td><td class="lose">Built in the browser from what happens to be loaded.</td><td class="win">Server-side, from the same query as the list, with the same filters.</td></tr>
+<tr><td>Cost per page view</td><td class="lose">Heavy multi-CTE SQL per (instance, 15 s).</td><td class="win">Indexed select. The heavy SQL runs once per event, per scope.</td></tr>
+</tbody></table></div>
+<div class="callout warn">
+	<span class="t">The cost of storing</span>
+	<p>The table is only as fresh as its triggers. Every pipeline that writes the external state must enqueue an evaluation (§1.7). The nightly sweep catches anything missed. Tickets must never be cleared outside the scope that was evaluated (§1.6 rule 2).</p>
+</div>
+
+<h3 id="p1-id"><span class="num">1.3</span>Ticket identity: one universal key</h3>
+<p>Every ticket uses the same four segments in the same order. A segment that does not apply to the issue type is <code>0</code>, never left out. The account is not part of the key. Uniqueness is per account.</p>
+<div class="keybox">
+	<span class="seg">productId:</span><span class="val">12</span><span class="sep">||</span><span class="seg">channelId:</span><span class="val">4</span><span class="sep">||</span><span class="seg">amazonMarketplaceId:</span><span class="val">2</span><span class="sep">||</span><span class="seg">issueType:</span><span class="val">MISSING_PRICE</span>
+</div>
+<div class="table-wrap"><table>
+<thead><tr><th>Ticket</th><th>Key</th></tr></thead>
+<tbody>
+<tr><td>Amazon product, missing price in DE</td><td><code>productId:12||channelId:4||amazonMarketplaceId:2||issueType:MISSING_PRICE</code></td></tr>
+<tr><td>Shopify product, out of stock</td><td><code>productId:12||channelId:7||amazonMarketplaceId:0||issueType:OUT_OF_STOCK</code></td></tr>
+<tr><td>Channel connection lost</td><td><code>productId:0||channelId:4||amazonMarketplaceId:0||issueType:CONNECTION</code></td></tr>
+<tr><td>Amazon marketplace at risk (FR)</td><td><code>productId:0||channelId:4||amazonMarketplaceId:3||issueType:MARKETPLACE_HEALTH</code></td></tr>
+<tr><td>Inventory data stale on a channel</td><td><code>productId:0||channelId:7||amazonMarketplaceId:0||issueType:DATA_TRUST</code></td></tr>
+</tbody></table></div>
+<p><strong>Ticket items</strong> (the rows inside a ticket) extend the same format with two more segments, so a single variant problem can be addressed exactly:</p>
+<div class="keybox">
+	<span class="seg">productId:</span><span class="val">12</span><span class="sep">||</span><span class="seg">channelId:</span><span class="val">4</span><span class="sep">||</span><span class="seg">amazonMarketplaceId:</span><span class="val">2</span><span class="sep">||</span><span class="seg">issueType:</span><span class="val">MAIN_IMAGE</span><span class="sep">||</span><span class="seg">variantId:</span><span class="val">55</span><span class="sep">||</span><span class="seg">subIssueType:</span><span class="val">UNSUPPORTED_FORMAT</span>
+</div>
+<ul>
+	<li>A standalone product (or a parent-level problem) uses <code>variantId:0</code>. Channel-level tickets use <code>variantId:0</code> with the reason as <code>subIssueType</code> (e.g. <code>CONNECTION_LOST</code>).</li>
+	<li>The key is the external, URL-safe id used by the API, deep links and CSV. The numeric row id stays internal.</li>
+	<li>Using <code>0</code> (not <code>NULL</code>) also lets one plain composite unique index enforce the key, because <code>NULL</code>s never collide in a Postgres unique index.</li>
+</ul>
+
+<h3 id="p1-tax"><span class="num">1.4</span>Issue taxonomy and priority</h3>
+<p>Issue types are the 18 Command Center attention families (<code>GlobalEnums.CommandCenterAttentionFamily</code>). Their severity, order and labels are read from the constants the Command Center already uses (<code>COMMAND_CENTER_ATTENTION_SEVERITY</code>, <code>COMMAND_CENTER_ATTENTION_FAMILY_ORDER</code>). There is one source of truth, and nothing comes from <code>tbl_action_engine_settings</code>.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Group (CC step)</th><th>Issue type</th><th>Priority</th><th>Sub issue types (item level)</th><th>Product-bound</th></tr></thead>
+<tbody>
+<tr><td rowspan="5">Restore access</td><td><code>CONNECTION</code></td><td><span class="pill pill-red">Red</span></td><td><code>NOT_CONNECTED</code>, <code>CONNECTION_LOST</code></td><td>No</td></tr>
+<tr><td><code>ACCOUNT_HEALTH</code></td><td><span class="pill pill-red">Red</span></td><td><code>ACCOUNT_DEACTIVATED</code>, <code>ACCOUNT_AT_RISK</code>, Shopify store <code>UNINSTALLED</code> / <code>FROZEN</code> / <code>LOCKED</code> / <code>INACTIVE</code></td><td>No</td></tr>
+<tr><td><code>MARKETPLACE_HEALTH</code></td><td><span class="pill pill-red">Red</span></td><td><code>MARKETPLACE_DEACTIVATED</code>, <code>MARKETPLACE_AT_RISK</code>, <code>AHR_NOT_HEALTHY</code>, <code>METRIC_BAD</code>, <code>POLICY_BAD</code></td><td>No</td></tr>
+<tr><td><code>PERMISSION_REQUIRED</code></td><td><span class="pill pill-yellow">Yellow</span></td><td><code>PERMISSION_REQUIRED</code></td><td>No</td></tr>
+<tr><td><code>DATA_TRUST</code></td><td><span class="pill pill-red">Red</span></td><td><code>INVENTORY_SYNC_STALE</code>, <code>ORDER_SYNC_STALE</code></td><td>No</td></tr>
+<tr><td rowspan="2">Restore sellability</td><td><code>MISSING_PRICE</code></td><td><span class="pill pill-red">Red</span></td><td><code>NO_PRICE</code></td><td>Yes</td></tr>
+<tr><td><code>OUT_OF_STOCK</code></td><td><span class="pill pill-red">Red</span></td><td><code>NO_STOCK</code></td><td>Yes</td></tr>
+<tr><td rowspan="5">Fix listings</td><td><code>AMAZON_LISTING_BLOCKER</code></td><td><span class="pill pill-red">Red</span></td><td>Listing bucket: <code>SUPPRESSION_VISIBILITY</code>, <code>NOT_BUYABLE</code>, <code>STRUCTURE_PRODUCT_TYPE</code>, <code>COMPLIANCE</code>, <code>ATTRIBUTES_CONTENT</code>, <code>MEDIA</code>, <code>OTHER_VALIDATION</code></td><td>Yes</td></tr>
+<tr><td><code>AMAZON_NOT_SEARCHABLE</code></td><td><span class="pill pill-red">Red</span></td><td><code>NOT_DISCOVERABLE</code></td><td>Yes</td></tr>
+<tr><td><code>SHOPIFY_NOT_ACTIVE</code></td><td><span class="pill pill-red">Red</span></td><td><code>DRAFT</code>, <code>ARCHIVED</code>, <code>UNPUBLISHED</code></td><td>Yes</td></tr>
+<tr><td><code>MAIN_IMAGE</code></td><td><span class="pill pill-red">Red</span></td><td><code>MISSING</code>, <code>UNSUPPORTED_FORMAT</code></td><td>Yes (Amazon only)</td></tr>
+<tr><td><code>BUY_BOX_INELIGIBLE</code></td><td><span class="pill pill-red">Red</span></td><td>Ineligibility reason</td><td>Yes</td></tr>
+<tr><td rowspan="6">Improve catalog</td><td><code>LOW_STOCK</code></td><td><span class="pill pill-yellow">Yellow</span></td><td><code>BELOW_THRESHOLD</code></td><td>Yes</td></tr>
+<tr><td><code>STOCK_SYNC</code></td><td><span class="pill pill-red">Red</span></td><td><code>QUANTITY_MISMATCH</code>, <code>PUSH_FAILING</code></td><td>Yes</td></tr>
+<tr><td><code>AMAZON_LISTING_WARNING</code></td><td><span class="pill pill-yellow">Yellow</span></td><td>Listing bucket (as above)</td><td>Yes</td></tr>
+<tr><td><code>PRODUCT_TYPE_CHANGED</code></td><td><span class="pill pill-blue">Blue</span></td><td><code>REMAP_REQUIRED</code></td><td>Yes</td></tr>
+<tr><td><code>BUY_BOX_LOST</code></td><td><span class="pill pill-yellow">Yellow</span></td><td><code>NOT_WINNING</code></td><td>Yes</td></tr>
+<tr><td><code>BUY_BOX_AT_RISK</code></td><td><span class="pill pill-yellow">Yellow</span></td><td><code>AT_RISK</code></td><td>Yes</td></tr>
+</tbody></table></div>
+<ul>
+	<li><strong>Priority</strong> maps 1:1 to CC severity: <code>critical</code> → Red, <code>warning</code> → Yellow, <code>info</code> → Blue. It is stored on the ticket, so it can be filtered and indexed.</li>
+	<li><strong>The stock cards stay mutually exclusive</strong> (CC rule): an item is in at most one of out of stock → low stock → stock sync.</li>
+	<li><strong>Listing blockers hide warnings</strong> at the <em>ticket</em> level: a product × marketplace with a blocker ticket gets no warning ticket. This is per-ticket, while the CC card applies it globally.</li>
+	<li>The v1 types that have no external counterpart (<code>MISSING_CONTENT</code>, <code>MISSING_ATTRIBUTES</code>, <code>LOW_READINESS</code>, <code>SOURCE_DATA</code>, <code>OUT_OF_SYNC</code>) are not issue types any more. "Issues are purely external." Unpublished changes show up as the fix state instead (§3).</li>
+</ul>
+<h4><span class="num">1.4.1</span>Sort orders</h4>
+<div class="table-wrap"><table>
+<thead><tr><th>List</th><th>Order</th><th>Index-backed by</th></tr></thead>
+<tbody>
+<tr><td>Tickets (each lane)</td><td><code>issue_type_rank</code> ASC → <code>affected_variant_count</code> DESC → <code>product_id</code> ASC → <code>channel_id</code> ASC → <code>amazon_marketplace_id</code> ASC</td><td><code>(account_id, status, issue_type_rank, affected_variant_count DESC, product_id, channel_id, amazon_marketplace_id)</code></td></tr>
+<tr><td>Items inside a ticket</td><td><code>variant_id</code> ASC (then <code>sub_issue_type</code> for stability)</td><td>unique <code>(ticket_id, variant_id, sub_issue_type)</code></td></tr>
+</tbody></table></div>
+<p><code>issue_type_rank</code> is the CC family order constant, written by the evaluator, so "issue type ASC" follows the domain order (Connection first) and not the alphabet. See <a class="ref" href="#confirm">§5 #1</a>.</p>
+
+<h3 id="p1-tables"><span class="num">1.5</span>Tables</h3>
+<p>Four new tables, all created in <code>db-migrations/</code> with matching entities in <code>api/src/entities/</code>. They replace the three v1 workflow tables (<a class="ref" href="#removed">§6</a>).</p>
+
+<h4><span class="num">1.5.1</span><code>tbl_action_center_tickets</code>: one row per open ticket</h4>
+<div class="table-wrap"><table>
+<thead><tr><th>Column</th><th>Type</th><th>Written by</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>bigserial PK</td><td>—</td><td>Internal only.</td></tr>
+<tr><td><code>account_id</code></td><td>bigint, FK</td><td>Evaluator</td><td></td></tr>
+<tr><td><code>product_id</code></td><td>bigint, default 0</td><td>Evaluator</td><td>0 for non-product tickets. No FK, because 0 is a sentinel. Deletion paths clear tickets explicitly (§4).</td></tr>
+<tr><td><code>channel_id</code></td><td>bigint, FK</td><td>Evaluator</td><td>Always set: every family is at least channel-scoped. Deleting a channel cascades.</td></tr>
+<tr><td><code>amazon_marketplace_id</code></td><td>bigint, default 0</td><td>Evaluator</td><td>0 for Shopify and for channel-level Amazon tickets.</td></tr>
+<tr><td><code>issue_type</code></td><td>varchar</td><td>Evaluator</td><td>CC family.</td></tr>
+<tr><td><code>ticket_key</code></td><td>varchar, generated stored</td><td>DB</td><td><code>'productId:'||product_id||'||channelId:'||…</code>. Unique <code>(account_id, ticket_key)</code>.</td></tr>
+<tr><td><code>issue_type_rank</code></td><td>smallint</td><td>Evaluator</td><td>From the family order constant, for the index sort.</td></tr>
+<tr><td><code>priority</code></td><td>varchar <code>RED|YELLOW|BLUE</code></td><td>Evaluator</td><td>From the severity constant.</td></tr>
+<tr><td><code>affected_variant_count</code></td><td>int</td><td>Evaluator</td><td>Distinct <code>variant_id &gt; 0</code> items (1 for a standalone product).</td></tr>
+<tr><td><code>status</code></td><td>varchar <code>TODO|IN_PROGRESS|AWAITING_CHANNEL</code></td><td>User (+ the system moves in §2.3)</td><td>Default <code>TODO</code>. There is no "cleared" value: a cleared ticket is deleted.</td></tr>
+<tr><td><code>assignee_user_id</code>, <code>assigned_by</code>, <code>assigned_at</code></td><td>bigint null, bigint null, timestamptz null</td><td>User</td><td>One owner per ticket.</td></tr>
+<tr><td><code>detected_at</code></td><td>timestamptz</td><td>Evaluator</td><td>When this occurrence was first seen.</td></tr>
+<tr><td><code>status_changed_at</code></td><td>timestamptz</td><td>User / system move</td><td>Drives "in this stage for 3 d".</td></tr>
+<tr><td><code>last_evaluated_at</code></td><td>timestamptz</td><td>Evaluator</td><td>Proves freshness. The sweep uses it to find drift.</td></tr>
+<tr><td><code>createdAt</code>, <code>updatedAt</code></td><td>timestamptz</td><td>—</td><td></td></tr>
+</tbody></table></div>
+<p>Indexes: the lane-sort index from §1.4.1, <code>(account_id, channel_id, amazon_marketplace_id)</code> for scope diffs and filters, <code>(account_id, product_id)</code>, and <code>(account_id, assignee_user_id)</code>.</p>
+
+<h4><span class="num">1.5.2</span><code>tbl_action_center_ticket_items</code>: what is wrong, per variant</h4>
+<div class="table-wrap"><table>
+<thead><tr><th>Column</th><th>Type</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>bigserial PK</td><td></td></tr>
+<tr><td><code>ticket_id</code></td><td>bigint, FK ON DELETE CASCADE</td><td></td></tr>
+<tr><td><code>variant_id</code></td><td>bigint, default 0</td><td>0 = product/parent or channel-level.</td></tr>
+<tr><td><code>sub_issue_type</code></td><td>varchar</td><td>§1.4 column 4.</td></tr>
+<tr><td><code>detected_at</code></td><td>timestamptz</td><td>Lets the dialog show "since 2 d" per variant.</td></tr>
+</tbody></table></div>
+<p>Unique <code>(ticket_id, variant_id, sub_issue_type)</code>. The item table holds no copied evidence such as prices, error text or ASINs. The ticket dialog reads those live from the source tables, so the evidence can never go stale in two places.</p>
+
+<h4><span class="num">1.5.3</span><code>tbl_action_center_ticket_snoozes</code>: per user</h4>
+<div class="table-wrap"><table>
+<thead><tr><th>Column</th><th>Type</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>bigserial PK</td><td></td></tr>
+<tr><td><code>ticket_id</code></td><td>bigint, FK ON DELETE CASCADE</td><td>A cleared ticket takes its snoozes with it.</td></tr>
+<tr><td><code>user_id</code></td><td>bigint, FK</td><td></td></tr>
+<tr><td><code>snoozed_until</code></td><td>timestamptz</td><td>Same date picker as the Details tab.</td></tr>
+<tr><td><code>createdAt</code></td><td>timestamptz</td><td></td></tr>
+</tbody></table></div>
+<p>Unique <code>(ticket_id, user_id)</code>. Reads treat <code>snoozed_until &lt;= NOW()</code> as not snoozed. A daily cleanup deletes expired rows, so read paths never write.</p>
+
+<h4><span class="num">1.5.4</span><code>tbl_action_center_ticket_events</code>: the audit trail</h4>
+<div class="table-wrap"><table>
+<thead><tr><th>Column</th><th>Type</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>bigserial PK</td><td></td></tr>
+<tr><td><code>account_id</code></td><td>bigint</td><td></td></tr>
+<tr><td><code>ticket_key</code></td><td>varchar</td><td>No FK: the history outlives the ticket and links its occurrences together.</td></tr>
+<tr><td><code>event_type</code></td><td>varchar</td><td><code>CREATED</code>, <code>REAPPEARED</code>, <code>STATUS_CHANGED</code>, <code>ASSIGNEE_CHANGED</code>, <code>ITEMS_CHANGED</code>, <code>CLEARED</code></td></tr>
+<tr><td><code>from_value</code>, <code>to_value</code></td><td>varchar null</td><td>Status, assignee id, or affected count.</td></tr>
+<tr><td><code>actor_user_id</code></td><td>bigint null</td><td><code>NULL</code> = system.</td></tr>
+<tr><td><code>source</code></td><td>varchar</td><td><code>USER</code> or the trigger in §1.7 (<code>FS_RESULT</code>, <code>BS_IMPORT</code>, <code>STOCK_PUBLISH</code>, <code>PRICE_AUTO_PUBLISH</code>, <code>AMAZON_NOTIFICATION</code>, <code>SHOPIFY_WEBHOOK</code>, <code>SWEEP</code>, <code>SCOPE_REMOVED</code>, …).</td></tr>
+<tr><td><code>occurred_at</code></td><td>timestamptz</td><td></td></tr>
+</tbody></table></div>
+<p>Index <code>(account_id, ticket_key, occurred_at DESC)</code>. Snoozes are personal and not audited. Retention is a constant (e.g. 180 days) with a cleanup cron.</p>
+
+<h3 id="p1-eval"><span class="num">1.6</span>The evaluator</h3>
+<p>One service (<code>ActionCenterEvaluatorService</code>) and one BullMQ queue (<code>ACTION_CENTER_EVALUATION</code>, processed in <code>api-worker</code>, following the <code>READINESS_RECALCULATION</code> pattern).</p>
+<h4><span class="num">1.6.1</span>Input: a scope</h4>
+<pre class="diagram">{
+  accountId, channelId,
+  amazonMarketplaceId?   <span class="m">// omitted = every active marketplace of the channel</span>
+  productIds?            <span class="m">// omitted = every published product in the channel scope</span>
+  issueTypes?            <span class="m">// omitted = every family that applies to the channel type</span>
+  source                 <span class="m">// trigger name, recorded on events</span>
+}</pre>
+<h4><span class="num">1.6.2</span>Steps</h4>
+<ol>
+	<li><strong>Detect.</strong> Run the family detectors for the scope against the external state (§3.2). These are the Command Center attention SQL builders, refactored to return per-unit rows instead of aggregated cards and filtered to <code>productIds</code>. Parents with variants are folded: the ticket is the parent product and its variants become items.</li>
+	<li><strong>Load current.</strong> Select the stored tickets and items of exactly that scope (same channel, marketplaces, products, issue types).</li>
+	<li><strong>Diff and write</strong> in one transaction, under a Postgres advisory lock on <code>(account_id, channel_id)</code>:
+		<ul>
+			<li>A new key is inserted with status <code>TODO</code>. If the events table has a past <code>CLEARED</code> for that key, the event is <code>REAPPEARED</code>, otherwise <code>CREATED</code>.</li>
+			<li>A key that still exists has its items replaced, and <code>affected_variant_count</code>, <code>priority</code> and <code>last_evaluated_at</code> updated. <code>ITEMS_CHANGED</code> is logged only when the count changed.</li>
+			<li>A key that is gone is deleted (items and snoozes cascade) and <code>CLEARED</code> is logged.</li>
+		</ul>
+	</li>
+	<li><strong>System stage moves</strong> (§2.3) are applied in the same transaction.</li>
+	<li>Publish a lightweight "tickets changed" signal for the account. The page can pick it up later; it is not needed for correctness.</li>
+</ol>
+<h4><span class="num">1.6.3</span>Rules</h4>
+<ol>
+	<li><strong>The evaluator writes system columns only.</strong> It never touches <code>status</code> (except the moves in §2.3), the assignee or snoozes.</li>
+	<li><strong>It never clears outside its scope.</strong> A product trigger for products [12, 15] in DE cannot delete product 20's tickets, or tickets of a family it did not evaluate.</li>
+	<li><strong>Jobs are deduplicated and debounced.</strong> The job id is <code>account:channel:marketplace:issueTypes</code> with a short delay (a constant, e.g. 10 s). Product ids of the jobs are merged, so a 5 000-product import produces a handful of evaluations, not 5 000.</li>
+	<li><strong>The channel must be connected.</strong> While a <code>CONNECTION</code> ticket exists for a channel, product-level evaluation of that channel is skipped (§4), because the external state cannot be trusted.</li>
+</ol>
+
+<h3 id="p1-triggers"><span class="num">1.7</span>Evaluation triggers</h3>
+<p>The brief names publish, import, stock publish, price auto publish and Amazon/Shopify notifications. The rows marked <span class="pill pill-violet">added</span> are also needed, because some CC family's external state is written somewhere else.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Trigger</th><th>Hook point (queue / flow)</th><th>Scope</th><th>Issue types</th></tr></thead>
+<tbody>
+<tr><td>Publish result</td><td>Amazon feed result processed (<code>FORWARD_SYNC_GET_FEED_DOCUMENT</code>); Shopify FS finished (<code>SHOPIFY_PRODUCT_FORWARD_SYNC</code>)</td><td>Products of the task × channel × marketplaces</td><td>All product families</td></tr>
+<tr><td>Import (backward sync)</td><td>End of each BS batch (<code>AMAZON_SYNC_FETCH_PRODUCTS</code>, <code>SHOPIFY_SYNC_FETCH_AND_INIT_PRODUCTS</code> chains)</td><td>Imported products</td><td>All product families</td></tr>
+<tr><td>Stock publish</td><td>Stock push result (Amazon / Shopify)</td><td>Pushed products</td><td><code>OUT_OF_STOCK</code>, <code>LOW_STOCK</code>, <code>STOCK_SYNC</code></td></tr>
+<tr><td>Price auto publish</td><td>Price push result</td><td>Pushed products</td><td><code>MISSING_PRICE</code>, <code>BUY_BOX_*</code></td></tr>
+<tr><td>Amazon notification</td><td><code>AMAZON_NOTIFICATION_LISTINGS</code> (listing status / issues change)</td><td>SKU → product × marketplace</td><td>Listing blocker/warning, not searchable, main image</td></tr>
+<tr><td>Shopify webhook</td><td>Product / inventory update; app uninstalled</td><td>Product, or channel</td><td><code>SHOPIFY_NOT_ACTIVE</code>, stock families; <code>ACCOUNT_HEALTH</code></td></tr>
+<tr><td>Buy Box refresh <span class="pill pill-violet">added</span></td><td><code>BUY_BOX_REFRESH</code></td><td>Refreshed products</td><td><code>BUY_BOX_*</code></td></tr>
+<tr><td>Channel health <span class="pill pill-violet">added</span></td><td><code>AMAZON_SELLER_PERFORMANCE</code>; connection status change; OAuth reconnect; SP Insights role grant</td><td>Channel (± marketplace)</td><td><code>CONNECTION</code>, <code>ACCOUNT_HEALTH</code>, <code>MARKETPLACE_HEALTH</code>, <code>PERMISSION_REQUIRED</code></td></tr>
+<tr><td>Order / stock sync run <span class="pill pill-violet">added</span></td><td><code>AMAZON_SYNC_ORDERS</code>, <code>SHOPIFY_SYNC_ORDERS</code>, stock fetch</td><td>Channel</td><td><code>DATA_TRUST</code></td></tr>
+<tr><td>Product type change <span class="pill pill-violet">added</span></td><td><code>PRODUCT_TYPE_CHANGE</code> (detected / accepted)</td><td>Product × channel</td><td><code>PRODUCT_TYPE_CHANGED</code></td></tr>
+<tr><td>Scope removed <span class="pill pill-violet">added</span></td><td>Product deleted / unlisted, marketplace deactivated, channel deleted</td><td>That product / marketplace / channel</td><td>All, cleared with source <code>SCOPE_REMOVED</code></td></tr>
+<tr><td>Nightly sweep</td><td>Cron, accounts staggered across a window (constant)</td><td>Every channel of the account</td><td>All. Fixes drift from missed events and from changes made directly in Seller Central / Shopify admin.</td></tr>
+</tbody></table></div>
+<div class="callout">
+	<span class="t">Initial seed</span>
+	<p>The deploy runs the sweep once for every account, so tickets exist before the first user visit. No data is migrated from the v1 overlays (<a class="ref" href="#confirm">§5 #4</a>).</p>
+</div>
+
+<h3 id="p1-ops"><span class="num">1.8</span>Managing a ticket</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Operation</th><th>Who</th><th>Write</th><th>Audit</th></tr></thead>
+<tbody>
+<tr><td>Change stage</td><td>User (⋮ "Move to"), system (§2.3)</td><td><code>UPDATE … SET status, status_changed_at WHERE id AND account_id</code></td><td><code>STATUS_CHANGED</code> from → to</td></tr>
+<tr><td>Assign / reassign / unassign</td><td>User with <code>actionCenter.assign</code> (or owner/admin); "Assign to me" for anyone with view access</td><td>Assignee columns. The candidate must be an active team member with access to the ticket's channel <em>and</em> the Action Center module.</td><td><code>ASSIGNEE_CHANGED</code></td></tr>
+<tr><td>Snooze / unsnooze</td><td>The user, for themselves</td><td>Upsert / delete in the snoozes table</td><td>—</td></tr>
+<tr><td>Clear</td><td><strong>System only</strong>, from an evaluation</td><td>DELETE the ticket (cascade)</td><td><code>CLEARED</code> + source</td></tr>
+<tr><td>Re-appear</td><td>System only</td><td>INSERT a fresh <code>TODO</code> ticket</td><td><code>REAPPEARED</code></td></tr>
+</tbody></table></div>
+<ul>
+	<li><strong>The ticket may be cleared between load and click.</strong> Mutations address the ticket by key. If it is gone, the API returns <code>404 TICKET_CLEARED</code> and the page removes the card quietly (no full refresh).</li>
+	<li><strong>Assignment is shown only with two or more users</strong> in the account. With one user, neither the assignee filter nor "Unassigned" is rendered.</li>
+</ul>
+
+<h3 id="p1-read"><span class="num">1.9</span>Read path</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Endpoint</th><th>Returns</th></tr></thead>
+<tbody>
+<tr><td><code>POST action-center/tickets</code></td><td>One lane page: <code>{ status, filters, search, limit, offset }</code> → rows in the §1.4.1 order with items summary, assignee, priority, fix state (§3). The current user's active snoozes are excluded unless the "Snoozed" filter is on.</td></tr>
+<tr><td><code>POST action-center/tickets/counts</code></td><td>Counts per lane (and per filter facet) for the same filters.</td></tr>
+<tr><td><code>GET action-center/tickets/:ticketKey</code></td><td>The dialog: ticket, items sorted by <code>variant_id</code>, live evidence per item, primary action, audit history.</td></tr>
+<tr><td><code>POST action-center/tickets/export</code></td><td>CSV of every ticket matching the filters (server-side).</td></tr>
+<tr><td><code>PATCH action-center/tickets/:ticketKey/status|assignee</code>, <code>PUT|DELETE …/snooze</code></td><td>The mutations in §1.8. Each returns the updated row, so the card updates in place.</td></tr>
+</tbody></table></div>
+<p>The search (product name, variant name, product/variant SKU and ASIN) joins from the ticket and its items to the product, variant and listing tables. The Command Center hand-off is exact: <code>?issueType=&lt;family&gt;&amp;channelId=&amp;marketplaceId=</code> maps straight onto ticket columns.</p>
+</section>
+
+<!-- ============================== 2 ============================== -->
+<section class="doc-section" id="p2">
+<h2><span class="num">2</span>Are three lanes needed?</h2>
+<p class="lead">"Mark resolved" is gone and only the system clears tickets. The question is whether the lanes still mean anything.</p>
+
+<h3 id="p2-verdict"><span class="num">2.1</span>Verdict</h3>
+<div class="callout rec">
+	<span class="t">Recommendation</span>
+	<p><strong>Keep three lanes, with new meanings:</strong> <em>To do</em> · <em>In progress</em> · <em>Awaiting channel</em> (renamed from "Pending verification"). A lane says <strong>who the ticket is waiting on</strong>: nobody has picked it up, a teammate is working on it, or the fix is out and Amazon/Shopify still has to confirm it. None of them means "solved", because a solved ticket disappears.</p>
+</div>
+
+<h3 id="p2-lanes"><span class="num">2.2</span>The three lanes</h3>
+<div class="lanes">
+	<div class="lane"><div class="lane-h">To do <span class="cnt">TODO</span></div><div class="lane-s">Detected, nobody has started.</div><div class="lane-tag">Entered: new or re-appeared ticket · user move</div></div>
+	<div class="lane"><div class="lane-h">In progress <span class="cnt">IN_PROGRESS</span></div><div class="lane-s">Someone is fixing it in Categra.</div><div class="lane-tag">Entered: user move · primary action click · channel still reports the issue after a publish</div></div>
+	<div class="lane"><div class="lane-h">Awaiting channel <span class="cnt">AWAITING_CHANNEL</span></div><div class="lane-s">Fix published, or a case raised with the channel. Waiting on them.</div><div class="lane-tag">Entered: user move · Publish from the ticket</div></div>
+</div>
+<p>Every lane is left the same way: the evaluator clears the ticket, or the user moves it. A ticket that is snoozed for the current user is hidden from all three lanes for that user only.</p>
+
+<h3 id="p2-moves"><span class="num">2.3</span>Moves: user and system</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>#</th><th>Move</th><th>By</th><th>When</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Any → any other</td><td>User</td><td>⋮ → "Move to …", listing only the stages other than the current one. No reason dialog: the waiting-reason feature is removed.</td></tr>
+<tr><td>2</td><td>To do → In progress</td><td>System</td><td>The user clicks the primary action (e.g. "Open Price"). In a team account the ticket is also assigned to the clicker if it is unassigned. This keeps the v1 behaviour. See <a class="ref" href="#confirm">§5 #3</a>.</td></tr>
+<tr><td>3</td><td>To do / In progress → Awaiting channel</td><td>System</td><td>The user runs <strong>Publish</strong> from the ticket (the fix state was "Ready to publish", §3).</td></tr>
+<tr><td>4</td><td>Awaiting channel → In progress</td><td>System</td><td>A publish result for the ticket's scope has been evaluated and the channel <em>still</em> reports the issue. Audit: <code>STATUS_CHANGED</code>, source <code>FS_RESULT</code>.</td></tr>
+<tr><td>5</td><td>Any → (gone)</td><td>System</td><td>The evaluation no longer finds the issue.</td></tr>
+</tbody></table></div>
+<pre class="diagram">            <span class="m">detected / re-appeared</span>
+                    │
+                    ▼
+   ┌──────────── <span class="r">To do</span> ◄──────────────┐
+   │   primary action │  user move      │ user move
+   │   (sys #2)       ▼                 │
+   │            <span class="y">In progress</span> ───────────┤
+   │   Publish        │  ▲              │
+   │   (sys #3)       │  │ still failing after publish (sys #4)
+   │                  ▼  │              │
+   └──────────► <span class="b">Awaiting channel</span> ──────┘
+                    │
+     <span class="k">any lane ── evaluation finds no issue ──► CLEARED (row deleted, audit kept)</span></pre>
+
+<h3 id="p2-alt"><span class="num">2.4</span>Alternatives rejected</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Option</th><th>Why not</th></tr></thead>
+<tbody>
+<tr><td>No lanes: one sorted list</td><td>Loses "what is mine to do now" vs "what is out of our hands". A team would re-open tickets that are only waiting for an Amazon feed.</td></tr>
+<tr><td>Two lanes (To do / In progress)</td><td>A published fix that Amazon has not confirmed yet (feed processing, issue refresh, up to hours) sits in In progress next to real work. "Awaiting channel" is the stage this redesign makes visible.</td></tr>
+<tr><td>Third lane fully system-owned (derived from "publishing")</td><td>A seller also waits on the channel when no publish is involved (a support case, a compliance appeal), so the user must be able to move a ticket there too. The publishing signal shows as a badge (§3) instead.</td></tr>
+</tbody></table></div>
+
+<h3 id="p2-ui"><span class="num">2.5</span>Lane behaviour in the UI</h3>
+<ul>
+	<li>Each lane loads its own page from <code>POST action-center/tickets</code>, with infinite scroll and server-side order. Lane counts come from <code>/counts</code>.</li>
+	<li>A move, assign or snooze updates the card in place from the mutation response and adjusts the two lane counts locally. There is no full reload and no periodic refresh.</li>
+	<li>Cards have a fixed size (image box capped, e.g. 44 × 44, name clamped to two lines), so lanes stay aligned and virtualise cleanly.</li>
+	<li>Clicking a card opens the ticket <strong>dialog</strong> (items, evidence, history). The separate issue page is removed.</li>
+</ul>
+</section>
+
+<!-- ============================== 3 ============================== -->
+<section class="doc-section" id="p3">
+<h2><span class="num">3</span>External state vs what is in Categra</h2>
+<p class="lead">The channel decides whether a ticket exists. The confusing case is a user who has already added the price or image in Categra and still sees the ticket, because the change has not reached Amazon or Shopify yet.</p>
+
+<h3 id="p3-verdict"><span class="num">3.1</span>Verdict</h3>
+<div class="callout rec">
+	<span class="t">Recommendation</span>
+	<p><strong>Same ticket, plus a system-derived fix state.</strong> Whether a ticket exists depends only on the published / live state. Each item also carries a <em>fix state</em> that compares Categra to what is live: <code>NOT_FIXED</code> (it is missing in Categra too), <code>READY_TO_PUBLISH</code> (Categra has it, the channel doesn't), or <code>PUBLISHING</code> (a publish of that scope is in flight). The fix state drives the card badge, the context bar and the primary button. It never creates or clears a ticket.</p>
+</div>
+
+<h3 id="p3-published"><span class="num">3.2</span>What "published" means (reused from the Command Center)</h3>
+<p>The Command Center already counts on the external state. The evaluator uses the same rules:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Signal</th><th>Published / live value</th><th>Source today</th></tr></thead>
+<tbody>
+<tr><td>In scope at all</td><td>The listing is published: <code>sync_status ∈ CHANNEL_PUBLISHED_STATUSES</code> (<code>SUCCESS</code>, <code>OUT_OF_SYNC</code>)</td><td><code>buildPulseKeysCteSql</code></td></tr>
+<tr><td>Price</td><td>A <code>tbl_price_sync_baselines</code> row exists → its <code>previous_price_data</code> is what the channel has. No baseline → nothing changed since publishing, so the live Categra price <em>is</em> the published price.</td><td><code>resolvePublishedEffectivePrice</code> (baseline → scope → master)</td></tr>
+<tr><td>Main image</td><td>Same rule with <code>tbl_product_media_sync_baselines.previous_sync_value</code>, else the live linkers.</td><td><code>buildAttentionKeySignalsQuery</code></td></tr>
+<tr><td>Listing issues / status</td><td><code>tbl_channel_product_errors</code> from Amazon/Shopify responses. Amazon <code>external_status</code> (<code>DISCOVERABLE</code>, <code>BUYABLE</code>), Shopify product status.</td><td>FS results, notifications, BS</td></tr>
+<tr><td>Stock</td><td>Remote quantity: <code>amazon_stock</code> / <code>external_stock</code>; FBA → <code>fulfillable_quantity</code></td><td>Stock fetch / push, FBA sync</td></tr>
+<tr><td>Buy Box</td><td><code>tbl_product_buy_box_statuses</code></td><td><code>BUY_BOX_REFRESH</code></td></tr>
+<tr><td>Account / marketplace</td><td><code>tbl_channels</code>, <code>tbl_amazon_channels</code>, <code>tbl_amazon_channel_marketplaces</code>, <code>tbl_amazon_seller_performance</code></td><td>Channel health</td></tr>
+</tbody></table></div>
+<p>Because a baseline row exists <em>only while</em> Categra differs from what was published, "baseline exists and the local value is valid" is exactly the signal for "set in Categra, not published". No new tracking is needed.</p>
+<div class="callout warn">
+	<span class="t">One divergence to settle</span>
+	<p>For listings with mapped non-FBA warehouses, the Command Center today judges stock on the <strong>warehouse</strong> quantity (local) and calls a remote mismatch <code>STOCK_SYNC</code>. Under "purely external", a listing with 5 in the warehouse and 0 on Amazon is <code>OUT_OF_STOCK</code> with fix state <code>READY_TO_PUBLISH</code>. The CC stock classifier would have to move to the remote quantity too, or the two pages will disagree. See <a class="ref" href="#confirm">§5 #2</a>.</p>
+</div>
+
+<h3 id="p3-states"><span class="num">3.3</span>The fix state</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>State</th><th>Meaning</th><th>Derived from</th><th>Badge</th><th>Primary button</th></tr></thead>
+<tbody>
+<tr><td><code>NOT_FIXED</code></td><td>Missing or wrong in Categra too</td><td>No usable local value / no pending change</td><td><span class="pill pill-slate">Not set in Categra</span></td><td>Go-to-fix, e.g. <span class="btn primary">Open Price</span></td></tr>
+<tr><td><code>READY_TO_PUBLISH</code></td><td>Fixed in Categra, the channel still has the old value</td><td>Baseline row for the relevant group + valid local value (per family, §3.4)</td><td><span class="pill pill-green">Set in Categra · not published</span></td><td><span class="btn go">Publish</span> (preselects the relevant group)</td></tr>
+<tr><td><code>PUBLISHING</code></td><td>A publish of this scope is in flight</td><td><code>sync_in_progress</code> on PCM / VM (Amazon) or PC / PVC (Shopify)</td><td><span class="pill pill-blue">Publishing…</span></td><td><span class="btn dis">Publishing…</span> + link to the task</td></tr>
+<tr><td><code>N/A</code></td><td>The fix is not a Categra value (channel-level, FBA, product type remap)</td><td>Issue type</td><td>—</td><td>Go-to-fix</td></tr>
+</tbody></table></div>
+<ul>
+	<li>The state is per <strong>item</strong>. The card shows a summary: "3 of 5 variants ready to publish". If the items are mixed, the primary button follows the most actionable state (<code>READY_TO_PUBLISH</code> before <code>NOT_FIXED</code>), and the dialog shows each variant's own state.</li>
+	<li>With <code>auto_publish_price</code> on, a price fix moves from <code>READY_TO_PUBLISH</code> to <code>PUBLISHING</code> by itself. The badge just follows.</li>
+	<li>If a publish fails, the in-flight flag drops and the baseline stays, so the state returns to <code>READY_TO_PUBLISH</code>. The new channel error appears in the item evidence.</li>
+</ul>
+
+<h3 id="p3-family"><span class="num">3.4</span>Per issue type</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Issue type</th><th>Ticket exists when (external)</th><th><code>READY_TO_PUBLISH</code> when (Categra)</th><th>Go-to-fix button</th></tr></thead>
+<tbody>
+<tr><td><code>MISSING_PRICE</code></td><td>Published effective price is null</td><td>Price baseline exists and the live effective price (scope → master) is positive</td><td>Open Price</td></tr>
+<tr><td><code>OUT_OF_STOCK</code> / <code>LOW_STOCK</code></td><td>Remote qty ≤ 0 / ≤ threshold</td><td>Categra stock (mapped warehouses) &gt; 0 / &gt; threshold. FBA → <code>N/A</code>.</td><td>Open Stock</td></tr>
+<tr><td><code>STOCK_SYNC</code></td><td>Remote qty ≠ Categra qty, or the stock push is failing</td><td>Always (the issue <em>is</em> an unpublished value)</td><td>Publish stock / Open Sync errors</td></tr>
+<tr><td><code>MAIN_IMAGE</code></td><td>Published main image missing or unsupported (Amazon)</td><td>Media baseline exists and the live main image is present and supported</td><td>Open Media</td></tr>
+<tr><td><code>AMAZON_LISTING_BLOCKER</code> / <code>_WARNING</code></td><td>Unresolved channel error on the listing</td><td>The scope has unpublished changes (any baseline group, or <code>OUT_OF_SYNC</code>) made after the error was detected</td><td>Open Sync errors</td></tr>
+<tr><td><code>AMAZON_NOT_SEARCHABLE</code></td><td><code>external_status</code> lacks <code>DISCOVERABLE</code></td><td>Same "unpublished changes" rule</td><td>Open Channel tab</td></tr>
+<tr><td><code>SHOPIFY_NOT_ACTIVE</code></td><td>Shopify status ≠ ACTIVE</td><td>Same "unpublished changes" rule</td><td>Open Channel tab</td></tr>
+<tr><td><code>BUY_BOX_*</code></td><td>Buy Box status NOT_WINNING / AT_RISK / INELIGIBLE</td><td>Price baseline exists (repriced, not pushed)</td><td>Open Price</td></tr>
+<tr><td><code>PRODUCT_TYPE_CHANGED</code></td><td>Amazon suggested a different product type</td><td><code>N/A</code>: the fix is accepting / remapping in Categra, and the acceptance flow triggers evaluation</td><td>Review product type</td></tr>
+<tr><td>Channel-level families</td><td>Health / connection / permission / staleness signals</td><td><code>N/A</code></td><td>Open Channel settings</td></tr>
+</tbody></table></div>
+<p>For listing errors, "ready" can only say that <em>changes</em> are waiting, not that they fix the error. The copy has to say exactly that: <em>"Changes not yet published"</em> and not <em>"Fixed"</em>.</p>
+
+<h3 id="p3-ui"><span class="num">3.5</span>How it looks</h3>
+<div class="cards">
+	<div class="card" style="--pl: var(--red-line)">
+		<div class="top"><div class="thumb"></div><div><div class="name">Linen Shirt Classic</div><div class="ctx">Amazon EU · 🇩🇪 DE · 4 variants</div></div></div>
+		<div class="badges"><span class="pill pill-red">Missing price</span><span class="pill pill-slate">Not set in Categra</span></div>
+		<div class="foot"><span class="who">Unassigned</span><span class="btn primary">Open Price</span></div>
+	</div>
+	<div class="card" style="--pl: var(--red-line)">
+		<div class="top"><div class="thumb"></div><div><div class="name">Linen Shirt Classic</div><div class="ctx">Amazon EU · 🇫🇷 FR · 4 variants</div></div></div>
+		<div class="badges"><span class="pill pill-red">Missing price</span><span class="pill pill-green">Set in Categra · not published</span></div>
+		<div class="foot"><span class="who">Priya · 2h</span><span class="btn go">Publish</span></div>
+	</div>
+	<div class="card" style="--pl: var(--red-line)">
+		<div class="top"><div class="thumb"></div><div><div class="name">Linen Shirt Classic</div><div class="ctx">Amazon EU · 🇮🇹 IT · 4 variants</div></div></div>
+		<div class="badges"><span class="pill pill-red">Missing price</span><span class="pill pill-blue">Publishing…</span></div>
+		<div class="foot"><span class="who">Priya · 5m</span><span class="btn dis">Publishing…</span></div>
+	</div>
+</div>
+<p>The <strong>centralised context bar</strong> (shown in the dialog and carried to the destination page) puts both values next to each other, so the reason the ticket still exists is visible:</p>
+<div class="ctxbar">
+	<span><span class="lbl">Issue</span>Missing price</span>
+	<span><span class="lbl">Scope</span>Amazon EU · DE · 3 of 4 variants</span>
+	<span><span class="lbl">On Amazon</span><span class="pill pill-red">not set</span></span>
+	<span><span class="lbl">In Categra</span><span class="pill pill-green">€19.99</span></span>
+	<span class="btn go">Publish</span>
+</div>
+
+<h3 id="p3-readtime"><span class="num">3.6</span>Why the fix state is read-time, not stored</h3>
+<div class="grid2">
+	<div class="box"><h5>Read-time (recommended)</h5><ul><li>Local edits need no trigger: the ticket table changes only on external events, as the brief requires.</li><li>Always exact: it is a join of the visible page's items to the baselines and the in-flight flags (≤ one page of rows).</li><li>Filterable ("Ready to publish" in the filter dialog) through the same join.</li></ul></div>
+	<div class="box"><h5>Stored (rejected)</h5><ul><li>Every price / media / attribute save, revert and publish start would have to update ticket items. That is the trigger surface of the whole product editor.</li><li>Any missed write leaves a wrong badge, which is the confusion this is supposed to remove.</li></ul></div>
+</div>
+</section>
+
+<!-- ============================== 4 ============================== -->
+<section class="doc-section" id="edge">
+<h2><span class="num">4</span>Edge cases</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Case</th><th>Behaviour</th></tr></thead>
+<tbody>
+<tr><td>Channel connection lost</td><td>A <code>CONNECTION</code> ticket opens. The channel's product tickets are frozen (not re-evaluated) until reconnect. The reconnect trigger then evaluates the whole channel.</td></tr>
+<tr><td>Product deleted / unlisted from a channel</td><td>Its tickets in that scope are cleared with source <code>SCOPE_REMOVED</code> (needed because <code>product_id</code> has no FK).</td></tr>
+<tr><td>Channel deleted</td><td>FK cascade on <code>channel_id</code>. Audit rows stay (keyed by <code>ticket_key</code>).</td></tr>
+<tr><td>Some variants fixed</td><td>Their items are removed, <code>affected_variant_count</code> drops and the ticket stays. <code>ITEMS_CHANGED</code> is logged.</td></tr>
+<tr><td>A new variant gets the same issue</td><td>An item is added to the existing ticket. There is no new ticket and the stage is unchanged.</td></tr>
+<tr><td>Issue flaps (clears, then re-appears within minutes)</td><td>New row, <code>REAPPEARED</code>, starts in To do. The debounce in §1.6.3 absorbs most flaps within one burst of events.</td></tr>
+<tr><td>Snoozed ticket is cleared</td><td>The snooze is cascade-deleted. If the issue re-appears it is not snoozed.</td></tr>
+<tr><td>Assignee loses channel access or leaves</td><td>The ticket shows as unassigned (the assignee is filtered at read time). The next assignment overwrites it.</td></tr>
+<tr><td>User acts on a ticket cleared meanwhile</td><td><code>404 TICKET_CLEARED</code>. The card is removed quietly.</td></tr>
+<tr><td>Command Center count ≠ Action Center count</td><td>By design: CC counts units (variants), AC counts tickets (products). After a CC hand-off the AC header shows both: "5 tickets · 14 items".</td></tr>
+<tr><td>Import of thousands of products</td><td>Debounced, merged jobs per channel × marketplace. Detection runs as set-based SQL, not per product.</td></tr>
+<tr><td>Same seller in several Categra accounts</td><td>Tickets are per account. Fan-out channel-health triggers enqueue one evaluation per affected account.</td></tr>
+</tbody></table></div>
+</section>
+
+<!-- ============================== 5 ============================== -->
+<section class="doc-section" id="confirm">
+<h2><span class="num">5</span>Points to confirm before implementation</h2>
+<p class="lead">Each one changes a detail of the design above. The recommended default is what the doc assumes.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>#</th><th>Question</th><th>Recommended default</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>"Issue type ASC": the domain order of the families, or alphabetical?</td><td>Domain order (<code>COMMAND_CENTER_ATTENTION_FAMILY_ORDER</code>), so connection problems come first.</td></tr>
+<tr><td>2</td><td>Stock with mapped warehouses: judge on remote stock (external) and change the Command Center classifier to match?</td><td>Yes: remote stock for both, with warehouse stock as the <code>READY_TO_PUBLISH</code> signal.</td></tr>
+<tr><td>3</td><td>Should clicking the primary action still auto-move To do → In progress and self-assign?</td><td>Yes (v1 behaviour, §2.3 #2).</td></tr>
+<tr><td>4</td><td>v1 workflow / assignment / lifecycle data: migrate or drop?</td><td>Drop. Tickets are seeded by the first sweep, and v1 identities don't map 1:1 onto the new keys.</td></tr>
+<tr><td>5</td><td>"Number of variants for product DESC": affected variants in the ticket, or total variants of the product?</td><td>Affected variants (<code>affected_variant_count</code>).</td></tr>
+<tr><td>6</td><td>On re-appearance, restore the previous assignee?</td><td>No: a fresh To do, unassigned. The history shows the previous owner.</td></tr>
+<tr><td>7</td><td>Should the Command Center later count from the ticket table, so both pages match by construction?</td><td>Yes, as a follow-up once the trigger coverage is proven. Until then both use the same detector SQL.</td></tr>
+</tbody></table></div>
+</section>
+
+<!-- ============================== 6 ============================== -->
+<section class="doc-section" id="removed">
+<h2><span class="num">6</span>Appendix: what is removed</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Item</th><th>Replaced by</th></tr></thead>
+<tbody>
+<tr><td><code>tbl_action_center_issue_workflows</code></td><td><code>tickets.status</code> + <code>tbl_action_center_ticket_snoozes</code></td></tr>
+<tr><td><code>tbl_action_center_issue_assignments</code></td><td><code>tickets.assignee_user_id</code></td></tr>
+<tr><td><code>tbl_action_center_lifecycle_events</code></td><td><code>tbl_action_center_ticket_events</code></td></tr>
+<tr><td><code>tbl_action_engine_settings</code> (+ admin module)</td><td>Constants in <code>src/core</code></td></tr>
+<tr><td><code>tbl_amazon_event_action_center_materializations</code></td><td>Buy Box families read <code>tbl_product_buy_box_statuses</code>, as the Command Center does</td></tr>
+<tr><td>Modes <code>SALES_OPERATIONS</code> / <code>CATALOG_PREPARATION</code></td><td>One ticket model</td></tr>
+<tr><td>Snapshot build, overlay reconciliation, 15 s cache, compound projection</td><td>Evaluator + indexed reads</td></tr>
+<tr><td>Mark solved, waiting reasons, pending reasons</td><td>System clearance and free stage moves</td></tr>
+<tr><td>Recently cleared, Recent activity, Resolution velocity, issue detail page</td><td>The audit trail (data kept, no UI) and the ticket dialog</td></tr>
+<tr><td>Periodic / focus refresh</td><td>In-place updates from mutation responses</td></tr>
+</tbody></table></div>
+</section>
+</main>
+</div>
+<button id="to-top" aria-label="Back to top">↑</button>
+<script>
+(function () {
+	var links = {};
+	document.querySelectorAll('#toc a').forEach(function (a) { links[a.getAttribute('href').slice(1)] = a; });
+	var heads = Array.prototype.filter.call(document.querySelectorAll('main section, main h3'), function (h) { return links[h.id]; });
+	var bar = document.getElementById('progress'), top = document.getElementById('to-top'), current = null;
+	function onScroll() {
+		var h = document.documentElement.scrollHeight - innerHeight;
+		bar.style.width = (h > 0 ? (scrollY / h) * 100 : 0) + '%';
+		top.classList.toggle('show', scrollY > 600);
+		var pick = null;
+		for (var i = 0; i < heads.length; i++) { if (heads[i].getBoundingClientRect().top < 140) pick = heads[i]; }
+		var id = pick ? pick.id : null;
+		if (id === current) return;
+		current = id;
+		document.querySelectorAll('#toc a.active').forEach(function (a) { a.classList.remove('active'); });
+		if (id) links[id].classList.add('active');
+	}
+	addEventListener('scroll', onScroll, { passive: true });
+	onScroll();
+	top.addEventListener('click', function () { scrollTo({ top: 0 }); });
+})();
+</script>
+</body>
+</html>
