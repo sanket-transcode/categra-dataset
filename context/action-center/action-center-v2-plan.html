@@ -1,0 +1,3290 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Action Center V2 Plan</title>
+    <style>
+      :root {
+        --bg: #0b0d12;
+        --surface: #12151c;
+        --surface-2: #181c25;
+        --surface-3: #1f2430;
+        --text: #e8eaf0;
+        --muted: #a3a9b6;
+        --faint: #6f7685;
+        --border: #242a36;
+        --border-strong: #323949;
+        --accent: #8b8cff;
+        --accent-2: #5eead4;
+        --accent-soft: #23244a;
+        --accent-text: #c9c8ff;
+        --code-bg: #1d212b;
+        --code-text: #f5a8d4;
+        --diagram-bg: #080a0e;
+        --red: #ff8a80;
+        --red-bg: #3a1618;
+        --red-line: #ff5b4f;
+        --yellow: #f7c56b;
+        --yellow-bg: #33270c;
+        --yellow-line: #f0a929;
+        --blue: #8db6ff;
+        --blue-bg: #14264a;
+        --blue-line: #4b8bff;
+        --green: #77dba3;
+        --green-bg: #0f2f1e;
+        --violet: #c4a8ff;
+        --violet-bg: #2a1c4a;
+        --slate: #b3bccb;
+        --slate-bg: #252a34;
+        --shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 8px 28px rgba(0, 0, 0, 0.28);
+        color-scheme: dark;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 24px;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font:
+          15px/1.65 Inter,
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          Roboto,
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: -1;
+        background:
+          radial-gradient(
+            900px 500px at 85% -10%,
+            rgba(139, 140, 255, 0.1),
+            transparent 60%
+          ),
+          radial-gradient(
+            700px 400px at -10% 30%,
+            rgba(94, 234, 212, 0.05),
+            transparent 60%
+          );
+      }
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      #progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        width: 0;
+        background: linear-gradient(90deg, var(--accent), var(--accent-2));
+        z-index: 50;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 290px minmax(0, 1fr);
+        min-height: 100vh;
+      }
+      aside {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow-y: auto;
+        border-right: 1px solid var(--border);
+        background: rgba(18, 21, 28, 0.85);
+        backdrop-filter: blur(8px);
+        padding: 22px 14px 40px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 8px 18px;
+      }
+      .brand-mark {
+        width: 32px;
+        height: 32px;
+        border-radius: 9px;
+        color: #0b0d12;
+        font-weight: 800;
+        font-size: 13px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      }
+      .brand-name {
+        font-weight: 700;
+        font-size: 14px;
+        line-height: 1.2;
+      }
+      .brand-sub {
+        color: var(--faint);
+        font-size: 12px;
+      }
+      nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      nav a {
+        display: flex;
+        gap: 8px;
+        padding: 5px 8px;
+        border-radius: 7px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.4;
+      }
+      nav a:hover {
+        background: var(--surface-2);
+        color: var(--text);
+        text-decoration: none;
+      }
+      nav .num {
+        color: var(--faint);
+        min-width: 26px;
+        font-size: 12px;
+        padding-top: 1px;
+        font-variant-numeric: tabular-nums;
+      }
+      .toc-l1 > a {
+        font-weight: 600;
+        color: var(--text);
+        margin-top: 3px;
+      }
+      .toc-l1 > ul {
+        padding-left: 12px;
+        margin: 2px 0 6px 8px;
+        border-left: 1px solid var(--border);
+      }
+      nav a.active {
+        background: var(--accent-soft);
+        color: var(--accent-text);
+      }
+      nav a.active .num {
+        color: var(--accent-text);
+      }
+
+      main {
+        padding: 40px clamp(16px, 4vw, 56px) 120px;
+        max-width: 1160px;
+        width: 100%;
+      }
+      .hero {
+        background: linear-gradient(160deg, #161a24, #11141b);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 34px 36px;
+        box-shadow: var(--shadow);
+        margin-bottom: 26px;
+        position: relative;
+        overflow: hidden;
+      }
+      .hero::after {
+        content: '';
+        position: absolute;
+        right: -90px;
+        top: -90px;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(139, 140, 255, 0.22),
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+      .eyebrow {
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+        font-size: 12px;
+        font-weight: 650;
+        color: var(--accent-2);
+      }
+      .hero h1 {
+        font-size: clamp(28px, 4vw, 40px);
+        line-height: 1.15;
+        margin: 8px 0 10px;
+        letter-spacing: -0.02em;
+      }
+      .hero p {
+        color: var(--muted);
+        max-width: 760px;
+        margin: 0 0 18px;
+        font-size: 16px;
+      }
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .chip {
+        border: 1px solid var(--border);
+        background: var(--surface-2);
+        border-radius: 999px;
+        padding: 4px 11px;
+        font-size: 12.5px;
+        color: var(--muted);
+      }
+      .chip b {
+        color: var(--text);
+        font-weight: 600;
+      }
+
+      .verdicts {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+        margin: 0 0 26px;
+      }
+      .verdict {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 20px 20px 18px;
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+      }
+      .verdict::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        height: 3px;
+        background: var(--vc, var(--accent));
+      }
+      .verdict .q {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        color: var(--faint);
+        font-weight: 650;
+      }
+      .verdict .a {
+        font-size: 18px;
+        font-weight: 700;
+        margin: 6px 0 8px;
+        line-height: 1.3;
+      }
+      .verdict p {
+        color: var(--muted);
+        font-size: 13.5px;
+        margin: 0 0 10px;
+      }
+      .verdict a {
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .doc-section {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 30px 36px 26px;
+        margin-bottom: 24px;
+        box-shadow: var(--shadow);
+      }
+      h2,
+      h3,
+      h4 {
+        letter-spacing: -0.01em;
+      }
+      h2 {
+        font-size: 25px;
+        line-height: 1.25;
+        margin: 0 0 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      h2 .num {
+        color: #0b0d12;
+        border-radius: 10px;
+        min-width: 36px;
+        height: 36px;
+        padding: 0 8px;
+        display: inline-grid;
+        place-items: center;
+        font-size: 15px;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      }
+      h3 {
+        font-size: 18.5px;
+        margin: 34px 0 12px;
+        padding-top: 22px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        gap: 10px;
+        align-items: baseline;
+      }
+      h3 .num {
+        color: var(--accent);
+        font-weight: 700;
+        font-size: 15px;
+      }
+      h4 {
+        font-size: 15.5px;
+        margin: 24px 0 10px;
+        display: flex;
+        gap: 9px;
+        align-items: baseline;
+      }
+      h4 .num {
+        color: var(--accent-text);
+        background: var(--accent-soft);
+        border-radius: 6px;
+        padding: 1px 7px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .lead {
+        color: var(--muted);
+        font-size: 15.5px;
+        margin-top: -6px;
+      }
+
+      p {
+        margin: 0 0 14px;
+      }
+      ul,
+      ol {
+        margin: 0 0 16px;
+        padding-left: 22px;
+      }
+      li {
+        margin: 4px 0;
+      }
+      li::marker {
+        color: var(--faint);
+      }
+      strong {
+        font-weight: 650;
+        color: #f3f4f8;
+      }
+      code {
+        font-family:
+          'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+        font-size: 0.84em;
+        background: var(--code-bg);
+        color: var(--code-text);
+        padding: 1.5px 5px;
+        border-radius: 5px;
+        overflow-wrap: anywhere;
+      }
+      a.ref {
+        font-size: 0.86em;
+        font-weight: 600;
+        background: var(--accent-soft);
+        color: var(--accent-text);
+        padding: 1px 6px;
+        border-radius: 5px;
+        white-space: nowrap;
+      }
+      a.ref:hover {
+        text-decoration: none;
+        filter: brightness(1.1);
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        margin: 6px 0 20px;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 13.5px;
+        line-height: 1.5;
+      }
+      th {
+        text-align: left;
+        background: var(--surface-2);
+        color: var(--muted);
+        font-weight: 600;
+        font-size: 11.5px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--border);
+        white-space: nowrap;
+      }
+      td {
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+      }
+      tr:last-child td {
+        border-bottom: 0;
+      }
+      tbody tr:hover td {
+        background: rgba(255, 255, 255, 0.015);
+      }
+      td:first-child {
+        font-weight: 500;
+      }
+      td code {
+        overflow-wrap: normal;
+      }
+      td.win {
+        color: var(--green);
+      }
+      td.lose {
+        color: var(--muted);
+      }
+
+      .pill {
+        display: inline-block;
+        padding: 1px 9px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 650;
+        white-space: nowrap;
+      }
+      .pill-red {
+        background: var(--red-bg);
+        color: var(--red);
+      }
+      .pill-yellow {
+        background: var(--yellow-bg);
+        color: var(--yellow);
+      }
+      .pill-blue {
+        background: var(--blue-bg);
+        color: var(--blue);
+      }
+      .pill-green {
+        background: var(--green-bg);
+        color: var(--green);
+      }
+      .pill-violet {
+        background: var(--violet-bg);
+        color: var(--violet);
+      }
+      .pill-slate {
+        background: var(--slate-bg);
+        color: var(--slate);
+      }
+
+      .callout {
+        border: 1px solid var(--border-strong);
+        background: var(--surface-2);
+        border-radius: 12px;
+        padding: 14px 16px;
+        margin: 4px 0 18px;
+        font-size: 14px;
+      }
+      .callout.rec {
+        border-color: rgba(94, 234, 212, 0.35);
+        background: rgba(94, 234, 212, 0.06);
+      }
+      .callout.warn {
+        border-color: rgba(240, 169, 41, 0.4);
+        background: rgba(240, 169, 41, 0.07);
+      }
+      .callout .t {
+        font-weight: 700;
+        display: block;
+        margin-bottom: 4px;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .callout.rec .t {
+        color: var(--accent-2);
+      }
+      .callout.warn .t {
+        color: var(--yellow);
+      }
+      .callout p:last-child,
+      .callout ul:last-child {
+        margin-bottom: 0;
+      }
+
+      pre.diagram {
+        background: var(--diagram-bg);
+        color: #d9dde6;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 18px 20px;
+        overflow-x: auto;
+        font:
+          12.8px/1.6 'JetBrains Mono',
+          ui-monospace,
+          Consolas,
+          monospace;
+        margin: 6px 0 20px;
+      }
+      pre.diagram .k {
+        color: var(--accent-2);
+      }
+      pre.diagram .r {
+        color: var(--red);
+      }
+      pre.diagram .y {
+        color: var(--yellow);
+      }
+      pre.diagram .b {
+        color: var(--blue);
+      }
+      pre.diagram .m {
+        color: var(--faint);
+      }
+      pre.diagram .v {
+        color: var(--violet);
+      }
+
+      .keybox {
+        background: var(--diagram-bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px 16px;
+        margin: 6px 0 18px;
+        font:
+          13px/1.7 'JetBrains Mono',
+          ui-monospace,
+          Consolas,
+          monospace;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+      .keybox .seg {
+        color: var(--text);
+      }
+      .keybox .sep {
+        color: var(--faint);
+      }
+      .keybox .val {
+        color: var(--accent-2);
+      }
+
+      /* lane + card mocks */
+      .lanes {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin: 8px 0 20px;
+      }
+      .lane {
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 12px;
+      }
+      .lane-h {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-weight: 700;
+        font-size: 13.5px;
+        margin-bottom: 4px;
+      }
+      .lane-h .cnt {
+        font-size: 12px;
+        color: var(--muted);
+        background: var(--surface-3);
+        border-radius: 999px;
+        padding: 0 8px;
+      }
+      .lane-s {
+        color: var(--faint);
+        font-size: 12px;
+        margin-bottom: 10px;
+      }
+      .lane-tag {
+        font-size: 11px;
+        font-weight: 650;
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
+
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin: 8px 0 20px;
+      }
+      .card {
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--pl, var(--red-line));
+        border-radius: 12px;
+        padding: 12px 12px 10px;
+        height: 168px;
+        display: flex;
+        flex-direction: column;
+      }
+      .card .top {
+        display: flex;
+        gap: 10px;
+      }
+      .thumb {
+        width: 44px;
+        height: 44px;
+        border-radius: 8px;
+        flex: none;
+        background: linear-gradient(135deg, #2a3040, #1c212c);
+        border: 1px solid var(--border-strong);
+      }
+      .card .name {
+        font-weight: 650;
+        font-size: 13px;
+        line-height: 1.35;
+      }
+      .card .ctx {
+        color: var(--faint);
+        font-size: 11.5px;
+      }
+      .card .badges {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin: 8px 0 auto;
+      }
+      .card .foot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-top: 1px solid var(--border);
+        padding-top: 8px;
+        margin-top: 8px;
+      }
+      .card .who {
+        color: var(--muted);
+        font-size: 11.5px;
+      }
+      .btn {
+        font-size: 12px;
+        font-weight: 650;
+        border-radius: 8px;
+        padding: 4px 10px;
+        border: 1px solid var(--border-strong);
+        background: var(--surface-3);
+        color: var(--text);
+        white-space: nowrap;
+      }
+      .btn.primary {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #0b0d12;
+      }
+      .btn.go {
+        background: var(--accent-2);
+        border-color: var(--accent-2);
+        color: #0b0d12;
+      }
+      .btn.dis {
+        opacity: 0.55;
+      }
+      .ctxbar {
+        background: var(--diagram-bg);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px 14px;
+        margin: 4px 0 18px;
+        font-size: 13px;
+        display: flex;
+        gap: 18px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .ctxbar .lbl {
+        color: var(--faint);
+        font-size: 11.5px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-right: 6px;
+      }
+
+      .grid2 {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+        margin: 6px 0 18px;
+      }
+      .box {
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px 16px;
+      }
+      .box h5 {
+        margin: 0 0 6px;
+        font-size: 14px;
+      }
+      .box p,
+      .box ul {
+        font-size: 13.5px;
+        color: var(--muted);
+        margin-bottom: 0;
+      }
+
+      #to-top {
+        position: fixed;
+        right: 22px;
+        bottom: 22px;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        border: 1px solid var(--border-strong);
+        background: var(--surface-2);
+        color: var(--muted);
+        cursor: pointer;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+      }
+      #to-top.show {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      @media (max-width: 1000px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+        aside {
+          position: static;
+          height: auto;
+          border-right: 0;
+          border-bottom: 1px solid var(--border);
+        }
+        .verdicts,
+        .lanes,
+        .cards,
+        .grid2 {
+          grid-template-columns: 1fr;
+        }
+        .doc-section,
+        .hero {
+          padding: 22px 18px;
+        }
+      }
+
+      /* additions for the V2 schema + plan docs */
+      .er {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+        margin: 8px 0 20px;
+      }
+      .ent {
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .ent-h {
+        padding: 10px 14px;
+        background: var(--surface-3);
+        border-bottom: 1px solid var(--border);
+        font:
+          600 13px/1.4 'JetBrains Mono',
+          ui-monospace,
+          Consolas,
+          monospace;
+        color: var(--accent-2);
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .ent-h span {
+        color: var(--faint);
+        font-family: Inter, system-ui, sans-serif;
+        font-weight: 500;
+        font-size: 12px;
+      }
+      .ent ul {
+        list-style: none;
+        margin: 0;
+        padding: 8px 14px 10px;
+        font:
+          12.5px/1.75 'JetBrains Mono',
+          ui-monospace,
+          Consolas,
+          monospace;
+      }
+      .ent li {
+        margin: 0;
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        color: var(--text);
+      }
+      .ent li i {
+        font-style: normal;
+        color: var(--faint);
+      }
+      .ent li.pk {
+        color: var(--yellow);
+      }
+      .ent li.fk {
+        color: var(--blue);
+      }
+      .ent li.gen {
+        color: var(--violet);
+      }
+      .legend {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        font-size: 12.5px;
+        color: var(--muted);
+        margin: -6px 0 18px;
+      }
+      .legend b {
+        font-weight: 600;
+      }
+      pre.sql {
+        background: var(--diagram-bg);
+        color: #d9dde6;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px 18px;
+        overflow-x: auto;
+        font:
+          12.6px/1.6 'JetBrains Mono',
+          ui-monospace,
+          Consolas,
+          monospace;
+        margin: 6px 0 20px;
+      }
+      pre.sql .kw {
+        color: var(--accent);
+      }
+      pre.sql .c {
+        color: var(--faint);
+      }
+      pre.sql .s {
+        color: var(--green);
+      }
+      .steps {
+        counter-reset: step;
+        list-style: none;
+        padding: 0;
+        margin: 8px 0 20px;
+      }
+      .steps > li {
+        position: relative;
+        padding: 14px 16px 14px 60px;
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        margin: 0 0 10px;
+      }
+      .steps > li::before {
+        counter-increment: step;
+        content: counter(step);
+        position: absolute;
+        left: 14px;
+        top: 14px;
+        width: 32px;
+        height: 32px;
+        border-radius: 9px;
+        display: grid;
+        place-items: center;
+        font-weight: 800;
+        font-size: 14px;
+        color: #0b0d12;
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      }
+      .steps > li h5 {
+        margin: 0 0 4px;
+        font-size: 14.5px;
+      }
+      .steps > li p,
+      .steps > li ul {
+        font-size: 13.5px;
+        color: var(--muted);
+        margin: 0 0 6px;
+      }
+      .steps > li .meta {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 6px;
+      }
+      .tree {
+        background: var(--diagram-bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px 18px;
+        overflow-x: auto;
+        font:
+          12.6px/1.65 'JetBrains Mono',
+          ui-monospace,
+          Consolas,
+          monospace;
+        color: #d9dde6;
+        margin: 6px 0 20px;
+        white-space: pre;
+      }
+      .tree .d {
+        color: var(--accent-2);
+      }
+      .tree .n {
+        color: var(--green);
+      }
+      .tree .x {
+        color: var(--yellow);
+      }
+      .tree .m {
+        color: var(--faint);
+      }
+      .mock-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 10px 12px;
+        margin: 6px 0 14px;
+      }
+      .mock-bar .l,
+      .mock-bar .r {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .search {
+        width: 240px;
+        max-width: 100%;
+        border: 1px solid var(--border-strong);
+        background: var(--surface-3);
+        border-radius: 8px;
+        padding: 5px 10px;
+        font-size: 12.5px;
+        color: var(--faint);
+      }
+      .avatars {
+        display: flex;
+      }
+      .av {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        border: 2px solid var(--surface-2);
+        margin-left: -6px;
+        display: grid;
+        place-items: center;
+        font-size: 10.5px;
+        font-weight: 700;
+        color: #0b0d12;
+      }
+      .av:first-child {
+        margin-left: 0;
+      }
+      @media (max-width: 1000px) {
+        .er {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="progress"></div>
+    <div class="layout">
+      <aside>
+        <div class="brand">
+          <div class="brand-mark">AC</div>
+          <div>
+            <div class="brand-name">Action Center V2</div>
+            <div class="brand-sub">Doc 2 of 2 · Build plan</div>
+          </div>
+        </div>
+        <nav id="toc">
+          <ul>
+            <li class="toc-l1">
+              <a href="#s1"><span class="num">1</span>Objective &amp; scope</a>
+              <ul>
+                <li>
+                  <a href="#s1-1"><span class="num">1.1</span>What V2 is</a>
+                </li>
+                <li>
+                  <a href="#s1-2"><span class="num">1.2</span>Ground rules</a>
+                </li>
+                <li>
+                  <a href="#s1-3"
+                    ><span class="num">1.3</span>End-to-end flow</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <li class="toc-l1">
+              <a href="#s2"><span class="num">2</span>Decisions baseline</a>
+            </li>
+            <li class="toc-l1">
+              <a href="#s3"><span class="num">3</span>Requirements (product)</a>
+              <ul>
+                <li>
+                  <a href="#s3-1"><span class="num">3.1</span>Entry points</a>
+                </li>
+                <li>
+                  <a href="#s3-2"><span class="num">3.2</span>Top bar</a>
+                </li>
+                <li>
+                  <a href="#s3-3"><span class="num">3.3</span>Filter dialog</a>
+                </li>
+                <li>
+                  <a href="#s3-4"
+                    ><span class="num">3.4</span>Board &amp; cards</a
+                  >
+                </li>
+                <li>
+                  <a href="#s3-5"><span class="num">3.5</span>Card actions</a>
+                </li>
+                <li>
+                  <a href="#s3-6"><span class="num">3.6</span>Ticket dialog</a>
+                </li>
+                <li>
+                  <a href="#s3-7"
+                    ><span class="num">3.7</span>Primary action &amp; context
+                    bar</a
+                  >
+                </li>
+                <li>
+                  <a href="#s3-8"
+                    ><span class="num">3.8</span>Right-edge drawer</a
+                  >
+                </li>
+                <li>
+                  <a href="#s3-9"
+                    ><span class="num">3.9</span>Product page drawer</a
+                  >
+                </li>
+                <li>
+                  <a href="#s3-10"><span class="num">3.10</span>CSV export</a>
+                </li>
+                <li>
+                  <a href="#s3-11"><span class="num">3.11</span>Not in V2</a>
+                </li>
+              </ul>
+            </li>
+            <li class="toc-l1">
+              <a href="#s4"><span class="num">4</span>API plan</a>
+              <ul>
+                <li>
+                  <a href="#s4-1"><span class="num">4.1</span>Module layout</a>
+                </li>
+                <li>
+                  <a href="#s4-2"><span class="num">4.2</span>Detectors</a>
+                </li>
+                <li>
+                  <a href="#s4-3"
+                    ><span class="num">4.3</span>Evaluator &amp; queue</a
+                  >
+                </li>
+                <li>
+                  <a href="#s4-4"
+                    ><span class="num">4.4</span>Trigger hook points</a
+                  >
+                </li>
+                <li>
+                  <a href="#s4-5"><span class="num">4.5</span>Cron jobs</a>
+                </li>
+                <li>
+                  <a href="#s4-6"><span class="num">4.6</span>Fix state</a>
+                </li>
+                <li>
+                  <a href="#s4-7"
+                    ><span class="num">4.7</span>Primary actions</a
+                  >
+                </li>
+                <li>
+                  <a href="#s4-8"><span class="num">4.8</span>Endpoints</a>
+                </li>
+                <li>
+                  <a href="#s4-9"
+                    ><span class="num">4.9</span>Permissions &amp; assignees</a
+                  >
+                </li>
+                <li>
+                  <a href="#s4-10"
+                    ><span class="num">4.10</span>Issue-type order &amp;
+                    priority</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <li class="toc-l1">
+              <a href="#s5"><span class="num">5</span>Webapp plan</a>
+              <ul>
+                <li>
+                  <a href="#s5-1"
+                    ><span class="num">5.1</span>Route &amp; files</a
+                  >
+                </li>
+                <li>
+                  <a href="#s5-2"
+                    ><span class="num">5.2</span>State &amp; data</a
+                  >
+                </li>
+                <li>
+                  <a href="#s5-3"><span class="num">5.3</span>URL contract</a>
+                </li>
+                <li>
+                  <a href="#s5-4"><span class="num">5.4</span>Shell wiring</a>
+                </li>
+                <li>
+                  <a href="#s5-5"
+                    ><span class="num">5.5</span>Command Center hand-off</a
+                  >
+                </li>
+                <li>
+                  <a href="#s5-6"
+                    ><span class="num">5.6</span>Destination pages</a
+                  >
+                </li>
+                <li>
+                  <a href="#s5-7"
+                    ><span class="num">5.7</span>Product page swap</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <li class="toc-l1">
+              <a href="#s6"><span class="num">6</span>No leftovers</a>
+            </li>
+            <li class="toc-l1">
+              <a href="#s7"><span class="num">7</span>Defaults &amp; risks</a>
+            </li>
+            <li class="toc-l1">
+              <a href="#s8"><span class="num">8</span>Execution steps</a>
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <main>
+        <header class="hero">
+          <div class="eyebrow">Categra · Action Center V2 · Doc 2 of 2</div>
+          <h1>Action Center V2 build plan</h1>
+          <p>
+            What V2 does for the user, then what to build in
+            <code>api/</code> and <code>webapp/</code> to get there, and the
+            order to build it in. The tables are in
+            <code>action-center-v2-schema.html</code>. The reasoning behind
+            stored tickets, the three lanes and the fix state is in
+            <code>action-center-v2-solutions.html</code>.
+          </p>
+          <div class="chips">
+            <span class="chip"><b>Repos</b> api · webapp · db-migrations</span>
+            <span class="chip"><b>Route</b> /action-center-v2</span>
+            <span class="chip"><b>API prefix</b> issue-tickets/</span>
+            <span class="chip"><b>v1</b> kept, reachable</span>
+            <span class="chip"><b>Date</b> 2026-10-26</span>
+          </div>
+        </header>
+
+        <!-- ============================== 1 ============================== -->
+        <section class="doc-section" id="s1">
+          <h2><span class="num">1</span>Objective &amp; scope</h2>
+
+          <h3 id="s1-1"><span class="num">1.1</span>What V2 is</h3>
+          <p>
+            A new Action Center at <code>/action-center-v2</code>, with its own
+            sidebar item <strong>Action Center V2</strong>. It shows what the
+            channels (Amazon, Shopify) report as wrong, as tickets: one per
+            product × channel × marketplace × issue type, with the parent and
+            its affected variants inside. The system creates and clears tickets;
+            the team moves them between three stages, assigns and snoozes them,
+            and jumps to the right page to fix them.
+          </p>
+
+          <h3 id="s1-2"><span class="num">1.2</span>Ground rules</h3>
+          <div class="grid2">
+            <div class="box">
+              <h5>v1 stays</h5>
+              <p>
+                The <code>/actionCenter</code> page, its API module and its
+                tables keep working and stay in the sidebar. V2 code never
+                imports v1 code or reads v1 tables.
+              </p>
+            </div>
+            <div class="box">
+              <h5>Names not tied to the page</h5>
+              <p>
+                Tables, entities, API code, queues and constants are named after
+                the domain (<code>tbl_issue_tickets</code>,
+                <code>IssueTicket*</code>, <code>ISSUE_TICKET_*</code>,
+                <code>issue-tickets/</code>), so renaming the page never needs a
+                migration. Only the webapp page layer (route, page components,
+                store, translations) carries <code>ActionCenterV2</code>.
+              </p>
+            </div>
+            <div class="box">
+              <h5>External only</h5>
+              <p>
+                A ticket exists only if the channel reports the problem. The one
+                exception is the stock rule, which mirrors the Command Center
+                exactly (warehouse quantity when mapped).
+              </p>
+            </div>
+            <div class="box">
+              <h5>No leftovers</h5>
+              <p>
+                Anything V2 replaces outside v1 (the Command Center redirect
+                mapping, the product-page v1 trigger mount) is removed in the
+                same step, not left for later (§6).
+              </p>
+            </div>
+          </div>
+
+          <h3 id="s1-3"><span class="num">1.3</span>End-to-end flow</h3>
+          <pre
+            class="diagram"
+          ><span class="m">channel state changes (publish result, import, notification, health, sweep …)</span>
+      │
+      ▼
+ <span class="k">IssueTicketTriggerService</span>.enqueue(scope)  <span class="m">debounced, merged per account × channel × market</span>
+      │  queue <span class="v">ISSUE_TICKET_EVALUATION</span> (api-worker)
+      ▼
+ <span class="k">IssueTicketEvaluatorService</span>  detectors (shared with CC) → diff → tickets / items / events
+      │
+      ▼
+ <span class="k">/action-center-v2</span>  top bar · 3 lanes · ticket dialog · right-edge drawer
+      │  primary action (e.g. <span class="y">Open Price</span>) → TODO → IN_PROGRESS, self-assign
+      ▼
+ <span class="k">destination page</span> (product tab / channel settings)  context bar + affected variants highlighted &amp; filtered
+      │  user fixes in Categra → fix state "Set in Categra · not published" → the tab's own <span class="y">Publish</span>
+      ▼
+ publish starts → ticket → AWAITING_CHANNEL <span class="m">(PUBLISH_STARTED)</span> → result evaluated → <span class="r">cleared</span> (deleted, audited) or back to IN_PROGRESS</pre>
+        </section>
+
+        <!-- ============================== 2 ============================== -->
+        <section class="doc-section" id="s2">
+          <h2><span class="num">2</span>Decisions baseline</h2>
+          <p class="lead">
+            Everything below is settled. The plan doesn't reopen it.
+          </p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Topic</th>
+                  <th>Decision</th>
+                  <th>From</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Ticket storage</td>
+                  <td>
+                    Stored tickets, computed detection, event-driven + nightly
+                    sweep
+                  </td>
+                  <td>Solutions §1</td>
+                </tr>
+                <tr>
+                  <td>Ticket id</td>
+                  <td>
+                    <code
+                      >productId:…||channelId:…||amazonMarketplaceId:…||issueType:…</code
+                    >, 0 for keys that don't apply (the columns themselves are
+                    nullable FKs; schema §3.1)
+                  </td>
+                  <td>Solutions §1.3</td>
+                </tr>
+                <tr>
+                  <td>Lanes</td>
+                  <td>
+                    To do · In progress · Awaiting channel. Free moves from ⋮,
+                    plus three system moves
+                  </td>
+                  <td>Solutions §2</td>
+                </tr>
+                <tr>
+                  <td>Local vs external</td>
+                  <td>
+                    Same ticket, read-time fix state: Not set · Set, not
+                    published · Publishing
+                  </td>
+                  <td>Solutions §3</td>
+                </tr>
+                <tr>
+                  <td>Issue type order</td>
+                  <td>
+                    CC family order, not alphabetical. Resolved by the API at
+                    read time (not stored), so it can become dynamic; priority
+                    likewise derived from the issue type
+                  </td>
+                  <td>§5 #1 accepted · 2026-10-26</td>
+                </tr>
+                <tr>
+                  <td>Publish</td>
+                  <td>
+                    Never from the board. "Review &amp; publish" opens the tab
+                    that owns the publish; a publish starting moves matching
+                    tickets to Awaiting channel
+                  </td>
+                  <td>2026-10-26</td>
+                </tr>
+                <tr>
+                  <td>Stock</td>
+                  <td>Mirror the CC classifier exactly; CC untouched</td>
+                  <td>§5 #2 rejected → 2026-10-23</td>
+                </tr>
+                <tr>
+                  <td>Primary action click</td>
+                  <td>
+                    TODO → IN_PROGRESS + self-assign if unassigned (team
+                    accounts)
+                  </td>
+                  <td>§5 #3 accepted</td>
+                </tr>
+                <tr>
+                  <td>v1 data</td>
+                  <td>Not migrated. First sweep seeds V2</td>
+                  <td>§5 #4 accepted</td>
+                </tr>
+                <tr>
+                  <td>"Number of variants"</td>
+                  <td>Affected variants in the ticket</td>
+                  <td>§5 #5 accepted</td>
+                </tr>
+                <tr>
+                  <td>Re-appearance</td>
+                  <td>Fresh TODO, unassigned</td>
+                  <td>§5 #6 accepted</td>
+                </tr>
+                <tr>
+                  <td>CC counting from tickets</td>
+                  <td>Follow-up after V2 trigger coverage is proven</td>
+                  <td>§5 #7 accepted</td>
+                </tr>
+                <tr>
+                  <td>Route</td>
+                  <td><code>/action-center-v2</code></td>
+                  <td>2026-10-23</td>
+                </tr>
+                <tr>
+                  <td>Permissions</td>
+                  <td>
+                    Reuse <code>actionCenter.view</code> /
+                    <code>actionCenter.assign</code> + channel access
+                  </td>
+                  <td>2026-10-23</td>
+                </tr>
+                <tr>
+                  <td>Command Center CTAs</td>
+                  <td>Go to V2 with channel, market and issue type filters</td>
+                  <td>2026-10-23</td>
+                </tr>
+                <tr>
+                  <td>Right-edge drawer on V2</td>
+                  <td>
+                    Category breakdown + recent activity (from the events table)
+                  </td>
+                  <td>2026-10-23</td>
+                </tr>
+                <tr>
+                  <td>Product page</td>
+                  <td>
+                    V2 drawer replaces the v1 trigger; v1 drawer files kept but
+                    not mounted
+                  </td>
+                  <td>2026-10-23</td>
+                </tr>
+                <tr>
+                  <td>Inline stock/price edit in the drawer</td>
+                  <td>Dropped. Fixes happen on the destination tabs</td>
+                  <td>2026-10-23</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ============================== 3 ============================== -->
+        <section class="doc-section" id="s3">
+          <h2><span class="num">3</span>Requirements (product)</h2>
+          <p class="lead">
+            What the user sees and can do. Each sub-section is one build unit in
+            §8.
+          </p>
+
+          <h3 id="s3-1"><span class="num">3.1</span>Entry points</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>From</th>
+                  <th>Lands on</th>
+                  <th>Pre-applied</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    Sidebar <strong>Action Center V2</strong> (below v1's
+                    <em>Action Center</em>)
+                  </td>
+                  <td><code>/action-center-v2</code></td>
+                  <td>Nothing.</td>
+                </tr>
+                <tr>
+                  <td>Command Center attention card / next action</td>
+                  <td>
+                    <code
+                      >/action-center-v2?issueTypes=…&amp;channelId=…&amp;marketplaceId=…</code
+                    >
+                  </td>
+                  <td>
+                    Exactly the card's issue type(s) and the CC page's channel
+                    and market (All when the CC shows All).
+                  </td>
+                </tr>
+                <tr>
+                  <td>Product page edge trigger</td>
+                  <td>V2 product drawer (§3.9)</td>
+                  <td>That product.</td>
+                </tr>
+                <tr>
+                  <td>Deep link to a ticket</td>
+                  <td><code>/action-center-v2?ticket=&lt;key&gt;</code></td>
+                  <td>
+                    The board opens with the ticket dialog on top. A cleared
+                    ticket shows a toast instead.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 id="s3-2"><span class="num">3.2</span>Top bar (Jira-like)</h3>
+          <div class="mock-bar">
+            <div class="l">
+              <span class="search">🔍 Search product, variant, SKU, ASIN</span>
+              <span class="avatars"
+                ><span class="av" style="background: var(--slate)">–</span
+                ><span class="av" style="background: var(--accent)">PR</span
+                ><span class="av" style="background: var(--accent-2)">JD</span
+                ><span class="av" style="background: var(--yellow)"
+                  >+2</span
+                ></span
+              >
+              <span class="btn">⚲ Filters · 3</span>
+              <span
+                class="btn"
+                style="
+                  border-color: transparent;
+                  background: transparent;
+                  color: var(--accent);
+                "
+                >Clear filters</span
+              >
+            </div>
+            <div class="r"><span class="btn">⤓ Export CSV</span></div>
+          </div>
+          <ul>
+            <li>
+              <strong>Search</strong>: product name, variant name, product /
+              variant SKU and ASIN, server-side and debounced. It matches a
+              ticket on its parent or any of its items.
+            </li>
+            <li>
+              <strong>Assignee list</strong>: "Unassigned" + one avatar per team
+              member, multi-select toggles like Jira. Shown only when the
+              account has 2+ users.
+            </li>
+            <li>
+              <strong>Filters</strong>: one button that opens the filter dialog
+              (§3.3). Its badge shows how many filters are applied.
+            </li>
+            <li>
+              <strong>Clear filters</strong>: shown only when a filter, search
+              or assignee selection is active. Resets all of them.
+            </li>
+            <li><strong>Export CSV</strong> (right): §3.10.</li>
+            <li>
+              Removed: Saved views, Refresh scope, the mode switch, KPI strip,
+              Resolution velocity, Recently cleared.
+            </li>
+          </ul>
+
+          <h3 id="s3-3"><span class="num">3.3</span>Filter dialog</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Filter</th>
+                  <th>Values</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Channel</td>
+                  <td>All · one channel</td>
+                  <td>Only channels the user can access.</td>
+                </tr>
+                <tr>
+                  <td>Marketplace</td>
+                  <td>All · one marketplace</td>
+                  <td>
+                    Enabled for an Amazon channel. A marketplace also shows that
+                    channel's channel-wide tickets (marketplace NULL: connection,
+                    account health, permission), since they block every market.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Issue type</td>
+                  <td>
+                    Grouped by the 4 groups (Restore access, Restore
+                    sellability, Fix listings, Improve catalog), multi-select
+                  </td>
+                  <td>
+                    Each option shows its count for the other active filters.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Priority</td>
+                  <td>Red · Yellow · Blue</td>
+                  <td>
+                    Not a column: the API expands it to the issue types of that
+                    priority.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Fix state</td>
+                  <td>
+                    Not set in Categra · Set in Categra, not published ·
+                    Publishing
+                  </td>
+                  <td>Matches tickets with at least one item in that state.</td>
+                </tr>
+                <tr>
+                  <td>Snoozed</td>
+                  <td>Off (default) · Only my snoozed</td>
+                  <td>Snoozed tickets are hidden unless this is on.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>
+            The dialog applies on <em>Apply</em>, not per click, so the board
+            loads once. All filters live in the URL (§5.3), so a refresh or a
+            shared link keeps them.
+          </p>
+
+          <h3 id="s3-4"><span class="num">3.4</span>Board &amp; cards</h3>
+          <div class="lanes">
+            <div class="lane">
+              <div class="lane-h">To do <span class="cnt">42</span></div>
+              <div class="lane-s">Detected, nobody started</div>
+              <div class="card" style="--pl: var(--red-line); height: auto">
+                <div class="top">
+                  <div class="thumb"></div>
+                  <div>
+                    <div class="name">Linen Shirt Classic</div>
+                    <div class="ctx">Amazon EU · DE · 3 of 4 variants</div>
+                  </div>
+                </div>
+                <div class="badges">
+                  <span class="pill pill-red">Missing price</span
+                  ><span class="pill pill-slate">Not set in Categra</span>
+                </div>
+                <div class="foot">
+                  <span class="who">Unassigned · 2 d</span
+                  ><span class="btn go">Open Price</span>
+                </div>
+              </div>
+            </div>
+            <div class="lane">
+              <div class="lane-h">In progress <span class="cnt">7</span></div>
+              <div class="lane-s">A teammate is fixing it</div>
+              <div class="card" style="--pl: var(--yellow-line); height: auto">
+                <div class="top">
+                  <div class="thumb"></div>
+                  <div>
+                    <div class="name">Wool Beanie</div>
+                    <div class="ctx">Shopify · 1 variant</div>
+                  </div>
+                </div>
+                <div class="badges">
+                  <span class="pill pill-yellow">Low stock</span
+                  ><span class="pill pill-violet">Set · not published</span>
+                </div>
+                <div class="foot">
+                  <span class="who">Priya · 5 h</span
+                  ><span class="btn primary">Review &amp; publish</span>
+                </div>
+              </div>
+            </div>
+            <div class="lane">
+              <div class="lane-h">
+                Awaiting channel <span class="cnt">3</span>
+              </div>
+              <div class="lane-s">Waiting on Amazon / Shopify</div>
+              <div class="card" style="--pl: var(--red-line); height: auto">
+                <div class="top">
+                  <div class="thumb"></div>
+                  <div>
+                    <div class="name">Desk Lamp Pro</div>
+                    <div class="ctx">Amazon EU · FR · standalone</div>
+                  </div>
+                </div>
+                <div class="badges">
+                  <span class="pill pill-red">Main image</span
+                  ><span class="pill pill-blue">Publishing…</span>
+                </div>
+                <div class="foot">
+                  <span class="who">Jon · 20 m</span
+                  ><span class="btn dis">Publishing…</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ul>
+            <li>
+              <strong>Order</strong> in every lane: issue type (CC order,
+              resolved by the API) → affected variants DESC → product id →
+              channel id → marketplace id. Server-side.
+            </li>
+            <li>
+              <strong>Loading</strong>: each lane loads its own pages (infinite
+              scroll). Counts come from one counts call. No periodic refresh, no
+              refresh on window focus.
+            </li>
+            <li>
+              <strong>In-place updates</strong>: a move, assign or snooze
+              updates the card from the mutation response and adjusts lane
+              counts locally. No full reload.
+            </li>
+            <li>
+              <strong>Fixed card size</strong>: fixed width (lane width) and
+              height. The image is capped (44 × 44,
+              <code>object-fit: contain</code>) and the name clamps to 2 lines.
+            </li>
+            <li>
+              <strong>Card content</strong>: priority stripe (Red/Yellow/Blue),
+              image, name, scope (channel · market · "3 of 4 variants"), issue
+              type badge, fix state badge, assignee + time in stage, primary
+              button, ⓘ, ⋮.
+            </li>
+            <li>
+              <strong>Channel-level tickets</strong> (connection, health,
+              permission, data trust) show the channel icon instead of a product
+              image, and the reason (e.g. "Connection lost") instead of a
+              variant count.
+            </li>
+            <li>
+              Clicking the card body opens the ticket dialog (§3.6). There is no
+              separate issue page.
+            </li>
+          </ul>
+
+          <h3 id="s3-5"><span class="num">3.5</span>Card actions</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Control</th>
+                  <th>Behaviour</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Primary button</td>
+                  <td>
+                    One per issue type, decided by the API (§4.7), with its
+                    label following the fix state: e.g. <em>Open Price</em> →
+                    <em>Review &amp; publish</em> → <em>Publishing…</em> (link to
+                    the task manager). Both of the first two open the tab that
+                    owns the fix; the board never publishes.
+                  </td>
+                </tr>
+                <tr>
+                  <td>⋮ → Move to …</td>
+                  <td>
+                    Lists the two stages other than the current one. No reason
+                    dialog.
+                  </td>
+                </tr>
+                <tr>
+                  <td>⋮ → Snooze for me</td>
+                  <td>
+                    Opens the same <code>DatePickerDialog</code> used in the
+                    Details tab. On save the card leaves the board for this user
+                    only. On a snoozed ticket (Snoozed filter on) it reads
+                    <em>Unsnooze</em>.
+                  </td>
+                </tr>
+                <tr>
+                  <td>ⓘ (hover)</td>
+                  <td>
+                    The shared Categra tooltip
+                    (<code>components/ui/tooltip.tsx</code>) listing SKU + ASIN
+                    of the parent and of each affected variant.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Assignee chip</td>
+                  <td>
+                    Team accounts only. "Unassigned" (or the avatar) opens a
+                    picker of team members who can access the ticket's channel
+                    and the Action Center module. Picking one assigns;
+                    "Unassign" is in the picker. Users without
+                    <code>actionCenter.assign</code> only see "Assign to me".
+                    With one user in the account there is no chip and no
+                    "Unassigned".
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 id="s3-6"><span class="num">3.6</span>Ticket dialog</h3>
+          <ul>
+            <li>
+              <strong>Header</strong>: product (or channel) name, scope,
+              priority, issue type, stage dropdown, assignee, snooze.
+            </li>
+            <li>
+              <strong>Context bar</strong>: the shared component from §3.7.
+            </li>
+            <li>
+              <strong>Items</strong>: one row per affected variant (by variant
+              id ASC): name, SKU, ASIN, sub issue type, live evidence (e.g. "On
+              Amazon: not set · In Categra: €19.99", the channel error text),
+              fix state and "since".
+            </li>
+            <li>
+              <strong>Primary action</strong> button, same as on the card.
+            </li>
+            <li>
+              <strong>History</strong>: the ticket's events across occurrences:
+              created, items changed, stage and assignee changes, cleared,
+              re-appeared, with actor ("System" for system events) and source.
+            </li>
+            <li>
+              Opening the dialog doesn't change the URL path. It sets
+              <code>?ticket=&lt;key&gt;</code>, so the browser back button
+              closes it.
+            </li>
+          </ul>
+
+          <h3 id="s3-7">
+            <span class="num">3.7</span>Primary action &amp; context bar
+          </h3>
+          <p>Clicking the primary action:</p>
+          <ol>
+            <li>
+              Moves the ticket To do → In progress and assigns it to the clicker
+              if it is unassigned (team accounts). Nothing moves if the ticket
+              is already further along.
+            </li>
+            <li>
+              Navigates to the destination (§4.7) with the ticket key in the
+              URL. The product page's V2 drawer does <strong>not</strong> open.
+            </li>
+            <li>
+              The destination shows the <strong>context bar</strong> at the top,
+              and the affected variants are highlighted and filtered.
+            </li>
+          </ol>
+          <div class="ctxbar">
+            <span
+              ><span class="lbl">Issue</span
+              ><span class="pill pill-red">Missing price</span></span
+            >
+            <span
+              ><span class="lbl">Scope</span>Amazon EU · DE · 3 of 4
+              variants</span
+            >
+            <span><span class="lbl">On Amazon</span>not set</span>
+            <span><span class="lbl">In Categra</span>€19.99 · 2 of 3</span>
+            <span style="color: var(--muted)"
+              >Ready to publish · use the price publish below ↓</span
+            >
+            <span class="btn">Show all variants</span>
+            <span class="btn">Back to Action Center</span>
+            <span style="color: var(--faint)">×</span>
+          </div>
+          <ul>
+            <li>
+              <strong>One component, one format</strong>
+              (<code>IssueTicketContextBar</code>): issue, scope, the channel
+              value vs the Categra value, the fix state with a pointer to the
+              page's own publish control (no Publish button of its own: the page
+              already handles sync locks, unsaved changes, trial limits and
+              sockets), "Show all
+              variants" (removes the filter, keeps the highlight), "Back to
+              Action Center" (returns to the board with its filters), and × to
+              dismiss.
+            </li>
+            <li>
+              It reads the ticket from the API by key, so it's correct even
+              after a reload, and it refreshes after a save on that page (no
+              polling).
+            </li>
+            <li>
+              If the ticket clears while the user is there, the bar turns into
+              "Resolved by the channel" with a link back.
+            </li>
+          </ul>
+
+          <h3 id="s3-8">
+            <span class="num">3.8</span>Right-edge drawer (V2 page)
+          </h3>
+          <p>
+            A trigger stuck to the center-right of the page, styled like the
+            product page's <em>Product Action Context</em> trigger, opens a
+            drawer with:
+          </p>
+          <ul>
+            <li>
+              <strong>Category breakdown</strong>: a ring by group and a list of
+              issue types with count, % and bar, for the current board filters
+              (excluding the issue type filter itself). Clicking an issue type
+              sets it as the issue type filter; clicking it again clears it.
+            </li>
+            <li>
+              <strong>Recent activity</strong>: the 5 latest events of the last
+              7 days in the board's channel / market / issue type scope (the
+              deploy seed writes no events, so it adds nothing here) ("Priya
+              moved Linen Shirt to In progress", "System cleared Desk Lamp ·
+              Main image", "Wool Beanie re-appeared"). "See all" opens a
+              paginated list. Clicking an event opens the ticket dialog if the
+              ticket still exists, else shows "Resolved".
+            </li>
+          </ul>
+
+          <h3 id="s3-9">
+            <span class="num">3.9</span>Product page drawer (V2)
+          </h3>
+          <p>
+            Replaces the v1 trigger on <code>/products/[product]</code>. Same
+            placement (center-right edge), shaped like the V2 board:
+          </p>
+          <ul>
+            <li>
+              <strong>Trigger</strong>: counts by priority (Red / Yellow / Blue)
+              for this product's open tickets. Hidden when there are none.
+            </li>
+            <li>
+              <strong>Drawer</strong>: this product's tickets across channels
+              and markets, grouped by channel · market, in board order. Each
+              ticket is a compact card: issue type, fix state, affected variants
+              (expandable list with SKU/ASIN and fix state per variant), stage,
+              assignee, primary action, ⋮ (Move to, Snooze for me).
+            </li>
+            <li>
+              The primary action switches the product page tab (same rules as
+              §3.7) and closes the drawer.
+            </li>
+            <li>
+              It opens only from its trigger. It never auto-opens from URL
+              params.
+            </li>
+            <li>
+              Kept from v1, refined: grouping by scope, the per-variant list,
+              "Publishing…" state with a link to the task manager. Dropped:
+              inline stock/price editing, the remediation banner with skip/next,
+              supporting/technical sections, the three counters
+              (actions/signals/sync).
+            </li>
+          </ul>
+
+          <h3 id="s3-10"><span class="num">3.10</span>CSV export</h3>
+          <p>
+            Server-side, all lanes, with the current search, assignee and
+            filters. One row per ticket item, with the ticket columns repeated:
+            ticket key, item key, priority, group, issue type, sub issue type,
+            product name, product SKU, product ASIN, variant name, variant SKU,
+            variant ASIN, channel, marketplace, stage, assignee, fix state,
+            detected at (ticket <code>created_at</code>). Channel-level tickets have one row with empty product
+            columns.
+          </p>
+
+          <h3 id="s3-11"><span class="num">3.11</span>Not in V2</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>v1 feature</th>
+                  <th>In V2</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Modes SALES_OPERATIONS / CATALOG_PREPARATION</td>
+                  <td>One ticket model.</td>
+                </tr>
+                <tr>
+                  <td>Mark resolved</td>
+                  <td>None. Only the system clears.</td>
+                </tr>
+                <tr>
+                  <td>Waiting / pending reasons</td>
+                  <td>None. Move freely.</td>
+                </tr>
+                <tr>
+                  <td>Recently cleared, Resolution velocity</td>
+                  <td>None.</td>
+                </tr>
+                <tr>
+                  <td>Issue detail page</td>
+                  <td>Ticket dialog.</td>
+                </tr>
+                <tr>
+                  <td>Saved views, Refresh scope, periodic / focus refresh</td>
+                  <td>None. Filters in the URL.</td>
+                </tr>
+                <tr>
+                  <td>
+                    Admin-panel thresholds
+                    (<code>tbl_action_engine_settings</code>)
+                  </td>
+                  <td>Constants.</td>
+                </tr>
+                <tr>
+                  <td>
+                    Catalog-only types (missing content, attributes, low
+                    readiness, source data, out of sync)
+                  </td>
+                  <td>
+                    Not issue types. Unpublished changes show as the fix state.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ============================== 4 ============================== -->
+        <section class="doc-section" id="s4">
+          <h2><span class="num">4</span>API plan</h2>
+          <p class="lead">
+            High-level technical requirements. Exact signatures and SQL are
+            written when each step is built.
+          </p>
+
+          <h3 id="s4-1"><span class="num">4.1</span>Module layout</h3>
+          <div class="tree">
+            <span class="d">api/apps/api-main/src/</span> ├─
+            <span class="d">entities/</span> │ ├─
+            <span class="n">issueTicket.entity.ts</span>
+            <span class="m">no V2 (entity rule)</span> │ ├─
+            <span class="n">issueTicketItem.entity.ts</span> │ ├─
+            <span class="n">issueTicketSnooze.entity.ts</span> │ └─
+            <span class="n">issueTicketEvent.entity.ts</span> ├─
+            <span class="d">core/constants/</span>
+            <span class="x">constants.ts</span> ·
+            <span class="x">global-enums.ts</span>
+            <span class="m"
+              >ISSUE_TICKET_* constants, IssueTicket* enums, queue
+              name</span
+            >
+            ├─ <span class="d">core/types/</span>
+            <span class="n">issue-ticket.type.ts</span> ├─
+            <span class="d"
+              >modules/app/system/operations/issue-tickets/</span
+            >
+            │ ├─ <span class="n">issue-tickets.module.ts</span> │ ├─
+            <span class="n">issue-tickets.controller.ts</span>
+            <span class="m">@Controller('issue-tickets')</span> │ ├─
+            <span class="n">issue-tickets.service.ts</span>
+            <span class="m">lanes, counts, facets, dialog, export</span> │ ├─
+            <span class="n">issue-ticket-mutations.service.ts</span>
+            <span class="m">status, assignee, snooze, primary action</span>
+            │ ├─ <span class="n">issue-ticket-insights.service.ts</span>
+            <span class="m">breakdown, recent activity</span> │ ├─
+            <span class="n">issue-ticket-assignees.service.ts</span> │ ├─
+            <span class="n">issue-ticket-fix-state.service.ts</span>
+            <span class="m">read-time fix state (§4.6)</span> │ ├─
+            <span class="n">issue-ticket-primary-actions.ts</span>
+            <span class="m">issue type → action (§4.7)</span> │ ├─
+            <span class="n">issue-ticket-taxonomy.ts</span>
+            <span class="m">order + priority resolver (§4.10)</span> │ ├─
+            <span class="n">issue-ticket-publish-hook.service.ts</span>
+            <span class="m">PUBLISH_STARTED move (§4.4)</span> │ ├─
+            <span class="n">issue-ticket-key.ts</span>
+            <span class="m">build / parse keys</span> │ ├─
+            <span class="n">issue-tickets.sql.ts</span>
+            <span class="m">lane, counts, search, export SQL</span> │ ├─
+            <span class="d">evaluation/</span> │ │ ├─
+            <span class="n">issue-ticket-evaluator.service.ts</span> │ │ ├─
+            <span class="n">issue-ticket-detectors.ts</span>
+            <span class="m">per-unit rows → ticket drafts</span> │ │ ├─
+            <span class="n">issue-ticket-trigger.service.ts</span> │ │ └─
+            <span class="n">issue-ticket-sweep.service.ts</span> │ └─
+            <span class="d">dto/</span>
+            <span class="n">issue-ticket-*.dto.ts</span> ├─
+            <span class="d">modules/app/sync/queue/processors/</span> │ └─
+            <span class="n">issue-ticket-evaluation.processor.ts</span> ├─
+            <span class="d"
+              >modules/app/system/operations/orchestration/command-center/</span
+            >
+            │ └─ <span class="x">attention.builder.ts · *.sql.ts</span>
+            <span class="m">refactor: shared per-unit classifier (§4.2)</span>
+            └─ <span class="d">modules/app/system/cron/</span>
+            <span class="x">cron.service.ts</span>
+            <span class="m">sweep + 2 cleanups</span>
+            <span class="m">legend:</span> <span class="n">new</span> ·
+            <span class="x">changed</span>
+          </div>
+          <p>
+            The module is imported in <code>system.module.ts</code> next to
+            <code>ActionCenterModule</code>. The worker imports the evaluator
+            through the sync consumers module, the same way the readiness
+            processor gets <code>ReadinessValueService</code>.
+          </p>
+
+          <h3 id="s4-2">
+            <span class="num">4.2</span>Detectors (shared with the Command
+            Center)
+          </h3>
+          <p>
+            Counts must match the CC, so detection must not be a second copy of
+            its rules.
+          </p>
+          <ul>
+            <li>
+              <strong>Refactor in the CC</strong> (no behaviour change): split
+              <code>buildAttentionItems</code> in
+              <code>attention.builder.ts</code> into a per-unit classifier (one
+              row per variant/product × channel × marketplace with its family
+              and sub type) and the existing aggregation into cards. These are
+              CC functions, so they keep CC names.
+            </li>
+            <li>
+              <strong>SQL scope options</strong>: the pulse / attention SQL
+              builders (<code>buildInventoryKeysQuery</code>,
+              <code>buildPricingKeysQuery</code>,
+              <code>buildListingIssuesQuery</code>,
+              <code>buildAttentionKeySignalsQuery</code>,
+              <code>buildBuyBoxAttentionQuery</code>) get an optional
+              <code>productIds</code> filter and an uncapped mode. The CC keeps
+              its <code>LISTINGS_MAX_ISSUES_SCANNED</code> cap; the evaluator
+              can't cap, or tickets would be silently missing.
+            </li>
+            <li>
+              <strong>Channel-level families</strong> come from
+              <code>ChannelHealthService.getHealth</code>, as in the CC.
+            </li>
+            <li>
+              <strong><code>issue-ticket-detectors.ts</code></strong> folds
+              the per-unit rows into ticket drafts: variants under their parent
+              product, one draft per key, items = (variant, sub type), plus the
+              blocker-hides-warning rule per product × marketplace.
+            </li>
+            <li>
+              <strong>One item per (variant, sub type)</strong>: the detector
+              dedupes before the diff. Channel health emits
+              <code>METRIC_BAD</code> once per bad metric and
+              <code>POLICY_BAD</code> once per policy
+              (<code>channel-health.derivation.ts</code>), so two bad metrics
+              on one marketplace would otherwise produce two (NULL,
+              <code>METRIC_BAD</code>) items and break
+              <code>UNIQUE (ticket_id, variant_id, sub_issue_type) NULLS NOT
+              DISTINCT</code>. Which metrics / policies are bad is evidence,
+              read live in the dialog.
+            </li>
+            <li>
+              <strong>Verification</strong>: for an account, the sum of affected
+              units over the drafts per family equals the CC card counts
+              (uncapped). This check is part of step 3 in §8.
+            </li>
+          </ul>
+
+          <h3 id="s4-3"><span class="num">4.3</span>Evaluator &amp; queue</h3>
+          <ul>
+            <li>
+              Queue
+              <code>ISSUE_TICKET_EVALUATION</code>
+              (<code>GlobalEnums.QueueNames</code>), registered in the queue
+              config map and the worker list like
+              <code>READINESS_RECALCULATION</code>. Processor
+              <code>IssueTicketEvaluationProcessor</code> extends
+              <code>BaseQueueProcessor</code>.
+            </li>
+            <li>
+              Job payload:
+              <code
+                >{ accountId, channelId, amazonMarketplaceIds?, productIds?,
+                issueTypes?, sources[] }</code
+              >.
+            </li>
+            <li>
+              <code>IssueTicketEvaluatorService.evaluateScope(scope)</code
+              >: run the detectors for the scope → load the stored tickets of
+              exactly that scope → diff and write in one transaction under
+              <code>pg_advisory_xact_lock(accountId, channelId)</code> → write
+              events. The rules are in schema §5 and solutions §1.6.
+            </li>
+            <li>
+              <code>ITEMS_CHANGED</code> is written when the affected count
+              changes <strong>or</strong> the set of sub types changes. A
+              channel-level ticket keeps a count of 0, so without the second
+              rule C1 going from <code>ACCOUNT_AT_RISK</code> to
+              <code>ACCOUNT_DEACTIVATED</code> would leave no history entry.
+              For a sub-type change, <code>from_value</code> /
+              <code>to_value</code> hold the sorted sub-type sets.
+            </li>
+            <li>
+              <strong>Awaiting channel → In progress</strong> (the evaluator's
+              only status move) happens only when (a) the evaluation's sources
+              include the publish kind that fixes the ticket's issue type
+              (<code>PRICE_PUBLISH</code> for price issues,
+              <code>STOCK_PUBLISH</code> for stock, <code>FS_RESULT</code> for
+              listing, media and product-type issues), (b) none of the ticket's
+              items is still <code>PUBLISHING</code>, and (c) the issue is still
+              reported. Otherwise an unrelated attribute publish returning first
+              would bounce a price ticket whose price push is still running. The
+              write is conditional,
+              <code>UPDATE … SET status = 'IN_PROGRESS' WHERE id = :id AND
+              status = 'AWAITING_CHANNEL'</code>, so it never overwrites a move a
+              user made a moment earlier.
+            </li>
+            <li>
+              It skips product-level families of a channel that has an open
+              CONNECTION ticket (stale external state), and evaluates the whole
+              channel when the connection comes back.
+            </li>
+          </ul>
+
+          <h3 id="s4-4"><span class="num">4.4</span>Trigger hook points</h3>
+          <p>
+            <code>IssueTicketTriggerService.enqueue(scope, source)</code>
+            never throws (same contract as
+            <code>ReadinessTriggerService.trigger</code>). It debounces with
+            <code>ISSUE_TICKET_EVALUATION_DEBOUNCE_MS</code> and must never
+            drop product ids:
+          </p>
+          <ul>
+            <li>
+              <strong>Time bucket in the job id</strong>:
+              <code>account:channel:markets:issueTypes:bucket</code>, with
+              <code>bucket = floor(now / debounce)</code>, as
+              <code>readiness-trigger.service.ts</code> does. A trigger that
+              arrives while a job is already active lands in the next bucket's
+              job instead of being ignored by BullMQ's duplicate-id check.
+            </li>
+            <li>
+              <strong>Atomic merge while delayed</strong>: product ids for a
+              bucket go into a Redis set keyed by the job id (<code>SADD</code>),
+              and the job carries only that key. The processor reads and deletes
+              the set when it starts (<code>SMEMBERS</code> + <code>DEL</code>
+              in one <code>MULTI</code>), so ids added up to that moment are
+              included and later ones fall into the next bucket. No
+              get-then-update on job data.
+            </li>
+          </ul>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Source</th>
+                  <th>Hook</th>
+                  <th>Scope</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>FS_RESULT</code></td>
+                  <td>
+                    Amazon feed result processed
+                    (<code>FORWARD_SYNC_GET_FEED_DOCUMENT</code>); Shopify
+                    forward sync done
+                    (<code>SHOPIFY_PRODUCT_FORWARD_SYNC</code>)
+                  </td>
+                  <td>
+                    Task products × channel × markets, all product families
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>BS_IMPORT</code></td>
+                  <td>End of each backward-sync batch (Amazon / Shopify)</td>
+                  <td>Imported products</td>
+                </tr>
+                <tr>
+                  <td><code>STOCK_PUBLISH</code></td>
+                  <td>Stock push result</td>
+                  <td>Pushed products · stock families</td>
+                </tr>
+                <tr>
+                  <td><code>PRICE_PUBLISH</code></td>
+                  <td>Price push result, including auto publish</td>
+                  <td>Pushed products · price + Buy Box families</td>
+                </tr>
+                <tr>
+                  <td><code>AMAZON_NOTIFICATION</code></td>
+                  <td><code>AMAZON_NOTIFICATION_LISTINGS</code> processor</td>
+                  <td>SKU → product × market · listing families</td>
+                </tr>
+                <tr>
+                  <td><code>SHOPIFY_WEBHOOK</code></td>
+                  <td>Product / inventory update, app uninstalled</td>
+                  <td>Product, or channel</td>
+                </tr>
+                <tr>
+                  <td><code>BUY_BOX_REFRESH</code></td>
+                  <td><code>BUY_BOX_REFRESH</code> processor</td>
+                  <td>Refreshed products · Buy Box families</td>
+                </tr>
+                <tr>
+                  <td><code>CHANNEL_HEALTH</code></td>
+                  <td>
+                    <code>AMAZON_SELLER_PERFORMANCE</code>, connection status
+                    change, OAuth reconnect, role grant
+                  </td>
+                  <td>Channel · channel families</td>
+                </tr>
+                <tr>
+                  <td><code>DATA_SYNC</code></td>
+                  <td>
+                    <code>AMAZON_SYNC_ORDERS</code>,
+                    <code>SHOPIFY_SYNC_ORDERS</code>, stock fetch
+                  </td>
+                  <td>Channel · DATA_TRUST</td>
+                </tr>
+                <tr>
+                  <td><code>PRODUCT_TYPE_CHANGE</code></td>
+                  <td><code>PRODUCT_TYPE_CHANGE</code> detected / accepted</td>
+                  <td>Product × channel</td>
+                </tr>
+                <tr>
+                  <td><code>SCOPE_REMOVED</code></td>
+                  <td>
+                    Product unlisted from a channel; marketplace deactivated
+                    (queued: no row is deleted, so nothing cascades)
+                  </td>
+                  <td>That scope, cleared</td>
+                </tr>
+                <tr>
+                  <td><code>SWEEP</code> / <code>SEED</code></td>
+                  <td>Cron / one-off deploy command</td>
+                  <td>
+                    Every channel of every account. <code>SEED</code> writes
+                    tickets and items but <strong>no events</strong>, so the
+                    first deploy doesn't flood recent activity.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <h4>Product / variant delete: synchronous clear (not queued)</h4>
+          <p>
+            A queued evaluation would run after the delete has committed, when
+            the FK cascade has already removed the tickets silently. So the
+            product and variant delete paths call
+            <code>IssueTicketEvaluatorService.clearScope(scope, tx)</code>
+            <strong>inside the delete transaction, before the delete</strong>.
+            It writes <code>CLEARED</code> events (source
+            <code>SCOPE_REMOVED</code>), deletes the product's tickets, and for a
+            variant delete removes that variant's items and recounts
+            <code>affected_variant_count</code> on the tickets it touched,
+            deleting a ticket left with no items (also <code>CLEARED</code>).
+            The FK cascades stay only as a backstop for a delete path that
+            doesn't call it.
+          </p>
+          <h4>Publish-start hook (not an evaluation)</h4>
+          <p>
+            <code>IssueTicketPublishHookService.onPublishStarted(scope, kind,
+            userId)</code> runs synchronously, never throws, and doesn't
+            re-detect anything. It is called where a publish is started: forward
+            sync task creation (Channels tab), price publish (Pricing tab, and
+            price auto publish) and stock Save &amp; Publish (Stock tab). It
+            moves TODO / IN_PROGRESS tickets in that product × channel × markets
+            scope to AWAITING_CHANNEL when the publish kind fixes their issue
+            type (price → price issues, stock → stock issues, forward sync →
+            listing, media and product-type issues) and at least one of their
+            items has a fix state other than <code>NOT_FIXED</code>
+            (<code>READY_TO_PUBLISH</code> <em>or</em>
+            <code>PUBLISHING</code>). Accepting <code>PUBLISHING</code> matters:
+            the publish flow may set <code>sync_in_progress</code> before the
+            hook runs, and the items then already read as publishing. It writes
+            STATUS_CHANGED with source <code>PUBLISH_STARTED</code>; the actor is
+            the user who clicked, or NULL (system) for auto publish. Tickets the
+            publish doesn't fix (e.g. <code>BUY_BOX_LOST</code> on a price push)
+            stay where they are. The result is still evaluated by the matching
+            source above.
+          </p>
+
+          <h3 id="s4-5">
+            <span class="num">4.5</span>Cron jobs (<code>cron.service.ts</code>)
+          </h3>
+          <ul>
+            <li>
+              <strong>Nightly sweep</strong>: enqueue a full evaluation per
+              channel, accounts staggered over
+              <code>ISSUE_TICKET_SWEEP_WINDOW_MINUTES</code>.
+            </li>
+            <li>
+              <strong>Daily</strong>: delete expired snoozes; delete events past
+              <code>ISSUE_TICKET_EVENT_RETENTION_DAYS</code> in batches.
+            </li>
+            <li>
+              <strong>Seed</strong>: a script (<code>api/scripts/</code>) that
+              runs the sweep once for all accounts on deploy, with source
+              <code>SEED</code>: tickets and items only, no events, so recent
+              activity starts empty instead of listing every pre-existing issue
+              as "created".
+            </li>
+          </ul>
+
+          <h3 id="s4-6"><span class="num">4.6</span>Fix state</h3>
+          <p>
+            <code>IssueTicketFixStateService.resolveFixStates(items)</code>
+            computes
+            <code
+              >NOT_FIXED | READY_TO_PUBLISH | PUBLISHING | NOT_APPLICABLE</code
+            >
+            for a page of items at read time, using the rules in solutions §3.4:
+            price / media baselines (<code>tbl_price_sync_baselines</code>,
+            <code>tbl_product_media_sync_baselines</code>), the warehouse
+            quantity for stock, unpublished changes for listing issues, and
+            <code>sync_in_progress</code> on PCM / VM / PC / PVC. It is also the
+            basis of the Fix state filter.
+          </p>
+
+          <h3 id="s4-7"><span class="num">4.7</span>Primary actions</h3>
+          <p>
+            <code>ISSUE_TICKET_PRIMARY_ACTIONS</code> maps each issue type
+            to an action kind. The API returns
+            <code>{ kind, label, destination }</code>, and both follow the fix
+            state: NOT_FIXED → the fix destination; READY_TO_PUBLISH →
+            <em>Review &amp; publish</em> to the tab that owns that publish;
+            PUBLISHING → <em>Publishing…</em>, a link to the task manager. The
+            board never publishes; the destination page's own controls do, with
+            their existing sync locks, unsaved-change checks, trial limits and
+            sockets.
+          </p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Issue type</th>
+                  <th>NOT_FIXED</th>
+                  <th>READY_TO_PUBLISH (publish owner)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>MISSING_PRICE, BUY_BOX_*</td>
+                  <td>Open Price · <code>?q=pricing</code></td>
+                  <td><code>?q=pricing</code> (price publish)</td>
+                </tr>
+                <tr>
+                  <td>OUT_OF_STOCK, LOW_STOCK, STOCK_SYNC</td>
+                  <td>Open Stock · <code>?q=stock</code></td>
+                  <td><code>?q=stock</code> (Save &amp; Publish)</td>
+                </tr>
+                <tr>
+                  <td>MAIN_IMAGE</td>
+                  <td>Open Media · <code>?q=details</code> (media section)</td>
+                  <td><code>?q=channels</code> (Publish)</td>
+                </tr>
+                <tr>
+                  <td>AMAZON_LISTING_BLOCKER / _WARNING</td>
+                  <td>Open Sync errors · <code>?q=syncError</code></td>
+                  <td><code>?q=channels</code> (Publish)</td>
+                </tr>
+                <tr>
+                  <td>AMAZON_NOT_SEARCHABLE, SHOPIFY_NOT_ACTIVE</td>
+                  <td>Open Channel · <code>?q=channels</code></td>
+                  <td><code>?q=channels</code> (Publish)</td>
+                </tr>
+                <tr>
+                  <td>PRODUCT_TYPE_CHANGED</td>
+                  <td>Review product type · <code>?q=channels</code></td>
+                  <td><code>?q=channels</code> (Publish)</td>
+                </tr>
+                <tr>
+                  <td>
+                    CONNECTION, ACCOUNT_HEALTH, MARKETPLACE_HEALTH,
+                    PERMISSION_REQUIRED, DATA_TRUST
+                  </td>
+                  <td>
+                    Open Channel settings · <code>/channelManagement</code> for
+                    the channel
+                  </td>
+                  <td>— (fix state NOT_APPLICABLE)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>
+            Paths are <code>/products/{id}?q=…</code>. Every destination also
+            carries <code>channelId</code>, <code>marketplaceId</code> and
+            <code>issueTicket=&lt;key&gt;</code> (§5.3), so the context bar
+            shows there.
+          </p>
+
+          <h3 id="s4-8">
+            <span class="num">4.8</span>Endpoints
+            (<code>issue-tickets/</code>)
+          </h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Method · path</th>
+                  <th>Purpose</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>POST tickets</code></td>
+                  <td>
+                    One lane page:
+                    <code
+                      >{ status, filters, search, assigneeIds, limit, offset
+                      }</code
+                    >
+                    → cards with items summary, fix state, primary action.
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>POST tickets/counts</code></td>
+                  <td>
+                    Lane counts (tickets + items) and filter facet counts.
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>GET tickets/:ticketKey</code></td>
+                  <td>
+                    Dialog / context bar: ticket, items with evidence and fix
+                    state, primary action, history.
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>POST tickets/export</code></td>
+                  <td>CSV stream for the filters (§3.10).</td>
+                </tr>
+                <tr>
+                  <td><code>PATCH tickets/:ticketKey/status</code></td>
+                  <td>Move to a stage.</td>
+                </tr>
+                <tr>
+                  <td><code>PATCH tickets/:ticketKey/assignee</code></td>
+                  <td>Assign / unassign / assign to me.</td>
+                </tr>
+                <tr>
+                  <td><code>PUT · DELETE tickets/:ticketKey/snooze</code></td>
+                  <td>Snooze / unsnooze for the caller.</td>
+                </tr>
+                <tr>
+                  <td><code>POST tickets/:ticketKey/primary-action</code></td>
+                  <td>
+                    The system move + self-assign; returns the destination.
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>GET assignees?channelId=</code></td>
+                  <td>Assignable team members for a channel.</td>
+                </tr>
+                <tr>
+                  <td><code>POST insights/breakdown</code></td>
+                  <td>Counts by group / issue type for the filters.</td>
+                </tr>
+                <tr>
+                  <td><code>POST insights/activity</code></td>
+                  <td>Recent activity, paginated.</td>
+                </tr>
+                <tr>
+                  <td><code>POST products/:productId/tickets</code></td>
+                  <td>
+                    Product drawer: the product's tickets across channels, plus
+                    counts by priority for the trigger.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>
+            Mutations address tickets by key inside the caller's account and
+            return the updated card. A cleared ticket returns 404
+            <code>TICKET_CLEARED</code>. JSDoc on every function, one short line
+            (api CLAUDE.md).
+          </p>
+
+          <h3 id="s4-9">
+            <span class="num">4.9</span>Permissions &amp; assignees
+          </h3>
+          <ul>
+            <li>
+              Read endpoints: <code>actionCenter.view</code> or
+              <code>actionCenter.*</code> (or owner / admin), and the ticket's
+              channel must be in the user's channels
+              (<code>ChannelService.getUserWiseChannels</code>).
+            </li>
+            <li>
+              Assigning others: <code>actionCenter.assign</code>. "Assign to
+              me", moving and snoozing: view access.
+            </li>
+            <li>
+              Candidates: active members of the account who have Action Center
+              access and access to the ticket's channel (role channels / user
+              channels). Fresh code in
+              <code>issue-ticket-assignees.service.ts</code>; v1's
+              <code>getActionCenterAssigneeCandidates</code> isn't imported.
+            </li>
+            <li>
+              At read time an assignee who lost access is shown as unassigned.
+            </li>
+          </ul>
+
+          <h3 id="s4-10">
+            <span class="num">4.10</span>Issue-type order &amp; priority
+          </h3>
+          <p>
+            Neither is stored on the ticket. <code>issue-ticket-taxonomy.ts</code>
+            exposes <code>resolveIssueTypeOrder(accountId)</code> and
+            <code>resolveIssuePriority(issueType)</code>, reading
+            <code>COMMAND_CENTER_ATTENTION_FAMILY_ORDER</code> /
+            <code>COMMAND_CENTER_ATTENTION_SEVERITY</code> today. Every reader
+            goes through it:
+          </p>
+          <ul>
+            <li>
+              Lane query: <code
+                >ORDER BY array_position(:issueTypeOrder, issue_type), …</code
+              >
+              (schema §6.1).
+            </li>
+            <li>
+              Priority filter: expanded to
+              <code>issue_type = ANY(:issueTypesOfThatPriority)</code>.
+            </li>
+            <li>
+              Priority facets, product drawer "3 Red · 1 Yellow", card stripe,
+              dialog header, CSV: <code>GROUP BY issue_type</code> or per row,
+              mapped by the resolver.
+            </li>
+          </ul>
+          <p>
+            A per-account order later changes only the resolver; no ticket row
+            is rewritten.
+          </p>
+        </section>
+
+        <!-- ============================== 5 ============================== -->
+        <section class="doc-section" id="s5">
+          <h2><span class="num">5</span>Webapp plan</h2>
+
+          <h3 id="s5-1"><span class="num">5.1</span>Route &amp; files</h3>
+          <div class="tree">
+            <span class="d">webapp/src/</span> ├─
+            <span class="d">app/(index)/(menu-layout)/action-center-v2/</span> │
+            ├─ <span class="n">page.tsx</span> · <span class="n">main.tsx</span>
+            <span class="m">ActionCenterV2Page / ActionCenterV2Main</span> │ ├─
+            <span class="d">_components/</span> │ │ ├─
+            <span class="n">action-center-v2-top-bar.tsx</span>
+            <span class="m">search · assignees · filters · clear · export</span>
+            │ │ ├─ <span class="n">action-center-v2-filter-dialog.tsx</span> │ │
+            ├─ <span class="n">action-center-v2-board.tsx</span> ·
+            <span class="n">action-center-v2-lane.tsx</span> │ │ ├─
+            <span class="n">action-center-v2-ticket-card.tsx</span>
+            <span class="m">fixed size</span> │ │ ├─
+            <span class="n">action-center-v2-ticket-menu.tsx</span>
+            <span class="m">⋮ move / snooze</span> │ │ ├─
+            <span class="n">action-center-v2-identifiers-tooltip.tsx</span> │ │
+            ├─ <span class="n">action-center-v2-assignee-picker.tsx</span> │ │
+            ├─ <span class="n">action-center-v2-snooze-dialog.tsx</span>
+            <span class="m">wraps DatePickerDialog</span> │ │ ├─
+            <span class="n">action-center-v2-ticket-dialog.tsx</span> │ │ ├─
+            <span class="n">action-center-v2-insights-drawer.tsx</span>
+            <span class="m">breakdown + activity</span> │ │ └─
+            <span class="n">action-center-v2-permission-gate.tsx</span> │ └─
+            <span class="d">_lib/</span>
+            <span class="n">action-center-v2-types.ts</span> ·
+            <span class="n">action-center-v2-filters.ts</span> ·
+            <span class="n">action-center-v2-store.ts</span> ├─
+            <span class="d">components/issue-tickets/</span> │ ├─
+            <span class="n">issue-ticket-context-bar.tsx</span>
+            <span class="m">shared by all destinations</span> │ └─
+            <span class="n">issue-ticket-fix-state-badge.tsx</span> ·
+            <span class="n">issue-ticket-priority.tsx</span> ├─
+            <span class="d">components/action-center-v2/</span> │ └─
+            <span class="n">action-center-v2-edge-trigger.tsx</span>
+            <span class="m">center-right trigger, V2 page + product page</span>
+            ├─
+            <span class="d"
+              >app/(index)/(menu-layout)/products/[product]/_components/action-center-v2/</span
+            >
+            │ ├─
+            <span class="n">ProductActionCenterV2DrawerLauncher.tsx</span> │ └─
+            <span class="n">ProductActionCenterV2Drawer.tsx</span> ├─
+            <span class="d">lib/</span>
+            <span class="n">issue-ticket-key.ts</span> ·
+            <span class="n">issue-ticket-navigation.ts</span> ·
+            <span class="x">api.ts</span> ·
+            <span class="x">authenticated-route-inventory.ts</span> ·
+            <span class="x">subscription-restricted-mode.ts</span> └─
+            <span class="d">app/(index)/(menu-layout)/</span>
+            <span class="x">_components/nav-container.tsx</span> ·
+            <span class="x">command-center/main.tsx</span> ·
+            <span class="x">products/[product]/page.tsx</span> + tabs
+            <span class="m">legend:</span> <span class="n">new</span> ·
+            <span class="x">changed</span>
+          </div>
+
+          <h3 id="s5-2"><span class="num">5.2</span>State &amp; data</h3>
+          <ul>
+            <li>
+              A page-scoped Zustand store (<code>useActionCenterV2Store</code>):
+              lanes (rows, offset, hasMore, loading), counts, filters, and the
+              open dialog key. Reset on unmount.
+            </li>
+            <li>
+              Fetches go through <code>GenericService</code> with URLs from
+              <code>lib/api.ts</code> (<code>ISSUE_TICKETS</code>,
+              …). No hardcoded URLs.
+            </li>
+            <li>
+              Filter / search / assignee change → reset lanes and reload page 1
+              of each lane + counts. Nothing else reloads the board.
+            </li>
+            <li>
+              Mutation → replace the card from the response, or move it to its
+              new lane; adjust counts; on 404 <code>TICKET_CLEARED</code> remove
+              the card and toast.
+            </li>
+          </ul>
+
+          <h3 id="s5-3"><span class="num">5.3</span>URL contract</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Param</th>
+                  <th>Where</th>
+                  <th>Meaning</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>channelId</code>, <code>marketplaceId</code></td>
+                  <td>V2 board</td>
+                  <td>
+                    Channel / market filter. <code>marketplaceId</code> matches
+                    <code>amazon_marketplace_id = :m OR IS NULL</code> within the
+                    channel, so channel-wide tickets stay visible when the
+                    Command Center hands off with a market selected.
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>issueTypes</code></td>
+                  <td>V2 board</td>
+                  <td>Comma-separated CC families.</td>
+                </tr>
+                <tr>
+                  <td>
+                    <code>priorities</code>, <code>fixStates</code>,
+                    <code>snoozed</code>, <code>assignees</code>,
+                    <code>search</code>
+                  </td>
+                  <td>V2 board</td>
+                  <td>
+                    Remaining filters (<code>assignees</code> accepts
+                    <code>unassigned</code>).
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>ticket</code></td>
+                  <td>V2 board</td>
+                  <td>Open ticket dialog.</td>
+                </tr>
+                <tr>
+                  <td><code>issueTicket</code></td>
+                  <td>Destination pages</td>
+                  <td>
+                    Show the context bar, highlight + filter the ticket's
+                    variants. Only V2 sets it, and only V2 code reads it; v1's
+                    <code>ac*</code> params are left alone.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 id="s5-4"><span class="num">5.4</span>Shell wiring</h3>
+          <ul>
+            <li>
+              <code>nav-container.tsx</code>: a new item "Action Center V2"
+              (route <code>/action-center-v2</code>, permissions
+              <code>ACTION_CENTER_ACCESS_PERMISSIONS</code>) right after v1's
+              item.
+            </li>
+            <li>
+              <code>authenticated-route-inventory.ts</code> and
+              <code>subscription-restricted-mode.ts</code>: add
+              <code>/action-center-v2</code> wherever
+              <code>/actionCenter</code> is listed.
+            </li>
+            <li>
+              <code>sidebar.tsx</code>: the desktop expanded-breakpoint rule
+              that matches <code>/actionCenter</code> also matches the V2 route.
+            </li>
+            <li>
+              Permission gate: reuse
+              <code>hasActionCenterAccessPermission</code> /
+              <code>hasActionCenterAssignmentPermission</code> from
+              <code>lib/action-center-permissions.ts</code> (shared lib, not v1
+              page code).
+            </li>
+            <li>
+              Translations: new keys prefixed <code>ActionCenterV2_</code>.
+            </li>
+          </ul>
+
+          <h3 id="s5-5"><span class="num">5.5</span>Command Center hand-off</h3>
+          <ul>
+            <li>
+              API: the attention item and next action
+              <code>redirect</code> becomes
+              <code
+                >{ issueTypes: CommandCenterAttentionFamily[], channelId,
+                marketplaceId }</code
+              >. <code>COMMAND_CENTER_ATTENTION_REDIRECT</code> (the v1 issue
+              type mapping) and the v1-only fields <code>issueGroupKey</code> /
+              <code>workflowStatus</code> are deleted.
+            </li>
+            <li>
+              <strong>Attention card</strong>: <code>issueTypes</code> = the
+              card's one family. Its chips can show different reasons per
+              channel (C1 "At risk", C2 "Deactivated" on the Account health
+              card); the board filters on issue type only, so both tickets
+              show. Sub type is never a board filter.
+            </li>
+            <li>
+              <strong>Next action</strong> (e.g. "Restore access"):
+              <code>issueTypes</code> = all of the step's
+              <code>action.families</code>, not the lead item's single family
+              (today <code>command-center/_lib/attention-view.ts</code> reuses
+              <code>lead.redirect</code>). <code>channelId</code> /
+              <code>marketplaceId</code> are set only when every chip of those
+              families is on the same channel / market, else left empty (All).
+            </li>
+            <li>
+              Webapp: <code>openActionCenter</code> in
+              <code>command-center/main.tsx</code> becomes
+              <code>openActionCenterV2</code> and pushes
+              <code>/action-center-v2?…</code>. The types in
+              <code>command-center/_lib/types.ts</code> follow.
+            </li>
+            <li>
+              v1 still parses its own <code>issueType</code> params; nothing
+              links there from the CC any more.
+            </li>
+          </ul>
+
+          <h3 id="s5-6"><span class="num">5.6</span>Destination pages</h3>
+          <p>
+            Each destination reads <code>issueTicket</code>, renders
+            <code>IssueTicketContextBar</code> at the top, and applies the
+            variant highlight / filter.
+          </p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Page</th>
+                  <th>Highlight + filter</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Product · Pricing</td>
+                  <td>
+                    Affected variant rows highlighted, "Affected only" filter
+                    on, channel / market preselected.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Product · Stock</td>
+                  <td>Same.</td>
+                </tr>
+                <tr>
+                  <td>Product · Details (media)</td>
+                  <td>
+                    The media section is scrolled into view; for variants, the
+                    affected variant is selected.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Product · Sync errors</td>
+                  <td>
+                    Filtered to the ticket's channel / market and affected
+                    variants.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Product · Channels</td>
+                  <td>
+                    The ticket's channel / market row expanded and highlighted.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Channel management</td>
+                  <td>
+                    The ticket's channel highlighted; context bar shows the
+                    reason.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>The product page's V2 drawer stays closed on these arrivals.</p>
+
+          <h3 id="s5-7"><span class="num">5.7</span>Product page swap</h3>
+          <ul>
+            <li>
+              <code>products/[product]/page.tsx</code> mounts
+              <code>ProductActionCenterV2DrawerLauncher</code> instead of
+              <code>ProductActionCenterIssueDrawerLauncher</code>.
+            </li>
+            <li>
+              The v1 drawer files in
+              <code>_components/action-center/</code> stay in the repo and still
+              compile, but are no longer mounted. They are deleted with the v1
+              removal (§6).
+            </li>
+            <li>
+              v1 board cards that link to the product page keep their
+              <code>ac*</code> params. With the v1 drawer unmounted those params
+              no longer open it. That's the accepted cost of the swap; v1's own
+              destination-tab handling is unchanged.
+            </li>
+          </ul>
+        </section>
+
+        <!-- ============================== 6 ============================== -->
+        <section class="doc-section" id="s6">
+          <h2><span class="num">6</span>No leftovers</h2>
+          <p class="lead">
+            What each step removes, so no half-used code is left between V2 and
+            v1.
+          </p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Action</th>
+                  <th>Step</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <code>COMMAND_CENTER_ATTENTION_REDIRECT</code>,
+                    <code>issueGroupKey</code>/<code>workflowStatus</code> on CC
+                    redirects
+                  </td>
+                  <td>Delete (replaced by family-based redirect)</td>
+                  <td>§8 step 13</td>
+                </tr>
+                <tr>
+                  <td>
+                    <code>openActionCenter</code> in the CC page,
+                    <code>/actionCenter</code> push
+                  </td>
+                  <td>Replace with the V2 version</td>
+                  <td>§8 step 13</td>
+                </tr>
+                <tr>
+                  <td>
+                    Product page mount of
+                    <code>ProductActionCenterIssueDrawerLauncher</code>
+                  </td>
+                  <td>Replace with the V2 launcher</td>
+                  <td>§8 step 12</td>
+                </tr>
+                <tr>
+                  <td>
+                    CC SQL builders: the inline classification in
+                    <code>buildAttentionItems</code>
+                  </td>
+                  <td>
+                    Moved into the shared per-unit classifier; no duplicate left
+                  </td>
+                  <td>§8 step 2</td>
+                </tr>
+                <tr>
+                  <td>v1 page, module, tables, product drawer files</td>
+                  <td>
+                    Kept (constraint). Removed together in a later v1-removal
+                    project
+                  </td>
+                  <td>—</td>
+                </tr>
+                <tr>
+                  <td>
+                    Socket "tickets changed" signal from the solutions doc
+                  </td>
+                  <td>Not built (no periodic or live refresh)</td>
+                  <td>—</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ============================== 7 ============================== -->
+        <section class="doc-section" id="s7">
+          <h2><span class="num">7</span>Defaults &amp; risks</h2>
+          <h3 id="s7-1">
+            <span class="num">7.1</span>Defaults this plan chose
+          </h3>
+          <p>
+            Small details not covered by the answers. Each is easy to change in
+            its step.
+          </p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Detail</th>
+                  <th>Default</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>CSV granularity</td>
+                  <td>One row per item, ticket columns repeated (§3.10)</td>
+                </tr>
+                <tr>
+                  <td>Recent activity event types</td>
+                  <td>All types, 7 days, 5 in the drawer</td>
+                </tr>
+                <tr>
+                  <td>Lane page size</td>
+                  <td>30</td>
+                </tr>
+                <tr>
+                  <td>Sidebar position</td>
+                  <td>Right after v1's Action Center</td>
+                </tr>
+                <tr>
+                  <td>Product drawer trigger</td>
+                  <td>Counts by priority; hidden with no tickets</td>
+                </tr>
+                <tr>
+                  <td>Filters apply</td>
+                  <td>On "Apply" in the dialog, not per click</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <h3 id="s7-2"><span class="num">7.2</span>Risks</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Risk</th>
+                  <th>Mitigation</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    A pipeline that changes external state doesn't enqueue an
+                    evaluation
+                  </td>
+                  <td>
+                    Nightly sweep; <code>last_evaluated_at</code> lets us find
+                    stale scopes; trigger coverage table (§4.4) is checked off
+                    in step 5.
+                  </td>
+                </tr>
+                <tr>
+                  <td>CC refactor changes CC counts</td>
+                  <td>
+                    Step 2 compares CC output before and after on a real
+                    account.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Uncapped detector SQL is slow on large accounts</td>
+                  <td>
+                    Product-scoped runs for events; the full run only in the
+                    sweep, staggered.
+                  </td>
+                </tr>
+                <tr>
+                  <td>CC count ≠ V2 count</td>
+                  <td>
+                    CC counts units, V2 counts tickets. The V2 header shows both
+                    ("5 tickets · 14 items") after a hand-off.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ============================== 8 ============================== -->
+        <section class="doc-section" id="s8">
+          <h2><span class="num">8</span>Execution steps</h2>
+          <p class="lead">
+            Ordered so each step can be built and checked on its own, backend
+            first. Steps 8–13 can be parallelised once 7 is done.
+          </p>
+          <ol class="steps">
+            <li>
+              <h5>Schema</h5>
+              <p>
+                Migration for the 4 tables, the 4 entities,
+                <code>ISSUE_TICKET_*</code> constants and
+                <code>IssueTicket*</code> enums, ticket key build/parse.
+              </p>
+              <div class="meta">
+                <span class="pill pill-slate">db-migrations</span
+                ><span class="pill pill-slate">api</span
+                ><span class="pill pill-green"
+                  >Check: migrate up/down; generated key matches the
+                  parser</span
+                >
+              </div>
+            </li>
+            <li>
+              <h5>Shared detector refactor in the Command Center</h5>
+              <p>
+                Per-unit classifier out of <code>buildAttentionItems</code>; SQL
+                builders get <code>productIds</code> + uncapped mode.
+              </p>
+              <div class="meta">
+                <span class="pill pill-slate">api</span
+                ><span class="pill pill-green"
+                  >Check: CC attention payload identical before/after</span
+                >
+              </div>
+            </li>
+            <li>
+              <h5>Detectors + evaluator</h5>
+              <p>
+                <code>issue-ticket-detectors.ts</code>,
+                <code>IssueTicketEvaluatorService</code> with diff, events,
+                system move, connection skip.
+              </p>
+              <div class="meta">
+                <span class="pill pill-slate">api</span
+                ><span class="pill pill-green"
+                  >Check: drafts match CC counts; diff
+                  create/update/clear/re-appear; two bad metrics → one
+                  METRIC_BAD item; at risk → deactivated logs
+                  ITEMS_CHANGED</span
+                >
+              </div>
+            </li>
+            <li>
+              <h5>Queue, trigger service, crons, seed</h5>
+              <p>
+                <code>ISSUE_TICKET_EVALUATION</code> queue + processor,
+                <code>IssueTicketTriggerService</code> (debounce/merge),
+                sweep, snooze and event cleanups, seed script.
+              </p>
+              <div class="meta">
+                <span class="pill pill-slate">api</span
+                ><span class="pill pill-green"
+                  >Check: seed fills tickets for a test account with no events;
+                  a trigger sent while a job is active is still evaluated</span
+                >
+              </div>
+            </li>
+            <li>
+              <h5>Trigger hook points</h5>
+              <p>Wire every source in §4.4 into its pipeline.</p>
+              <div class="meta">
+                <span class="pill pill-slate">api</span
+                ><span class="pill pill-green"
+                  >Check: each source clears / creates a ticket end to end;
+                  deleting a product / variant writes CLEARED before the row is
+                  gone</span
+                >
+              </div>
+            </li>
+            <li>
+              <h5>Read API</h5>
+              <p>
+                Lanes, counts, facets, search, dialog, fix state, export,
+                breakdown, activity, product tickets, primary-action registry,
+                issue-type order / priority resolver.
+              </p>
+              <div class="meta">
+                <span class="pill pill-slate">api</span
+                ><span class="pill pill-green"
+                  >Check: order, priority filter = its issue types, snooze
+                  exclusion, channel access</span
+                >
+              </div>
+            </li>
+            <li>
+              <h5>Mutation API</h5>
+              <p>
+                Status, assignee, snooze, primary-action, assignees; the
+                publish-start hook wired into forward sync, price publish and
+                stock Save &amp; Publish.
+              </p>
+              <div class="meta">
+                <span class="pill pill-slate">api</span
+                ><span class="pill pill-green"
+                  >Check: events written; 404 TICKET_CLEARED; a price publish
+                  moves the price ticket to Awaiting channel, not a Buy Box lost
+                  one</span
+                >
+              </div>
+            </li>
+            <li>
+              <h5>Webapp shell</h5>
+              <p>
+                Route, sidebar item, route inventory, restricted mode,
+                <code>lib/api.ts</code> URLs, permission gate, store.
+              </p>
+              <div class="meta">
+                <span class="pill pill-slate">webapp</span
+                ><span class="pill pill-green"
+                  >Check: v1 and V2 both reachable</span
+                >
+              </div>
+            </li>
+            <li>
+              <h5>Board</h5>
+              <p>
+                Top bar, lanes with infinite scroll, fixed cards, ⋮ menu,
+                tooltip, assignee picker, snooze dialog, in-place updates.
+              </p>
+              <div class="meta">
+                <span class="pill pill-slate">webapp</span>
+              </div>
+            </li>
+            <li>
+              <h5>Filter dialog, URL state, CSV</h5>
+              <p>All filters, Clear filters, URL sync, export.</p>
+              <div class="meta">
+                <span class="pill pill-slate">webapp</span>
+              </div>
+            </li>
+            <li>
+              <h5>Ticket dialog + right-edge drawer</h5>
+              <p>
+                Dialog with items, evidence and history; breakdown + recent
+                activity drawer with edge trigger.
+              </p>
+              <div class="meta">
+                <span class="pill pill-slate">webapp</span>
+              </div>
+            </li>
+            <li>
+              <h5>Primary action, context bar, destinations, product drawer</h5>
+              <p>
+                Navigation helper (fix destination vs publish-owner tab),
+                <code>IssueTicketContextBar</code> without its own Publish,
+                highlight/filter on each destination tab, V2 product drawer
+                replaces the v1 launcher.
+              </p>
+              <div class="meta">
+                <span class="pill pill-slate">webapp</span>
+              </div>
+            </li>
+            <li>
+              <h5>Command Center hand-off</h5>
+              <p>
+                Family-based redirect in the API,
+                <code>openActionCenterV2</code> in the webapp, v1 mapping
+                deleted.
+              </p>
+              <div class="meta">
+                <span class="pill pill-slate">api</span
+                ><span class="pill pill-slate">webapp</span
+                ><span class="pill pill-green"
+                  >Check: each CC card lands on the matching V2 filter</span
+                >
+              </div>
+            </li>
+            <li>
+              <h5>Rollout check</h5>
+              <p>
+                Run the seed, compare CC vs V2 counts per family on real
+                accounts, run lint + format in both repos.
+              </p>
+              <div class="meta">
+                <span class="pill pill-violet">Release gate</span>
+              </div>
+            </li>
+          </ol>
+          <div class="callout">
+            <span class="t">Follow-ups (not in this plan)</span>
+            <ul>
+              <li>
+                Command Center counts from the ticket table (§5 #7), once
+                trigger coverage is proven.
+              </li>
+              <li>
+                v1 removal: page, module, tables, product drawer files, then
+                rename the V2 route if wanted.
+              </li>
+            </ul>
+          </div>
+        </section>
+      </main>
+    </div>
+    <button id="to-top" aria-label="Back to top" onclick="scrollTo({ top: 0 })">
+      ↑
+    </button>
+    <script>
+      (function () {
+        var links = {};
+        document.querySelectorAll('#toc a').forEach(function (a) {
+          links[a.getAttribute('href').slice(1)] = a;
+        });
+        var heads = Array.prototype.filter.call(
+          document.querySelectorAll('main section, main h3'),
+          function (h) {
+            return links[h.id];
+          },
+        );
+        var bar = document.getElementById('progress'),
+          top = document.getElementById('to-top'),
+          current = null;
+        function onScroll() {
+          var h = document.documentElement.scrollHeight - innerHeight;
+          bar.style.width = (h > 0 ? (scrollY / h) * 100 : 0) + '%';
+          top.classList.toggle('show', scrollY > 600);
+          var pick = null;
+          for (var i = 0; i < heads.length; i++) {
+            if (heads[i].getBoundingClientRect().top < 140) pick = heads[i];
+          }
+          var id = pick ? pick.id : null;
+          if (id === current) return;
+          current = id;
+          document.querySelectorAll('#toc a.active').forEach(function (a) {
+            a.classList.remove('active');
+          });
+          if (id) links[id].classList.add('active');
+        }
+        addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+        top.addEventListener('click', function () {
+          scrollTo({ top: 0 });
+        });
+      })();
+    </script>
+  </body>
+</html>

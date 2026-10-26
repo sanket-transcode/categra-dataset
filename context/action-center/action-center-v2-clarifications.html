@@ -1,0 +1,596 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Action Center V2 Clarifications</title>
+<style>
+:root {
+	--bg: #0b0d12;
+	--surface: #12151c;
+	--surface-2: #181c25;
+	--surface-3: #1f2430;
+	--text: #e8eaf0;
+	--muted: #a3a9b6;
+	--faint: #6f7685;
+	--border: #242a36;
+	--border-strong: #323949;
+	--accent: #8b8cff;
+	--accent-2: #5eead4;
+	--accent-soft: #23244a;
+	--accent-text: #c9c8ff;
+	--code-bg: #1d212b;
+	--code-text: #f5a8d4;
+	--diagram-bg: #080a0e;
+	--red: #ff8a80; --red-bg: #3a1618; --red-line: #ff5b4f;
+	--yellow: #f7c56b; --yellow-bg: #33270c; --yellow-line: #f0a929;
+	--blue: #8db6ff; --blue-bg: #14264a; --blue-line: #4b8bff;
+	--green: #77dba3; --green-bg: #0f2f1e;
+	--violet: #c4a8ff; --violet-bg: #2a1c4a;
+	--slate: #b3bccb; --slate-bg: #252a34;
+	--shadow: 0 1px 2px rgba(0,0,0,.35), 0 8px 28px rgba(0,0,0,.28);
+	color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+body {
+	margin: 0; background: var(--bg); color: var(--text);
+	font: 15px/1.65 Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+	-webkit-font-smoothing: antialiased;
+}
+body::before {
+	content: ""; position: fixed; inset: 0; pointer-events: none; z-index: -1;
+	background:
+		radial-gradient(900px 500px at 85% -10%, rgba(139,140,255,.10), transparent 60%),
+		radial-gradient(700px 400px at -10% 30%, rgba(94,234,212,.05), transparent 60%);
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+#progress { position: fixed; top: 0; left: 0; height: 3px; width: 0; background: linear-gradient(90deg, var(--accent), var(--accent-2)); z-index: 50; }
+
+.layout { display: grid; grid-template-columns: 290px minmax(0, 1fr); min-height: 100vh; }
+aside {
+	position: sticky; top: 0; height: 100vh; overflow-y: auto; border-right: 1px solid var(--border);
+	background: rgba(18,21,28,.85); backdrop-filter: blur(8px); padding: 22px 14px 40px;
+}
+.brand { display: flex; align-items: center; gap: 10px; padding: 0 8px 18px; }
+.brand-mark {
+	width: 32px; height: 32px; border-radius: 9px; color: #0b0d12; font-weight: 800; font-size: 13px;
+	display: grid; place-items: center; background: linear-gradient(135deg, var(--accent), var(--accent-2));
+}
+.brand-name { font-weight: 700; font-size: 14px; line-height: 1.2; }
+.brand-sub { color: var(--faint); font-size: 12px; }
+nav ul { list-style: none; margin: 0; padding: 0; }
+nav a { display: flex; gap: 8px; padding: 5px 8px; border-radius: 7px; color: var(--muted); font-size: 13px; line-height: 1.4; }
+nav a:hover { background: var(--surface-2); color: var(--text); text-decoration: none; }
+nav .num { color: var(--faint); min-width: 26px; font-size: 12px; padding-top: 1px; font-variant-numeric: tabular-nums; }
+.toc-l1 > a { font-weight: 600; color: var(--text); margin-top: 3px; }
+.toc-l1 > ul { padding-left: 12px; margin: 2px 0 6px 8px; border-left: 1px solid var(--border); }
+nav a.active { background: var(--accent-soft); color: var(--accent-text); }
+nav a.active .num { color: var(--accent-text); }
+
+main { padding: 40px clamp(16px, 4vw, 56px) 120px; max-width: 1160px; width: 100%; }
+.hero {
+	background: linear-gradient(160deg, #161a24, #11141b); border: 1px solid var(--border); border-radius: 20px;
+	padding: 34px 36px; box-shadow: var(--shadow); margin-bottom: 26px; position: relative; overflow: hidden;
+}
+.hero::after {
+	content: ""; position: absolute; right: -90px; top: -90px; width: 300px; height: 300px; border-radius: 50%;
+	background: radial-gradient(circle, rgba(139,140,255,.22), transparent 70%); pointer-events: none;
+}
+.eyebrow { text-transform: uppercase; letter-spacing: .09em; font-size: 12px; font-weight: 650; color: var(--accent-2); }
+.hero h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.15; margin: 8px 0 10px; letter-spacing: -.02em; }
+.hero p { color: var(--muted); max-width: 760px; margin: 0 0 18px; font-size: 16px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { border: 1px solid var(--border); background: var(--surface-2); border-radius: 999px; padding: 4px 11px; font-size: 12.5px; color: var(--muted); }
+.chip b { color: var(--text); font-weight: 600; }
+
+.verdicts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 0 0 26px; }
+.verdict {
+	background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px 20px 18px;
+	box-shadow: var(--shadow); position: relative; overflow: hidden;
+}
+.verdict::before { content: ""; position: absolute; left: 0; top: 0; right: 0; height: 3px; background: var(--vc, var(--accent)); }
+.verdict .q { font-size: 12px; text-transform: uppercase; letter-spacing: .07em; color: var(--faint); font-weight: 650; }
+.verdict .a { font-size: 18px; font-weight: 700; margin: 6px 0 8px; line-height: 1.3; }
+.verdict p { color: var(--muted); font-size: 13.5px; margin: 0 0 10px; }
+.verdict a { font-size: 13px; font-weight: 600; }
+
+.doc-section {
+	background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 30px 36px 26px;
+	margin-bottom: 24px; box-shadow: var(--shadow);
+}
+h2, h3, h4 { letter-spacing: -.01em; }
+h2 { font-size: 25px; line-height: 1.25; margin: 0 0 16px; display: flex; align-items: center; gap: 12px; }
+h2 .num {
+	color: #0b0d12; border-radius: 10px; min-width: 36px; height: 36px; padding: 0 8px;
+	display: inline-grid; place-items: center; font-size: 15px; font-weight: 800;
+	background: linear-gradient(135deg, var(--accent), var(--accent-2));
+}
+h3 { font-size: 18.5px; margin: 34px 0 12px; padding-top: 22px; border-top: 1px solid var(--border); display: flex; gap: 10px; align-items: baseline; }
+h3 .num { color: var(--accent); font-weight: 700; font-size: 15px; }
+h4 { font-size: 15.5px; margin: 24px 0 10px; display: flex; gap: 9px; align-items: baseline; }
+h4 .num { color: var(--accent-text); background: var(--accent-soft); border-radius: 6px; padding: 1px 7px; font-size: 12px; font-weight: 600; }
+.lead { color: var(--muted); font-size: 15.5px; margin-top: -6px; }
+
+p { margin: 0 0 14px; }
+ul, ol { margin: 0 0 16px; padding-left: 22px; }
+li { margin: 4px 0; }
+li::marker { color: var(--faint); }
+strong { font-weight: 650; color: #f3f4f8; }
+code {
+	font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Consolas, monospace; font-size: .84em;
+	background: var(--code-bg); color: var(--code-text); padding: 1.5px 5px; border-radius: 5px; overflow-wrap: anywhere;
+}
+a.ref { font-size: .86em; font-weight: 600; background: var(--accent-soft); color: var(--accent-text); padding: 1px 6px; border-radius: 5px; white-space: nowrap; }
+a.ref:hover { text-decoration: none; filter: brightness(1.1); }
+
+.table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; margin: 6px 0 20px; }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; line-height: 1.5; }
+th {
+	text-align: left; background: var(--surface-2); color: var(--muted); font-weight: 600; font-size: 11.5px;
+	text-transform: uppercase; letter-spacing: .05em; padding: 10px 14px; border-bottom: 1px solid var(--border); white-space: nowrap;
+}
+td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+tbody tr:hover td { background: rgba(255,255,255,.015); }
+td:first-child { font-weight: 500; }
+td code { overflow-wrap: normal; }
+td.win { color: var(--green); }
+td.lose { color: var(--muted); }
+
+.pill { display: inline-block; padding: 1px 9px; border-radius: 999px; font-size: 12px; font-weight: 650; white-space: nowrap; }
+.pill-red { background: var(--red-bg); color: var(--red); }
+.pill-yellow { background: var(--yellow-bg); color: var(--yellow); }
+.pill-blue { background: var(--blue-bg); color: var(--blue); }
+.pill-green { background: var(--green-bg); color: var(--green); }
+.pill-violet { background: var(--violet-bg); color: var(--violet); }
+.pill-slate { background: var(--slate-bg); color: var(--slate); }
+
+.callout { border: 1px solid var(--border-strong); background: var(--surface-2); border-radius: 12px; padding: 14px 16px; margin: 4px 0 18px; font-size: 14px; }
+.callout.rec { border-color: rgba(94,234,212,.35); background: rgba(94,234,212,.06); }
+.callout.warn { border-color: rgba(240,169,41,.4); background: rgba(240,169,41,.07); }
+.callout .t { font-weight: 700; display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: .05em; }
+.callout.rec .t { color: var(--accent-2); }
+.callout.warn .t { color: var(--yellow); }
+.callout p:last-child, .callout ul:last-child { margin-bottom: 0; }
+
+pre.diagram {
+	background: var(--diagram-bg); color: #d9dde6; border: 1px solid var(--border); border-radius: 12px;
+	padding: 18px 20px; overflow-x: auto; font: 12.8px/1.6 "JetBrains Mono", ui-monospace, Consolas, monospace; margin: 6px 0 20px;
+}
+pre.diagram .k { color: var(--accent-2); }
+pre.diagram .r { color: var(--red); }
+pre.diagram .y { color: var(--yellow); }
+pre.diagram .b { color: var(--blue); }
+pre.diagram .m { color: var(--faint); }
+pre.diagram .v { color: var(--violet); }
+
+.keybox {
+	background: var(--diagram-bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin: 6px 0 18px;
+	font: 13px/1.7 "JetBrains Mono", ui-monospace, Consolas, monospace; overflow-x: auto; white-space: nowrap;
+}
+.keybox .seg { color: var(--text); }
+.keybox .sep { color: var(--faint); }
+.keybox .val { color: var(--accent-2); }
+
+/* lane + card mocks */
+.lanes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 8px 0 20px; }
+.lane { background: var(--surface-2); border: 1px solid var(--border); border-radius: 14px; padding: 12px; }
+.lane-h { display: flex; align-items: center; justify-content: space-between; font-weight: 700; font-size: 13.5px; margin-bottom: 4px; }
+.lane-h .cnt { font-size: 12px; color: var(--muted); background: var(--surface-3); border-radius: 999px; padding: 0 8px; }
+.lane-s { color: var(--faint); font-size: 12px; margin-bottom: 10px; }
+.lane-tag { font-size: 11px; font-weight: 650; color: var(--muted); margin-bottom: 8px; }
+
+.cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 8px 0 20px; }
+.card {
+	background: var(--surface-2); border: 1px solid var(--border); border-left: 3px solid var(--pl, var(--red-line));
+	border-radius: 12px; padding: 12px 12px 10px; height: 168px; display: flex; flex-direction: column;
+}
+.card .top { display: flex; gap: 10px; }
+.thumb { width: 44px; height: 44px; border-radius: 8px; flex: none; background: linear-gradient(135deg, #2a3040, #1c212c); border: 1px solid var(--border-strong); }
+.card .name { font-weight: 650; font-size: 13px; line-height: 1.35; }
+.card .ctx { color: var(--faint); font-size: 11.5px; }
+.card .badges { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0 auto; }
+.card .foot { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 8px; margin-top: 8px; }
+.card .who { color: var(--muted); font-size: 11.5px; }
+.btn { font-size: 12px; font-weight: 650; border-radius: 8px; padding: 4px 10px; border: 1px solid var(--border-strong); background: var(--surface-3); color: var(--text); white-space: nowrap; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #0b0d12; }
+.btn.go { background: var(--accent-2); border-color: var(--accent-2); color: #0b0d12; }
+.btn.dis { opacity: .55; }
+.ctxbar {
+	background: var(--diagram-bg); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; margin: 4px 0 18px;
+	font-size: 13px; display: flex; gap: 18px; flex-wrap: wrap; align-items: center;
+}
+.ctxbar .lbl { color: var(--faint); font-size: 11.5px; text-transform: uppercase; letter-spacing: .05em; margin-right: 6px; }
+
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 6px 0 18px; }
+.box { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+.box h5 { margin: 0 0 6px; font-size: 14px; }
+.box p, .box ul { font-size: 13.5px; color: var(--muted); margin-bottom: 0; }
+
+#to-top {
+	position: fixed; right: 22px; bottom: 22px; width: 40px; height: 40px; border-radius: 12px; border: 1px solid var(--border-strong);
+	background: var(--surface-2); color: var(--muted); cursor: pointer; opacity: 0; pointer-events: none; transition: opacity .2s;
+}
+#to-top.show { opacity: 1; pointer-events: auto; }
+
+@media (max-width: 1000px) {
+	.layout { grid-template-columns: 1fr; }
+	aside { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--border); }
+	.verdicts, .lanes, .cards, .grid2 { grid-template-columns: 1fr; }
+	.doc-section, .hero { padding: 22px 18px; }
+}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div class="layout">
+<aside>
+	<div class="brand">
+		<div class="brand-mark">AC</div>
+		<div><div class="brand-name">Action Center V2</div><div class="brand-sub">Schema &amp; flow clarifications</div></div>
+	</div>
+	<nav id="toc">
+		<ul>
+			<li class="toc-l1"><a href="#s0"><span class="num">0</span>At a glance</a></li>
+			<li class="toc-l1"><a href="#s1"><span class="num">1</span>issue_type_rank &amp; priority</a>
+				<ul>
+					<li><a href="#s1-1"><span class="num">1.1</span>What they hold</a></li>
+					<li><a href="#s1-2"><span class="num">1.2</span>Where they are used</a></li>
+					<li><a href="#s1-3"><span class="num">1.3</span>Dynamic issue-type order</a></li>
+					<li><a href="#s1-4"><span class="num">1.4</span>Cost of computing them</a></li>
+					<li><a href="#s1-5"><span class="num">1.5</span>When storing would be right</a></li>
+				</ul>
+			</li>
+			<li class="toc-l1"><a href="#s2"><span class="num">2</span>Sub issue types</a>
+				<ul>
+					<li><a href="#s2-1"><span class="num">2.1</span>Where the sub type lives</a></li>
+					<li><a href="#s2-2"><span class="num">2.2</span>C1 at risk, C2 deactivated</a></li>
+					<li><a href="#s2-3"><span class="num">2.3</span>Variants of one ticket</a></li>
+					<li><a href="#s2-4"><span class="num">2.4</span>No variants, several sub types</a></li>
+					<li><a href="#s2-5"><span class="num">2.5</span>Command Center hand-off</a></li>
+				</ul>
+			</li>
+			<li class="toc-l1"><a href="#s3"><span class="num">3</span>status_changed_at &amp; assigned_at</a></li>
+			<li class="toc-l1"><a href="#s4"><span class="num">4</span>assigned_by_user_id</a></li>
+			<li class="toc-l1"><a href="#s5"><span class="num">5</span>detected_at</a></li>
+			<li class="toc-l1"><a href="#s6"><span class="num">6</span>issue_type in events</a></li>
+			<li class="toc-l1"><a href="#s7"><span class="num">7</span>Publish from the ticket?</a>
+				<ul>
+					<li><a href="#s7-1"><span class="num">7.1</span>Why redirect is better</a></li>
+					<li><a href="#s7-2"><span class="num">7.2</span>Which tab owns the publish</a></li>
+					<li><a href="#s7-3"><span class="num">7.3</span>Button and context bar</a></li>
+					<li><a href="#s7-4"><span class="num">7.4</span>Moving to Awaiting channel</a></li>
+				</ul>
+			</li>
+			<li class="toc-l1"><a href="#s8"><span class="num">8</span>Appendix: doc changes applied</a></li>
+		</ul>
+	</nav>
+</aside>
+
+<main>
+<header class="hero">
+	<div class="eyebrow">Categra · Action Center V2 · Clarifications</div>
+	<h1>Ticket schema &amp; publish flow: open questions</h1>
+	<p>Answers to seven questions about the ticket tables and the publish button, checked against the Command Center constants, the channel-health rules and the product page code. All answers were accepted; §8 lists the changes now applied to the schema, plan and solutions docs.</p>
+	<div class="chips">
+		<span class="chip"><b>Schema</b> action-center-v2-schema.html</span>
+		<span class="chip"><b>Plan</b> action-center-v2-plan.html</span>
+		<span class="chip"><b>Status</b> applied 2026-10-26</span>
+		<span class="chip"><b>Date</b> 2026-10-26</span>
+	</div>
+</header>
+
+<!-- ============================== 0 ============================== -->
+<section class="doc-section" id="s0">
+	<h2><span class="num">0</span>At a glance</h2>
+	<div class="table-wrap"><table>
+	<thead><tr><th>#</th><th>Question</th><th>Answer</th></tr></thead>
+	<tbody>
+	<tr><td>1</td><td><code>issue_type_rank</code>, <code>priority</code></td><td><span class="pill pill-red">Drop both</span> Both depend only on <code>issue_type</code>. Resolve them in the API, which lets the issue-type order become dynamic without rewriting any rows.</td></tr>
+	<tr><td>2</td><td>Sub issue type on the ticket</td><td><span class="pill pill-slate">Not needed</span> It belongs on items. One ticket can hold several sub types at once, even with no variants. Filters and the Command Center hand-off work on issue type, so C1 and C2 both show.</td></tr>
+	<tr><td>3</td><td><code>status_changed_at</code>, <code>assigned_at</code></td><td><span class="pill pill-green">Keep</span> <code>status_changed_at</code>, <span class="pill pill-red">Drop</span> <code>assigned_at</code>. Every card shows time in stage, and events are deleted after 180 days. Nothing in the UI shows the assignment time.</td></tr>
+	<tr><td>4</td><td><code>assigned_by_user_id</code></td><td><span class="pill pill-red">Drop</span> Agreed. The <code>ASSIGNEE_CHANGED</code> event already records who made the change.</td></tr>
+	<tr><td>5</td><td><code>detected_at</code></td><td><span class="pill pill-red">Drop on tickets</span> (it always equals <code>created_at</code>), <span class="pill pill-green">keep on items, renamed <code>created_at</code></span> (it's the only timestamp there, and it differs per variant).</td></tr>
+	<tr><td>6</td><td><code>issue_type</code> in events</td><td><span class="pill pill-green">Keep</span> The ticket row is deleted when it clears, so the event has to carry its own scope.</td></tr>
+	<tr><td>7</td><td>Publish from the ticket</td><td><span class="pill pill-green">Redirect instead</span> Agreed, but send the user to the tab that owns that publish: Channels for listings and media, Pricing for price, Stock for stock. A publish starting is what moves the ticket to Awaiting channel.</td></tr>
+	</tbody></table></div>
+</section>
+
+<!-- ============================== 1 ============================== -->
+<section class="doc-section" id="s1">
+	<h2><span class="num">1</span>issue_type_rank &amp; priority</h2>
+	<p class="lead">Both columns are a fixed function of <code>issue_type</code>. A stored copy only helps if the value can differ between two tickets of the same issue type, and today it can't.</p>
+
+	<h3 id="s1-1"><span class="num">1.1</span>What they hold</h3>
+	<div class="table-wrap"><table>
+	<thead><tr><th>Column</th><th>Value</th><th>Source today</th></tr></thead>
+	<tbody>
+	<tr><td><code>issue_type_rank</code></td><td>Position of the issue type in the board order: <code>CONNECTION</code> = 1, <code>ACCOUNT_HEALTH</code> = 2, … <code>MISSING_PRICE</code> = 6 … <code>BUY_BOX_AT_RISK</code> = 18.</td><td><code>COMMAND_CENTER_ATTENTION_FAMILY_ORDER</code> (<code>api/…/core/constants/constants.ts:2489</code>)</td></tr>
+	<tr><td><code>priority</code></td><td>Red / Yellow / Blue.</td><td><code>COMMAND_CENTER_ATTENTION_SEVERITY</code> (<code>constants.ts:2468</code>): <code>critical</code> → Red, <code>warning</code> → Yellow, <code>info</code> → Blue.</td></tr>
+	</tbody></table></div>
+	<p>Both maps are keyed by issue type alone. Every <code>MISSING_PRICE</code> ticket gets rank 6 and Red, and every <code>LOW_STOCK</code> ticket gets rank 8 and Yellow. The evaluator writes them, but it adds nothing: it copies the constant into the row.</p>
+
+	<h3 id="s1-2"><span class="num">1.2</span>Where they are used</h3>
+	<div class="table-wrap"><table>
+	<thead><tr><th>Use</th><th>Column</th><th>Computed instead</th></tr></thead>
+	<tbody>
+	<tr><td>Lane order "issue type first"</td><td>rank</td><td><code>ORDER BY array_position(:issueTypeOrder, issue_type)</code></td></tr>
+	<tr><td>Card stripe, dialog header, CSV column</td><td>priority</td><td>API maps <code>issue_type</code> → priority when it builds the response</td></tr>
+	<tr><td>Priority filter (e.g. "Red only")</td><td>priority</td><td>API expands it to <code>issue_type = ANY(:redIssueTypes)</code></td></tr>
+	<tr><td>Priority facet counts, product drawer trigger "3 Red · 1 Yellow"</td><td>priority</td><td><code>GROUP BY issue_type</code>, then the API sums the groups per priority</td></tr>
+	</tbody></table></div>
+
+	<h3 id="s1-3"><span class="num">1.3</span>Dynamic issue-type order</h3>
+	<p>Suppose the order later becomes a per-account setting. For example, account A wants <code>BUY_BOX_LOST</code> above <code>LOW_STOCK</code>.</p>
+	<div class="grid2">
+		<div class="box">
+			<h5>Stored rank</h5>
+			<ul>
+				<li>Saving the setting must run <code>UPDATE tbl_issue_tickets SET issue_type_rank = CASE issue_type … END WHERE account_id = A</code>, which can touch about 50 k rows on a large account.</li>
+				<li>The evaluator must read the account's order on every write, or new tickets get the old rank.</li>
+				<li>If any write path forgets, the board sorts wrong with no error. A global order change needs a backfill at deploy.</li>
+			</ul>
+		</div>
+		<div class="box">
+			<h5>Computed rank</h5>
+			<ul>
+				<li>The API passes the order array it already holds (the constant today, the account setting later) into the query.</li>
+				<li>Changing the order is one setting write. No ticket row changes.</li>
+				<li>The same resolver feeds the CSV, the drawer and the board, so they can't disagree.</li>
+			</ul>
+		</div>
+	</div>
+	<pre class="diagram"><span class="m">-- lane page with a computed issue-type order</span>
+<span class="k">SELECT</span> t.* <span class="k">FROM</span> tbl_issue_tickets t
+<span class="k">WHERE</span> t.account_id = :accountId <span class="k">AND</span> t.status = :status <span class="m">/* + filters, snooze rule */</span>
+<span class="k">ORDER BY</span> array_position(<span class="v">:issueTypeOrder</span>, t.issue_type),      <span class="m">-- '{CONNECTION,ACCOUNT_HEALTH,…}'</span>
+         t.affected_variant_count <span class="k">DESC</span>, t.product_id <span class="k">NULLS FIRST</span>, t.channel_id, t.amazon_marketplace_id <span class="k">NULLS FIRST</span>
+<span class="k">LIMIT</span> 30 <span class="k">OFFSET</span> :offset</pre>
+
+	<h3 id="s1-4"><span class="num">1.4</span>Cost of computing them</h3>
+	<ul>
+		<li><strong>What we lose:</strong> the lane index can no longer return rows already in order. Postgres reads the lane's matching rows (served by <code>(account_id, status)</code>) and keeps the top <code>offset + 30</code> in a top-N heap sort.</li>
+		<li><strong>How big that is:</strong> schema §9 sizes a large account at about 50 k open tickets. A To do lane of 40 k narrow rows sorts in tens of milliseconds, and channel, market and issue-type filters usually cut it far below that.</li>
+		<li><strong>Why that's acceptable:</strong> the counts query (schema §6.2) already reads every row of every lane on each board load. The lane page now does work of the same size, not a larger kind.</li>
+		<li><strong>Priority filter:</strong> <code>issue_type = ANY(…)</code> is a plain column filter, so it stays indexable.</li>
+	</ul>
+	<div class="callout">
+		<span class="t">Effect on affected_variant_count</span>
+		<p>Once the first sort key is computed, the stored <code>affected_variant_count</code> no longer gives an index-ordered scan either. It's still worth storing: computing it means joining and aggregating the items (a few hundred thousand rows on a large account) for the whole lane on every page. Rank and priority are a per-row lookup with no join, so they cost nothing to compute.</p>
+	</div>
+
+	<h3 id="s1-5"><span class="num">1.5</span>When storing would be right</h3>
+	<p>Priority would have to be stored if it varied <em>within</em> one issue type. The channel-health rules already have that detail: <code>channel-health.derivation.ts</code> gives <code>ACCOUNT_DEACTIVATED</code> the severity <code>critical</code> and <code>ACCOUNT_AT_RISK</code> the severity <code>at_risk</code>. The Command Center then flattens both to the <code>ACCOUNT_HEALTH</code> family's single severity, so V2 copies that and both are Red. If we ever wanted C1 (at risk) Yellow and C2 (deactivated) Red, the evaluator would compute priority from the ticket's items, and it would become stored data. Until then, derive it.</p>
+	<div class="callout rec">
+		<span class="t">Recommendation</span>
+		<p>Drop <code>issue_type_rank</code> and <code>priority</code>. Add one API resolver (<code>resolveIssueTypeOrder(accountId)</code>, <code>resolveIssuePriority(issueType)</code>) that reads the constants today. Replace <code>idx_issue_tickets_lane_order</code> with <code>(account_id, status)</code>.</p>
+	</div>
+</section>
+
+<!-- ============================== 2 ============================== -->
+<section class="doc-section" id="s2">
+	<h2><span class="num">2</span>Sub issue types</h2>
+	<p class="lead">The ticket is the unit people work on (product × channel × marketplace × issue type). The sub type describes one problem inside it, so it belongs on the item rows.</p>
+
+	<h3 id="s2-1"><span class="num">2.1</span>Where the sub type lives</h3>
+	<ul>
+		<li><code>tbl_issue_ticket_items.sub_issue_type</code>, one row per (variant, sub type). Channel-level and standalone-product items have <code>variant_id</code> NULL.</li>
+		<li>The ticket key has no sub type, so a sub-type change keeps the same ticket. Its stage, assignee and snoozes stay; only the items change.</li>
+		<li>A single sub-type column on the ticket couldn't hold the cases in §2.3 and §2.4, where one ticket has several sub types at once.</li>
+	</ul>
+
+	<h3 id="s2-2"><span class="num">2.2</span>Example: C1 at risk, C2 deactivated</h3>
+	<p>Both are Amazon channels. The Command Center shows one <strong>Account health</strong> card for both, with per-channel chips "At risk" and "Deactivated". V2 stores two tickets because the key contains the channel:</p>
+	<div class="table-wrap"><table>
+	<thead><tr><th>Ticket key</th><th>issue_type</th><th>Items (variant · sub type)</th><th>Card shows</th></tr></thead>
+	<tbody>
+	<tr><td><code>productId:0||channelId:1||amazonMarketplaceId:0||issueType:ACCOUNT_HEALTH</code></td><td><code>ACCOUNT_HEALTH</code></td><td>NULL · <code>ACCOUNT_AT_RISK</code></td><td>C1 · "Account at risk"</td></tr>
+	<tr><td><code>productId:0||channelId:2||amazonMarketplaceId:0||issueType:ACCOUNT_HEALTH</code></td><td><code>ACCOUNT_HEALTH</code></td><td>NULL · <code>ACCOUNT_DEACTIVATED</code></td><td>C2 · "Account deactivated"</td></tr>
+	</tbody></table></div>
+	<p>If C1 later goes from at risk to deactivated, the evaluator keeps the C1 ticket, deletes the <code>ACCOUNT_AT_RISK</code> item and inserts <code>ACCOUNT_DEACTIVATED</code>. The card's reason text changes and the stage and assignee stay.</p>
+	<div class="callout warn">
+		<span class="t">Small gap found</span>
+		<p>The schema logs <code>ITEMS_CHANGED</code> only when the affected <em>count</em> changes. For C1 the count stays 0, so the at-risk → deactivated change would leave nothing in the history. Suggested fix: also log <code>ITEMS_CHANGED</code> when the set of sub types changes, with <code>from_value</code> / <code>to_value</code> holding the sub types.</p>
+	</div>
+
+	<h3 id="s2-3"><span class="num">2.3</span>How sub types vary across variants of one ticket</h3>
+	<div class="table-wrap"><table>
+	<thead><tr><th>Ticket (product 12, Amazon DE)</th><th>Items</th><th>affected_variant_count</th></tr></thead>
+	<tbody>
+	<tr><td><code>MAIN_IMAGE</code></td><td>51 · <code>MISSING</code><br>52 · <code>UNSUPPORTED_FORMAT</code><br>53 · <code>MISSING</code></td><td>3</td></tr>
+	<tr><td><code>AMAZON_LISTING_BLOCKER</code></td><td>51 · <code>ATTRIBUTES_CONTENT</code><br>51 · <code>MEDIA</code><br>52 · <code>COMPLIANCE</code></td><td>2 (3 items, because variant 51 has two buckets)</td></tr>
+	<tr><td><code>OUT_OF_STOCK</code></td><td>51, 52 · <code>NO_STOCK</code></td><td>2 (this issue type has only one sub type)</td></tr>
+	</tbody></table></div>
+	<p>The dialog lists one row per item, so the user sees that variant 52's image is the wrong format while 51 and 53 have none.</p>
+
+	<h3 id="s2-4"><span class="num">2.4</span>Can a ticket with no variants have several sub types?</h3>
+	<p>Yes. The channel-health rules (<code>api/…/catalog/channel/health/channel-health.derivation.ts</code>) emit some reasons independently of each other:</p>
+	<div class="table-wrap"><table>
+	<thead><tr><th>Issue type</th><th>Sub types that can coexist</th><th>Example ticket (variant NULL on every item)</th></tr></thead>
+	<tbody>
+	<tr><td><code>MARKETPLACE_HEALTH</code></td><td><code>AHR_NOT_HEALTHY</code>, <code>METRIC_BAD</code>, <code>POLICY_BAD</code> are separate <code>if</code>s. Only <code>MARKETPLACE_DEACTIVATED</code> / <code>_AT_RISK</code> exclude each other (one account status).</td><td>FR: <code>MARKETPLACE_AT_RISK</code> + <code>AHR_NOT_HEALTHY</code> + <code>METRIC_BAD</code> → 3 items</td></tr>
+	<tr><td><code>DATA_TRUST</code></td><td><code>INVENTORY_SYNC_STALE</code>, <code>ORDER_SYNC_STALE</code></td><td>Shopify store where both syncs are failing → 2 items</td></tr>
+	<tr><td><code>AMAZON_LISTING_BLOCKER</code> (standalone product)</td><td>Any listing buckets</td><td>Product 40, no variants: <code>SUPPRESSION_VISIBILITY</code> + <code>COMPLIANCE</code> → 2 items</td></tr>
+	<tr><td><code>CONNECTION</code>, <code>ACCOUNT_HEALTH</code></td><td>None. There is one connection status, and account status is an <code>if / else if</code>.</td><td>Always 1 item</td></tr>
+	</tbody></table></div>
+	<div class="callout warn">
+		<span class="t">Catch: the same sub type twice</span>
+		<p><code>METRIC_BAD</code> is emitted once <em>per bad metric</em> and <code>POLICY_BAD</code> once per policy (a loop over <code>badMetrics</code> / <code>badPolicies</code>). Two bad metrics on FR would produce two (NULL, <code>METRIC_BAD</code>) items, which the unique constraint <code>(ticket_id, variant_id, sub_issue_type) NULLS NOT DISTINCT</code> rejects. The detector should keep one item per sub type. Which metrics are bad is evidence, and the dialog reads it live like all other evidence (schema §3.2: items copy no evidence).</p>
+	</div>
+
+	<h3 id="s2-5"><span class="num">2.5</span>Command Center hand-off for channel health</h3>
+	<ul>
+		<li>A Command Center attention card is one family, and its chips can show different reasons per channel. V2's redirect carries <code>{ issueTypes: ['ACCOUNT_HEALTH'], channelId: null }</code>, and the board filters <code>issue_type = ANY(…)</code>. <strong>Both C1 and C2 show</strong>, whatever their sub type. Sub type is never a board filter.</li>
+		<li><strong>Gap in the next-action steps:</strong> a step such as "Restore access" covers several families (<code>action.families</code>). Today the webapp takes only the <em>lead</em> item's redirect (<code>command-center/_lib/attention-view.ts:419</code> and <code>:438</code>), which has one family. For V2 the step's redirect must send all of <code>action.families</code>, and send a <code>channelId</code> only when every chip is on the same channel. Otherwise a click on "Restore access" would show the connection tickets and hide the account-health and marketplace-health ones.</li>
+	</ul>
+</section>
+
+<!-- ============================== 3 ============================== -->
+<section class="doc-section" id="s3">
+	<h2><span class="num">3</span>status_changed_at &amp; assigned_at</h2>
+	<div class="grid2">
+		<div class="box">
+			<h5><span class="pill pill-green">Keep</span> status_changed_at</h5>
+			<ul>
+				<li>Every card shows the time in stage ("In progress · 3 d", plan §3.4), so it's read for every card on every page.</li>
+				<li>Taking it from events means finding the latest <code>STATUS_CHANGED</code> / <code>CREATED</code> / <code>REAPPEARED</code> event for each card. That's feasible for 30 cards, but it breaks for any ticket older than the 180-day event retention (see the example below).</li>
+				<li>A future "stuck in stage &gt; 7 days" sort or filter needs it as a column on the ticket. It can't be done by scanning events.</li>
+			</ul>
+		</div>
+		<div class="box">
+			<h5><span class="pill pill-red">Drop</span> assigned_at</h5>
+			<ul>
+				<li>No screen shows it. The card and dialog show <em>who</em> is assigned, not since when.</li>
+				<li>The dialog history already shows "Priya assigned to Tom · 2 d ago" from the <code>ASSIGNEE_CHANGED</code> event's <code>occurred_at</code>.</li>
+			</ul>
+		</div>
+	</div>
+	<div class="callout">
+		<span class="t">Example: why events alone are not enough</span>
+		<p>Ticket created on 1 Jan. Moved to In progress on 1 Feb. Nobody touches it after that. On 15 Sep the cleanup cron has deleted both events (older than 180 days). With events only, the card has no stage time left. Falling back to <code>created_at</code> would show "In progress · 257 d", which is wrong, because it has been in progress since 1 Feb (226 d). <code>status_changed_at</code> = 1 Feb gives the right answer at no extra cost.</p>
+	</div>
+</section>
+
+<!-- ============================== 4 ============================== -->
+<section class="doc-section" id="s4">
+	<h2><span class="num">4</span>assigned_by_user_id</h2>
+	<p>Agreed, drop it. The UI never shows who assigned a ticket, and the audit trail already records it: an <code>ASSIGNEE_CHANGED</code> event stores <code>actor_user_id</code> (who), <code>from_value</code> / <code>to_value</code> (old and new assignee) and <code>occurred_at</code>. If the history ever needs "assigned by", it's already there. Dropping it also removes one FK to <code>tbl_users</code> and one entity association.</p>
+</section>
+
+<!-- ============================== 5 ============================== -->
+<section class="doc-section" id="s5">
+	<h2><span class="num">5</span>detected_at</h2>
+	<div class="grid2">
+		<div class="box">
+			<h5><span class="pill pill-red">Drop</span> tickets.detected_at</h5>
+			<p>The evaluator inserts the row the moment it first sees the issue, and a re-appearance after a clear is a <em>new</em> row. So <code>detected_at</code> always equals <code>created_at</code>. The CSV "detected at" column reads <code>created_at</code>.</p>
+		</div>
+		<div class="box">
+			<h5><span class="pill pill-green">Keep</span> items.detected_at, renamed <code>created_at</code></h5>
+			<p>Items have no other timestamp. An item survives re-evaluations (set diff), and a variant can join an existing ticket later, so its time differs from the ticket's. The dialog shows "since" per variant (plan §3.6).</p>
+		</div>
+	</div>
+	<div class="callout">
+		<span class="t">Example</span>
+		<p>On Monday, Amazon reports no price for variants 51 and 52 of product 12 in DE. The ticket is created and items 51 and 52 get <code>created_at</code> = Monday. On Thursday variant 53 loses its price too: the same ticket gets item 53 with <code>created_at</code> = Thursday. On Friday the dialog reads "51 · since 4 d", "52 · since 4 d", "53 · since 1 d". The ticket's <code>created_at</code> stays Monday.</p>
+	</div>
+	<p><strong>Renamed to <code>created_at</code></strong> (2026-10-26): the value is set on insert and never updated, so it behaves exactly like <code>created_at</code>, and the ticket already uses <code>created_at</code> for "first seen". The entity uses <code>timestamps: true, createdAt: 'created_at', updatedAt: false</code>. UI and CSV labels ("since", "detected at") are unchanged.</p>
+</section>
+
+<!-- ============================== 6 ============================== -->
+<section class="doc-section" id="s6">
+	<h2><span class="num">6</span>issue_type in events</h2>
+	<p>Keep it. The ticket row isn't a reliable place to look it up, because there is no "cleared" status: a cleared ticket is <strong>deleted</strong> (schema §1.1). The events that matter most refer to tickets that no longer exist:</p>
+	<ul>
+		<li>The recent-activity drawer shows "System cleared Desk Lamp · Main image", and the board's issue-type filter (<code>MAIN_IMAGE</code>) must still match that event after the ticket row is gone.</li>
+		<li><code>REAPPEARED</code> joins occurrences across time. The earlier occurrence's row is long deleted.</li>
+	</ul>
+	<p>The issue type is also inside <code>ticket_key</code> (<code>…||issueType:MAIN_IMAGE</code>), as are the product, channel and marketplace. Filtering with <code>ticket_key LIKE '%issueType:MAIN_IMAGE'</code> can't use an index and relies on string parsing. The copied <code>issue_type</code> is a 64-byte column, and it buys an indexable, typed filter. The same reasoning applies to the copied <code>product_id</code>, <code>channel_id</code> and <code>amazon_marketplace_id</code>.</p>
+</section>
+
+<!-- ============================== 7 ============================== -->
+<section class="doc-section" id="s7">
+	<h2><span class="num">7</span>Publish from the ticket?</h2>
+	<p class="lead">Agreed: no direct publish from the board. The button takes the user to the page that already publishes safely. One refinement: that page isn't always the Channels tab.</p>
+
+	<h3 id="s7-1"><span class="num">7.1</span>Why redirect is better</h3>
+	<ul>
+		<li>The product page already gates publishing: <code>syncInProgress</code> at channel, marketplace and variant-marketplace level (<code>products/_components/list/List.tsx</code>), unsaved changes (<code>Save_Changes_Before_Publishing_Message</code>), the trial sync limit (<code>Trial_Sync_Actions_Exhausted_Message</code>), and socket listeners that refresh progress (<code>PRODUCT_FORWARD_SYNC_SUCCESS</code>, <code>PRODUCT_ERROR</code>, <code>ATTRIBUTE_SYNC_BASELINES_UPDATED</code>, <code>MISC_SYNC_BASELINES_UPDATED</code>).</li>
+		<li>A publish button on the board, the card and the context bar would need a second copy of all of that, plus sockets on a page the plan deliberately keeps free of live refresh. The two copies would drift.</li>
+		<li>On the product page the user sees what will be published (all pending changes for that channel, not only the ticket's), which a one-click board publish would hide.</li>
+	</ul>
+
+	<h3 id="s7-2"><span class="num">7.2</span>Which tab owns the publish</h3>
+	<p>The product page has three separate publish actions, and each issue type is fixed by one of them:</p>
+	<div class="table-wrap"><table>
+	<thead><tr><th>Issue types</th><th>Destination</th><th>Publish control there</th></tr></thead>
+	<tbody>
+	<tr><td><code>MISSING_PRICE</code>, <code>BUY_BOX_*</code></td><td><code>/products/{id}?q=pricing</code></td><td>Price publish (and auto publish)</td></tr>
+	<tr><td><code>OUT_OF_STOCK</code>, <code>LOW_STOCK</code>, <code>STOCK_SYNC</code></td><td><code>?q=stock</code></td><td>Save &amp; Publish</td></tr>
+	<tr><td>Listing blocker / warning, not searchable, Shopify not active, main image, product type changed</td><td><code>?q=channels</code></td><td>Publish (forward sync)</td></tr>
+	<tr><td>Channel-level (connection, health, permission, data trust)</td><td>Channel management</td><td>None. These are fixed outside Categra or by reconnecting.</td></tr>
+	</tbody></table></div>
+	<p>So "redirect to <code>q=channels</code>" is right for listing and media issues. Price and stock tickets go to their own tab, because publishing from Channels wouldn't push the price or the stock.</p>
+
+	<h3 id="s7-3"><span class="num">7.3</span>Button and context bar</h3>
+	<div class="table-wrap"><table>
+	<thead><tr><th>Fix state</th><th>Card / dialog button</th><th>Does</th></tr></thead>
+	<tbody>
+	<tr><td>Not fixed</td><td><span class="btn primary">Open Price</span></td><td>To do → In progress, self-assign, go to the tab (unchanged)</td></tr>
+	<tr><td>Set in Categra · not published</td><td><span class="btn primary">Review &amp; publish</span></td><td>Go to the same tab. The context bar says "Ready to publish", and the user clicks that page's own Publish</td></tr>
+	<tr><td>Publishing</td><td><span class="btn">Publishing…</span></td><td>Link to the task manager</td></tr>
+	</tbody></table></div>
+	<div class="ctxbar">
+		<span><span class="lbl">Issue</span><span class="pill pill-red">Missing price</span></span>
+		<span><span class="lbl">Scope</span>Amazon EU · DE · 3 of 4 variants</span>
+		<span><span class="lbl">Fix state</span>Set in Categra · not published</span>
+		<span style="color: var(--muted)">Publish with the price publish below ↓</span>
+		<span class="btn">Show all variants</span>
+		<span class="btn">Back to Action Center</span>
+	</div>
+	<p>The context bar loses its own <em>Publish</em> button and points at the page's control instead. The board needs no sockets: fix state is computed when read, and the lanes reload when the user comes back ("Back to Action Center").</p>
+
+	<h3 id="s7-4"><span class="num">7.4</span>Moving to Awaiting channel</h3>
+	<p>The ticket publish endpoint used to move the ticket to Awaiting channel. Without it, the move is done by the system when a publish <em>starts</em> for the ticket's scope:</p>
+	<ul>
+		<li><strong>Hook points:</strong> forward sync task created, price publish started, stock publish started (the same pipelines that already enqueue <code>FS_RESULT</code> / <code>PRICE_PUBLISH</code> / <code>STOCK_PUBLISH</code> evaluations when they finish).</li>
+		<li><strong>Which tickets move:</strong> To do / In progress tickets in that product × channel × markets scope whose items are "Set in Categra · not published" at that moment. They get a <code>STATUS_CHANGED</code> event with a new source <code>PUBLISH_STARTED</code>.</li>
+		<li><strong>Which don't:</strong> a <code>BUY_BOX_LOST</code> ticket on the same product isn't fixed by a price push, so it stays where it is.</li>
+	</ul>
+	<div class="callout">
+		<span class="t">Example</span>
+		<p>Priya opens the Missing price ticket for product 12 · DE, sets €19.99 on variants 51–53 and clicks Publish on the Pricing tab. The price publish starts, and the hook moves the ticket In progress → Awaiting channel (source <code>PUBLISH_STARTED</code>). When the result arrives, the <code>PRICE_PUBLISH</code> evaluation clears the ticket, or moves it back to In progress for the variants Amazon rejected.</p>
+	</div>
+	<p>The alternative is no automatic move, so users drag cards to Awaiting channel themselves. That's simpler, but the lane stops meaning "waiting on Amazon/Shopify" as soon as someone forgets.</p>
+	<div class="callout rec">
+		<span class="t">Recommendation</span>
+		<p>Remove <code>POST tickets/:ticketKey/publish</code>, the <code>TICKET_PUBLISH</code> source and the context-bar Publish button. Route "Review &amp; publish" to the tab that owns the publish (§7.2). Add the <code>PUBLISH_STARTED</code> system move.</p>
+	</div>
+</section>
+
+<!-- ============================== 8 ============================== -->
+<section class="doc-section" id="s8">
+	<h2><span class="num">8</span>Appendix: doc changes applied</h2>
+	<div class="table-wrap"><table>
+	<thead><tr><th>Doc</th><th>Change</th></tr></thead>
+	<tbody>
+	<tr><td>Schema §3.1</td><td>Drop <code>issue_type_rank</code>, <code>priority</code>, <code>assigned_by_user_id</code>, <code>assigned_at</code>, <code>detected_at</code>. Lane index becomes <code>(account_id, status)</code>.</td></tr>
+	<tr><td>Schema §3.2</td><td>Keep the item timestamp, renamed <code>items.detected_at</code> → <code>created_at</code>. The detector keeps one item per (variant, sub type).</td></tr>
+	<tr><td>Schema §4.3, §5</td><td>Source <code>TICKET_PUBLISH</code> → <code>PUBLISH_STARTED</code>. <code>ITEMS_CHANGED</code> is also logged when the sub-type set changes.</td></tr>
+	<tr><td>Schema §6</td><td>Lane <code>ORDER BY array_position(:issueTypeOrder, issue_type)</code>. Priority filter and facets go through <code>issue_type</code>.</td></tr>
+	<tr><td>Plan §3.5–3.7, §4.7</td><td>Button states from §7.3. Context bar without Publish. Destinations from §7.2.</td></tr>
+	<tr><td>Plan §4.3–4.4, §4.8</td><td>Add the <code>PUBLISH_STARTED</code> hook. Remove the publish endpoint. Add the issue-type order / priority resolver.</td></tr>
+	<tr><td>Plan §5.5</td><td>Next-action redirect sends all <code>action.families</code>, with <code>channelId</code> only when every chip is on one channel.</td></tr>
+	<tr><td>Solutions §1.4–1.5, §2.3</td><td>Same column, index and system-move changes.</td></tr>
+	</tbody></table></div>
+</section>
+</main>
+</div>
+<button id="to-top" aria-label="Back to top">↑</button>
+<script>
+(function () {
+	var links = {};
+	document.querySelectorAll('#toc a').forEach(function (a) { links[a.getAttribute('href').slice(1)] = a; });
+	var heads = Array.prototype.filter.call(document.querySelectorAll('main section, main h3'), function (h) { return links[h.id]; });
+	var bar = document.getElementById('progress'), top = document.getElementById('to-top'), current = null;
+	function onScroll() {
+		var h = document.documentElement.scrollHeight - innerHeight;
+		bar.style.width = (h > 0 ? (scrollY / h) * 100 : 0) + '%';
+		top.classList.toggle('show', scrollY > 600);
+		var pick = null;
+		for (var i = 0; i < heads.length; i++) { if (heads[i].getBoundingClientRect().top < 140) pick = heads[i]; }
+		var id = pick ? pick.id : null;
+		if (id === current) return;
+		current = id;
+		document.querySelectorAll('#toc a.active').forEach(function (a) { a.classList.remove('active'); });
+		if (id) links[id].classList.add('active');
+	}
+	addEventListener('scroll', onScroll, { passive: true });
+	onScroll();
+	top.addEventListener('click', function () { scrollTo({ top: 0 }); });
+})();
+</script>
+</body>
+</html>

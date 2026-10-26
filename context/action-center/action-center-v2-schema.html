@@ -1,0 +1,2992 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Action Center V2 Schema</title>
+    <style>
+      :root {
+        --bg: #0b0d12;
+        --surface: #12151c;
+        --surface-2: #181c25;
+        --surface-3: #1f2430;
+        --text: #e8eaf0;
+        --muted: #a3a9b6;
+        --faint: #6f7685;
+        --border: #242a36;
+        --border-strong: #323949;
+        --accent: #8b8cff;
+        --accent-2: #5eead4;
+        --accent-soft: #23244a;
+        --accent-text: #c9c8ff;
+        --code-bg: #1d212b;
+        --code-text: #f5a8d4;
+        --diagram-bg: #080a0e;
+        --red: #ff8a80;
+        --red-bg: #3a1618;
+        --red-line: #ff5b4f;
+        --yellow: #f7c56b;
+        --yellow-bg: #33270c;
+        --yellow-line: #f0a929;
+        --blue: #8db6ff;
+        --blue-bg: #14264a;
+        --blue-line: #4b8bff;
+        --green: #77dba3;
+        --green-bg: #0f2f1e;
+        --violet: #c4a8ff;
+        --violet-bg: #2a1c4a;
+        --slate: #b3bccb;
+        --slate-bg: #252a34;
+        --shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 8px 28px rgba(0, 0, 0, 0.28);
+        color-scheme: dark;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 24px;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font:
+          15px/1.65 Inter,
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          Roboto,
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: -1;
+        background:
+          radial-gradient(
+            900px 500px at 85% -10%,
+            rgba(139, 140, 255, 0.1),
+            transparent 60%
+          ),
+          radial-gradient(
+            700px 400px at -10% 30%,
+            rgba(94, 234, 212, 0.05),
+            transparent 60%
+          );
+      }
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      #progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        width: 0;
+        background: linear-gradient(90deg, var(--accent), var(--accent-2));
+        z-index: 50;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 290px minmax(0, 1fr);
+        min-height: 100vh;
+      }
+      aside {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow-y: auto;
+        border-right: 1px solid var(--border);
+        background: rgba(18, 21, 28, 0.85);
+        backdrop-filter: blur(8px);
+        padding: 22px 14px 40px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 8px 18px;
+      }
+      .brand-mark {
+        width: 32px;
+        height: 32px;
+        border-radius: 9px;
+        color: #0b0d12;
+        font-weight: 800;
+        font-size: 13px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      }
+      .brand-name {
+        font-weight: 700;
+        font-size: 14px;
+        line-height: 1.2;
+      }
+      .brand-sub {
+        color: var(--faint);
+        font-size: 12px;
+      }
+      nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      nav a {
+        display: flex;
+        gap: 8px;
+        padding: 5px 8px;
+        border-radius: 7px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.4;
+      }
+      nav a:hover {
+        background: var(--surface-2);
+        color: var(--text);
+        text-decoration: none;
+      }
+      nav .num {
+        color: var(--faint);
+        min-width: 26px;
+        font-size: 12px;
+        padding-top: 1px;
+        font-variant-numeric: tabular-nums;
+      }
+      .toc-l1 > a {
+        font-weight: 600;
+        color: var(--text);
+        margin-top: 3px;
+      }
+      .toc-l1 > ul {
+        padding-left: 12px;
+        margin: 2px 0 6px 8px;
+        border-left: 1px solid var(--border);
+      }
+      nav a.active {
+        background: var(--accent-soft);
+        color: var(--accent-text);
+      }
+      nav a.active .num {
+        color: var(--accent-text);
+      }
+
+      main {
+        padding: 40px clamp(16px, 4vw, 56px) 120px;
+        max-width: 1160px;
+        width: 100%;
+      }
+      .hero {
+        background: linear-gradient(160deg, #161a24, #11141b);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 34px 36px;
+        box-shadow: var(--shadow);
+        margin-bottom: 26px;
+        position: relative;
+        overflow: hidden;
+      }
+      .hero::after {
+        content: '';
+        position: absolute;
+        right: -90px;
+        top: -90px;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(139, 140, 255, 0.22),
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+      .eyebrow {
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+        font-size: 12px;
+        font-weight: 650;
+        color: var(--accent-2);
+      }
+      .hero h1 {
+        font-size: clamp(28px, 4vw, 40px);
+        line-height: 1.15;
+        margin: 8px 0 10px;
+        letter-spacing: -0.02em;
+      }
+      .hero p {
+        color: var(--muted);
+        max-width: 760px;
+        margin: 0 0 18px;
+        font-size: 16px;
+      }
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .chip {
+        border: 1px solid var(--border);
+        background: var(--surface-2);
+        border-radius: 999px;
+        padding: 4px 11px;
+        font-size: 12.5px;
+        color: var(--muted);
+      }
+      .chip b {
+        color: var(--text);
+        font-weight: 600;
+      }
+
+      .verdicts {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+        margin: 0 0 26px;
+      }
+      .verdict {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 20px 20px 18px;
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+      }
+      .verdict::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        height: 3px;
+        background: var(--vc, var(--accent));
+      }
+      .verdict .q {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        color: var(--faint);
+        font-weight: 650;
+      }
+      .verdict .a {
+        font-size: 18px;
+        font-weight: 700;
+        margin: 6px 0 8px;
+        line-height: 1.3;
+      }
+      .verdict p {
+        color: var(--muted);
+        font-size: 13.5px;
+        margin: 0 0 10px;
+      }
+      .verdict a {
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .doc-section {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 30px 36px 26px;
+        margin-bottom: 24px;
+        box-shadow: var(--shadow);
+      }
+      h2,
+      h3,
+      h4 {
+        letter-spacing: -0.01em;
+      }
+      h2 {
+        font-size: 25px;
+        line-height: 1.25;
+        margin: 0 0 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      h2 .num {
+        color: #0b0d12;
+        border-radius: 10px;
+        min-width: 36px;
+        height: 36px;
+        padding: 0 8px;
+        display: inline-grid;
+        place-items: center;
+        font-size: 15px;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      }
+      h3 {
+        font-size: 18.5px;
+        margin: 34px 0 12px;
+        padding-top: 22px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        gap: 10px;
+        align-items: baseline;
+      }
+      h3 .num {
+        color: var(--accent);
+        font-weight: 700;
+        font-size: 15px;
+      }
+      h4 {
+        font-size: 15.5px;
+        margin: 24px 0 10px;
+        display: flex;
+        gap: 9px;
+        align-items: baseline;
+      }
+      h4 .num {
+        color: var(--accent-text);
+        background: var(--accent-soft);
+        border-radius: 6px;
+        padding: 1px 7px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .lead {
+        color: var(--muted);
+        font-size: 15.5px;
+        margin-top: -6px;
+      }
+
+      p {
+        margin: 0 0 14px;
+      }
+      ul,
+      ol {
+        margin: 0 0 16px;
+        padding-left: 22px;
+      }
+      li {
+        margin: 4px 0;
+      }
+      li::marker {
+        color: var(--faint);
+      }
+      strong {
+        font-weight: 650;
+        color: #f3f4f8;
+      }
+      code {
+        font-family:
+          'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+        font-size: 0.84em;
+        background: var(--code-bg);
+        color: var(--code-text);
+        padding: 1.5px 5px;
+        border-radius: 5px;
+        overflow-wrap: anywhere;
+      }
+      a.ref {
+        font-size: 0.86em;
+        font-weight: 600;
+        background: var(--accent-soft);
+        color: var(--accent-text);
+        padding: 1px 6px;
+        border-radius: 5px;
+        white-space: nowrap;
+      }
+      a.ref:hover {
+        text-decoration: none;
+        filter: brightness(1.1);
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        margin: 6px 0 20px;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 13.5px;
+        line-height: 1.5;
+      }
+      th {
+        text-align: left;
+        background: var(--surface-2);
+        color: var(--muted);
+        font-weight: 600;
+        font-size: 11.5px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--border);
+        white-space: nowrap;
+      }
+      td {
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+      }
+      tr:last-child td {
+        border-bottom: 0;
+      }
+      tbody tr:hover td {
+        background: rgba(255, 255, 255, 0.015);
+      }
+      td:first-child {
+        font-weight: 500;
+      }
+      td code {
+        overflow-wrap: normal;
+      }
+      td.win {
+        color: var(--green);
+      }
+      td.lose {
+        color: var(--muted);
+      }
+
+      .pill {
+        display: inline-block;
+        padding: 1px 9px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 650;
+        white-space: nowrap;
+      }
+      .pill-red {
+        background: var(--red-bg);
+        color: var(--red);
+      }
+      .pill-yellow {
+        background: var(--yellow-bg);
+        color: var(--yellow);
+      }
+      .pill-blue {
+        background: var(--blue-bg);
+        color: var(--blue);
+      }
+      .pill-green {
+        background: var(--green-bg);
+        color: var(--green);
+      }
+      .pill-violet {
+        background: var(--violet-bg);
+        color: var(--violet);
+      }
+      .pill-slate {
+        background: var(--slate-bg);
+        color: var(--slate);
+      }
+
+      .callout {
+        border: 1px solid var(--border-strong);
+        background: var(--surface-2);
+        border-radius: 12px;
+        padding: 14px 16px;
+        margin: 4px 0 18px;
+        font-size: 14px;
+      }
+      .callout.rec {
+        border-color: rgba(94, 234, 212, 0.35);
+        background: rgba(94, 234, 212, 0.06);
+      }
+      .callout.warn {
+        border-color: rgba(240, 169, 41, 0.4);
+        background: rgba(240, 169, 41, 0.07);
+      }
+      .callout .t {
+        font-weight: 700;
+        display: block;
+        margin-bottom: 4px;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .callout.rec .t {
+        color: var(--accent-2);
+      }
+      .callout.warn .t {
+        color: var(--yellow);
+      }
+      .callout p:last-child,
+      .callout ul:last-child {
+        margin-bottom: 0;
+      }
+
+      pre.diagram {
+        background: var(--diagram-bg);
+        color: #d9dde6;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 18px 20px;
+        overflow-x: auto;
+        font:
+          12.8px/1.6 'JetBrains Mono',
+          ui-monospace,
+          Consolas,
+          monospace;
+        margin: 6px 0 20px;
+      }
+      pre.diagram .k {
+        color: var(--accent-2);
+      }
+      pre.diagram .r {
+        color: var(--red);
+      }
+      pre.diagram .y {
+        color: var(--yellow);
+      }
+      pre.diagram .b {
+        color: var(--blue);
+      }
+      pre.diagram .m {
+        color: var(--faint);
+      }
+      pre.diagram .v {
+        color: var(--violet);
+      }
+
+      .keybox {
+        background: var(--diagram-bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px 16px;
+        margin: 6px 0 18px;
+        font:
+          13px/1.7 'JetBrains Mono',
+          ui-monospace,
+          Consolas,
+          monospace;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+      .keybox .seg {
+        color: var(--text);
+      }
+      .keybox .sep {
+        color: var(--faint);
+      }
+      .keybox .val {
+        color: var(--accent-2);
+      }
+
+      /* lane + card mocks */
+      .lanes {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin: 8px 0 20px;
+      }
+      .lane {
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 12px;
+      }
+      .lane-h {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-weight: 700;
+        font-size: 13.5px;
+        margin-bottom: 4px;
+      }
+      .lane-h .cnt {
+        font-size: 12px;
+        color: var(--muted);
+        background: var(--surface-3);
+        border-radius: 999px;
+        padding: 0 8px;
+      }
+      .lane-s {
+        color: var(--faint);
+        font-size: 12px;
+        margin-bottom: 10px;
+      }
+      .lane-tag {
+        font-size: 11px;
+        font-weight: 650;
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
+
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin: 8px 0 20px;
+      }
+      .card {
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--pl, var(--red-line));
+        border-radius: 12px;
+        padding: 12px 12px 10px;
+        height: 168px;
+        display: flex;
+        flex-direction: column;
+      }
+      .card .top {
+        display: flex;
+        gap: 10px;
+      }
+      .thumb {
+        width: 44px;
+        height: 44px;
+        border-radius: 8px;
+        flex: none;
+        background: linear-gradient(135deg, #2a3040, #1c212c);
+        border: 1px solid var(--border-strong);
+      }
+      .card .name {
+        font-weight: 650;
+        font-size: 13px;
+        line-height: 1.35;
+      }
+      .card .ctx {
+        color: var(--faint);
+        font-size: 11.5px;
+      }
+      .card .badges {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin: 8px 0 auto;
+      }
+      .card .foot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-top: 1px solid var(--border);
+        padding-top: 8px;
+        margin-top: 8px;
+      }
+      .card .who {
+        color: var(--muted);
+        font-size: 11.5px;
+      }
+      .btn {
+        font-size: 12px;
+        font-weight: 650;
+        border-radius: 8px;
+        padding: 4px 10px;
+        border: 1px solid var(--border-strong);
+        background: var(--surface-3);
+        color: var(--text);
+        white-space: nowrap;
+      }
+      .btn.primary {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #0b0d12;
+      }
+      .btn.go {
+        background: var(--accent-2);
+        border-color: var(--accent-2);
+        color: #0b0d12;
+      }
+      .btn.dis {
+        opacity: 0.55;
+      }
+      .ctxbar {
+        background: var(--diagram-bg);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px 14px;
+        margin: 4px 0 18px;
+        font-size: 13px;
+        display: flex;
+        gap: 18px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .ctxbar .lbl {
+        color: var(--faint);
+        font-size: 11.5px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-right: 6px;
+      }
+
+      .grid2 {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+        margin: 6px 0 18px;
+      }
+      .box {
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px 16px;
+      }
+      .box h5 {
+        margin: 0 0 6px;
+        font-size: 14px;
+      }
+      .box p,
+      .box ul {
+        font-size: 13.5px;
+        color: var(--muted);
+        margin-bottom: 0;
+      }
+
+      #to-top {
+        position: fixed;
+        right: 22px;
+        bottom: 22px;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        border: 1px solid var(--border-strong);
+        background: var(--surface-2);
+        color: var(--muted);
+        cursor: pointer;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+      }
+      #to-top.show {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      @media (max-width: 1000px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+        aside {
+          position: static;
+          height: auto;
+          border-right: 0;
+          border-bottom: 1px solid var(--border);
+        }
+        .verdicts,
+        .lanes,
+        .cards,
+        .grid2 {
+          grid-template-columns: 1fr;
+        }
+        .doc-section,
+        .hero {
+          padding: 22px 18px;
+        }
+      }
+
+      /* additions for the V2 schema + plan docs */
+      .er {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+        margin: 8px 0 20px;
+      }
+      .ent {
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .ent-h {
+        padding: 10px 14px;
+        background: var(--surface-3);
+        border-bottom: 1px solid var(--border);
+        font:
+          600 13px/1.4 'JetBrains Mono',
+          ui-monospace,
+          Consolas,
+          monospace;
+        color: var(--accent-2);
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .ent-h span {
+        color: var(--faint);
+        font-family: Inter, system-ui, sans-serif;
+        font-weight: 500;
+        font-size: 12px;
+      }
+      .ent ul {
+        list-style: none;
+        margin: 0;
+        padding: 8px 14px 10px;
+        font:
+          12.5px/1.75 'JetBrains Mono',
+          ui-monospace,
+          Consolas,
+          monospace;
+      }
+      .ent li {
+        margin: 0;
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        color: var(--text);
+      }
+      .ent li i {
+        font-style: normal;
+        color: var(--faint);
+      }
+      .ent li.pk {
+        color: var(--yellow);
+      }
+      .ent li.fk {
+        color: var(--blue);
+      }
+      .ent li.gen {
+        color: var(--violet);
+      }
+      .legend {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        font-size: 12.5px;
+        color: var(--muted);
+        margin: -6px 0 18px;
+      }
+      .legend b {
+        font-weight: 600;
+      }
+      pre.sql {
+        background: var(--diagram-bg);
+        color: #d9dde6;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px 18px;
+        overflow-x: auto;
+        font:
+          12.6px/1.6 'JetBrains Mono',
+          ui-monospace,
+          Consolas,
+          monospace;
+        margin: 6px 0 20px;
+      }
+      pre.sql .kw {
+        color: var(--accent);
+      }
+      pre.sql .c {
+        color: var(--faint);
+      }
+      pre.sql .s {
+        color: var(--green);
+      }
+      .steps {
+        counter-reset: step;
+        list-style: none;
+        padding: 0;
+        margin: 8px 0 20px;
+      }
+      .steps > li {
+        position: relative;
+        padding: 14px 16px 14px 60px;
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        margin: 0 0 10px;
+      }
+      .steps > li::before {
+        counter-increment: step;
+        content: counter(step);
+        position: absolute;
+        left: 14px;
+        top: 14px;
+        width: 32px;
+        height: 32px;
+        border-radius: 9px;
+        display: grid;
+        place-items: center;
+        font-weight: 800;
+        font-size: 14px;
+        color: #0b0d12;
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      }
+      .steps > li h5 {
+        margin: 0 0 4px;
+        font-size: 14.5px;
+      }
+      .steps > li p,
+      .steps > li ul {
+        font-size: 13.5px;
+        color: var(--muted);
+        margin: 0 0 6px;
+      }
+      .steps > li .meta {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 6px;
+      }
+      .tree {
+        background: var(--diagram-bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px 18px;
+        overflow-x: auto;
+        font:
+          12.6px/1.65 'JetBrains Mono',
+          ui-monospace,
+          Consolas,
+          monospace;
+        color: #d9dde6;
+        margin: 6px 0 20px;
+        white-space: pre;
+      }
+      .tree .d {
+        color: var(--accent-2);
+      }
+      .tree .n {
+        color: var(--green);
+      }
+      .tree .x {
+        color: var(--yellow);
+      }
+      .tree .m {
+        color: var(--faint);
+      }
+      .mock-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 10px 12px;
+        margin: 6px 0 14px;
+      }
+      .mock-bar .l,
+      .mock-bar .r {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .search {
+        width: 240px;
+        max-width: 100%;
+        border: 1px solid var(--border-strong);
+        background: var(--surface-3);
+        border-radius: 8px;
+        padding: 5px 10px;
+        font-size: 12.5px;
+        color: var(--faint);
+      }
+      .avatars {
+        display: flex;
+      }
+      .av {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        border: 2px solid var(--surface-2);
+        margin-left: -6px;
+        display: grid;
+        place-items: center;
+        font-size: 10.5px;
+        font-weight: 700;
+        color: #0b0d12;
+      }
+      .av:first-child {
+        margin-left: 0;
+      }
+      @media (max-width: 1000px) {
+        .er {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="progress"></div>
+    <div class="layout">
+      <aside>
+        <div class="brand">
+          <div class="brand-mark">AC</div>
+          <div>
+            <div class="brand-name">Action Center V2</div>
+            <div class="brand-sub">Doc 1 of 2 · Schema</div>
+          </div>
+        </div>
+        <nav id="toc">
+          <ul>
+            <li class="toc-l1">
+              <a href="#s1"><span class="num">1</span>Objective &amp; naming</a>
+              <ul>
+                <li>
+                  <a href="#s1-1"
+                    ><span class="num">1.1</span>What the schema must do</a
+                  >
+                </li>
+                <li>
+                  <a href="#s1-2"><span class="num">1.2</span>Naming rules</a>
+                </li>
+              </ul>
+            </li>
+            <li class="toc-l1">
+              <a href="#s2"><span class="num">2</span>Model at a glance</a>
+              <ul>
+                <li>
+                  <a href="#s2-1"><span class="num">2.1</span>Entity diagram</a>
+                </li>
+                <li>
+                  <a href="#s2-2"><span class="num">2.2</span>Write flow</a>
+                </li>
+              </ul>
+            </li>
+            <li class="toc-l1">
+              <a href="#s3"><span class="num">3</span>Tables</a>
+              <ul>
+                <li>
+                  <a href="#s3-1"
+                    ><span class="num">3.1</span>tbl_issue_tickets</a
+                  >
+                </li>
+                <li>
+                  <a href="#s3-2"
+                    ><span class="num">3.2</span
+                    >tbl_issue_ticket_items</a
+                  >
+                </li>
+                <li>
+                  <a href="#s3-3"
+                    ><span class="num">3.3</span
+                    >tbl_issue_ticket_snoozes</a
+                  >
+                </li>
+                <li>
+                  <a href="#s3-4"
+                    ><span class="num">3.4</span
+                    >tbl_issue_ticket_events</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <li class="toc-l1">
+              <a href="#s4"><span class="num">4</span>Keys &amp; value sets</a>
+              <ul>
+                <li>
+                  <a href="#s4-1"
+                    ><span class="num">4.1</span>Ticket key &amp; item key</a
+                  >
+                </li>
+                <li>
+                  <a href="#s4-2"><span class="num">4.2</span>Issue taxonomy</a>
+                </li>
+                <li>
+                  <a href="#s4-3"
+                    ><span class="num">4.3</span>Status, priority, events,
+                    sources</a
+                  >
+                </li>
+                <li>
+                  <a href="#s4-4"
+                    ><span class="num">4.4</span>Constants (not admin
+                    settings)</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <li class="toc-l1">
+              <a href="#s5"
+                ><span class="num">5</span>Ownership &amp; lifecycle</a
+              >
+              <ul>
+                <li>
+                  <a href="#s5-1"
+                    ><span class="num">5.1</span>Who writes which column</a
+                  >
+                </li>
+                <li>
+                  <a href="#s5-2"
+                    ><span class="num">5.2</span>Lifecycle walk-through</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <li class="toc-l1">
+              <a href="#s6"><span class="num">6</span>Read queries</a>
+              <ul>
+                <li>
+                  <a href="#s6-1"><span class="num">6.1</span>Lane page</a>
+                </li>
+                <li>
+                  <a href="#s6-2"
+                    ><span class="num">6.2</span>Counts &amp; facets</a
+                  >
+                </li>
+                <li>
+                  <a href="#s6-3"><span class="num">6.3</span>Search</a>
+                </li>
+                <li>
+                  <a href="#s6-4"><span class="num">6.4</span>Ticket dialog</a>
+                </li>
+                <li>
+                  <a href="#s6-5"
+                    ><span class="num">6.5</span>Breakdown &amp; recent
+                    activity</a
+                  >
+                </li>
+                <li>
+                  <a href="#s6-6"
+                    ><span class="num">6.6</span>Evaluator scope diff</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <li class="toc-l1">
+              <a href="#s7"
+                ><span class="num">7</span>Retention &amp; maintenance</a
+              >
+            </li>
+            <li class="toc-l1">
+              <a href="#s8"
+                ><span class="num">8</span>Migration &amp; entities</a
+              >
+            </li>
+            <li class="toc-l1">
+              <a href="#s9"><span class="num">9</span>Scale notes</a>
+            </li>
+            <li class="toc-l1">
+              <a href="#s10"><span class="num">10</span>Appendix: v1 tables</a>
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <main>
+        <header class="hero">
+          <div class="eyebrow">Categra · Action Center V2 · Doc 1 of 2</div>
+          <h1>Action Center V2 schema</h1>
+          <p>
+            The four new tables behind Action Center V2: one row per open
+            ticket, its variant items, per-user snoozes and an audit trail. It
+            follows the decisions in
+            <code>action-center-v2-solutions.html</code>, with the 2026-10-23
+            answers applied. The v1 tables are not used or changed.
+          </p>
+          <div class="chips">
+            <span class="chip"><b>Repo</b> db-migrations · api/entities</span>
+            <span class="chip"><b>Tables</b> 4 new, 0 changed</span>
+            <span class="chip"
+              ><b>Companion</b> action-center-v2-plan.html</span
+            >
+            <span class="chip"><b>Date</b> 2026-10-26</span>
+          </div>
+        </header>
+
+        <!-- ============================== 1 ============================== -->
+        <section class="doc-section" id="s1">
+          <h2><span class="num">1</span>Objective &amp; naming</h2>
+          <p class="lead">
+            A ticket is a stored record of an open issue reported by the
+            channel. It is created, updated and deleted by the system, and only
+            its stage, assignee and snoozes are owned by users.
+          </p>
+
+          <h3 id="s1-1"><span class="num">1.1</span>What the schema must do</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Requirement (brief)</th>
+                  <th>How the schema answers it</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    One ticket = product × channel × marketplace × issue type,
+                    parent and variants inside
+                  </td>
+                  <td>
+                    One <code>tickets</code> row per key. Variants are rows in
+                    <code>ticket_items</code>.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Universal id, irrelevant keys = 0</td>
+                  <td>
+                    Real FK key columns, <code>NULL</code> when a key doesn't
+                    apply, plus a generated <code>ticket_key</code> that writes
+                    <code>COALESCE(col, 0)</code>, so the external id still
+                    shows <code>0</code> (§4.1).
+                  </td>
+                </tr>
+                <tr>
+                  <td>Main table manages per-item status; cleared = deleted</td>
+                  <td>
+                    <code>tickets.status</code> has no "cleared" value.
+                    Clearance is a <code>DELETE</code> with cascade.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Separate per-user snooze table</td>
+                  <td>
+                    <code>ticket_snoozes</code>, unique per ticket × user.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Separate audit table (status, cleared, re-generated…)</td>
+                  <td>
+                    <code>ticket_events</code>, keyed by
+                    <code>ticket_key</code> with no FK, so it outlives the
+                    ticket.
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Red / Yellow / Blue priority, as in the Command Center
+                  </td>
+                  <td>
+                    Not stored. The API derives it from <code>issue_type</code>
+                    through the CC severity constant (§4.2), so it can't drift.
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Sort: issue type → variants DESC → product → channel →
+                    marketplace; items by variant
+                  </td>
+                  <td>
+                    Issue-type order resolved by the API and passed into the
+                    query (<code>array_position</code>, §6.1), so it can become
+                    dynamic without rewriting rows; stored
+                    <code>affected_variant_count</code> for the second key.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Recent activity in the right-edge drawer</td>
+                  <td>
+                    Events carry denormalised scope columns, so they can be
+                    filtered after the ticket is gone (§3.4).
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 id="s1-2"><span class="num">1.2</span>Naming rules</h3>
+          <ul>
+            <li>
+              <strong>Names are not tied to the page.</strong> Tables, entities,
+              enums and constants are named after what they hold, not after
+              Action Center, so a page rename never needs a migration:
+              <code>tbl_issue_tickets</code>, entity <code>IssueTicket</code>,
+              enum <code>IssueTicketStatus</code>, constants
+              <code>ISSUE_TICKET_*</code>. No <code>V2</code> either.
+            </li>
+            <li>
+              No name clashes with v1: v1 uses
+              <code>tbl_action_center_issue_workflows</code>,
+              <code>_issue_assignments</code>, <code>_lifecycle_events</code>.
+              Every new table starts with <code>tbl_issue_ticket</code>, and
+              index names use <code>idx_issue_ticket*</code> /
+              <code>uq_issue_ticket*</code>.
+            </li>
+            <li>
+              Only the webapp page layer (route, page components, store,
+              translations) carries <code>ActionCenterV2</code>, as the
+              companion plan describes.
+            </li>
+            <li>
+              Columns are snake_case, including <code>created_at</code> /
+              <code>updated_at</code>, like the recent tables
+              (<code>tbl_llm_failures</code>). Entities map them with
+              <code>createdAt: 'created_at'</code>,
+              <code>updatedAt: 'updated_at'</code>.
+            </li>
+          </ul>
+        </section>
+
+        <!-- ============================== 2 ============================== -->
+        <section class="doc-section" id="s2">
+          <h2><span class="num">2</span>Model at a glance</h2>
+
+          <h3 id="s2-1"><span class="num">2.1</span>Entity diagram</h3>
+          <div class="er">
+            <div class="ent">
+              <div class="ent-h">
+                tbl_issue_tickets <span>one per open ticket</span>
+              </div>
+              <ul>
+                <li class="pk">id <i>bigserial PK</i></li>
+                <li class="fk">account_id <i>→ tbl_accounts · CASCADE</i></li>
+                <li class="fk">product_id <i>→ tbl_products · null · CASCADE</i></li>
+                <li class="fk">channel_id <i>→ tbl_channels · CASCADE</i></li>
+                <li class="fk">
+                  amazon_marketplace_id
+                  <i>→ tbl_amazon_marketplaces · null · CASCADE</i>
+                </li>
+                <li>issue_type <i>varchar</i></li>
+                <li class="gen">ticket_key <i>generated</i></li>
+                <li>affected_variant_count <i>system</i></li>
+                <li>status <i>user + system</i></li>
+                <li class="fk">
+                  assignee_user_id <i>→ tbl_users · SET NULL</i>
+                </li>
+                <li>status_changed_at · last_evaluated_at · created_at</li>
+              </ul>
+            </div>
+            <div class="ent">
+              <div class="ent-h">
+                tbl_issue_ticket_items
+                <span>what is wrong, per variant</span>
+              </div>
+              <ul>
+                <li class="pk">id <i>bigserial PK</i></li>
+                <li class="fk">ticket_id <i>→ tickets · CASCADE</i></li>
+                <li class="fk">
+                  variant_id <i>→ tbl_product_variants · null · CASCADE</i>
+                </li>
+                <li>sub_issue_type <i>varchar</i></li>
+                <li>created_at <i>first seen</i></li>
+              </ul>
+            </div>
+            <div class="ent">
+              <div class="ent-h">
+                tbl_issue_ticket_snoozes <span>per user</span>
+              </div>
+              <ul>
+                <li class="pk">id <i>bigserial PK</i></li>
+                <li class="fk">ticket_id <i>→ tickets · CASCADE</i></li>
+                <li class="fk">user_id <i>→ tbl_users · CASCADE</i></li>
+                <li>snoozed_until</li>
+              </ul>
+            </div>
+            <div class="ent">
+              <div class="ent-h">
+                tbl_issue_ticket_events
+                <span>audit, outlives tickets</span>
+              </div>
+              <ul>
+                <li class="pk">id <i>bigserial PK</i></li>
+                <li class="fk">account_id <i>→ tbl_accounts · CASCADE</i></li>
+                <li>ticket_key <i>no FK</i></li>
+                <li>
+                  product_id · channel_id · amazon_marketplace_id · issue_type
+                  <i>copies · no FK</i>
+                </li>
+                <li>event_type · from_value · to_value</li>
+                <li class="fk">actor_user_id <i>→ tbl_users · SET NULL</i></li>
+                <li>source · occurred_at</li>
+              </ul>
+            </div>
+          </div>
+          <div class="legend">
+            <span><b style="color: var(--yellow)">■</b> primary key</span
+            ><span><b style="color: var(--blue)">■</b> foreign key</span
+            ><span><b style="color: var(--violet)">■</b> generated</span
+            ><span
+              ><code>· null</code> = NULL when the key does not apply
+              (<code>0</code> in <code>ticket_key</code>)</span
+            >
+          </div>
+
+          <h3 id="s2-2"><span class="num">2.2</span>Write flow</h3>
+          <pre
+            class="diagram"
+          ><span class="m">external event  (publish result · import · stock/price publish · notification · health · sweep)</span>
+     │
+     ▼
+ <span class="k">evaluator</span> (worker, one transaction, advisory lock on account × channel)
+     ├─ new key            → <span class="v">INSERT tickets</span> + <span class="v">items</span>   → <span class="v">events</span> CREATED | REAPPEARED
+     ├─ key still present  → <span class="v">replace items</span>, update counts → <span class="v">events</span> ITEMS_CHANGED (count or sub-type set changed)
+     │                       + AWAITING_CHANNEL → IN_PROGRESS only on the fixing publish kind's result,
+     │                         nothing still PUBLISHING, conditional UPDATE   → STATUS_CHANGED
+     └─ key gone           → <span class="v">DELETE tickets</span> <span class="m">(items + snoozes cascade)</span> → <span class="v">events</span> CLEARED
+
+ <span class="k">publish start</span> (FS task created · price publish incl. auto · stock publish)
+     └─ TODO / IN_PROGRESS tickets in scope, items not NOT_FIXED → <span class="v">tickets.status</span> AWAITING_CHANNEL → STATUS_CHANGED (PUBLISH_STARTED)
+
+ <span class="k">product / variant delete</span> (same transaction, before the DELETE)
+     └─ clearScope → <span class="v">events</span> CLEARED (SCOPE_REMOVED) → <span class="v">DELETE tickets</span> / items + recount <span class="m">(FK cascade = backstop only)</span>
+
+ <span class="k">user</span> (API, one transaction per mutation)
+     ├─ move stage / primary action           → <span class="v">tickets.status</span>          → STATUS_CHANGED
+     ├─ assign / unassign                     → <span class="v">tickets.assignee_*</span>      → ASSIGNEE_CHANGED
+     └─ snooze / unsnooze                     → <span class="v">ticket_snoozes</span>          <span class="m">(not audited)</span>
+
+ <span class="k">cron</span>
+     ├─ expired snoozes  → DELETE
+     └─ events older than retention → DELETE</pre>
+        </section>
+
+        <!-- ============================== 3 ============================== -->
+        <section class="doc-section" id="s3">
+          <h2><span class="num">3</span>Tables</h2>
+          <p class="lead">
+            Column lists are final for the first migration. Types use Postgres
+            names. "Sys" = written by the evaluator only.
+          </p>
+
+          <h3 id="s3-1">
+            <span class="num">3.1</span><code>tbl_issue_tickets</code>
+          </h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Column</th>
+                  <th>Type</th>
+                  <th>Null / default</th>
+                  <th>Writer</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>id</code></td>
+                  <td>bigserial</td>
+                  <td>PK</td>
+                  <td>—</td>
+                  <td>
+                    Internal only. The API and URLs use <code>ticket_key</code>.
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>account_id</code></td>
+                  <td>bigint</td>
+                  <td>NOT NULL</td>
+                  <td>Sys</td>
+                  <td>FK <code>tbl_accounts(id)</code> ON DELETE CASCADE.</td>
+                </tr>
+                <tr>
+                  <td><code>product_id</code></td>
+                  <td>bigint</td>
+                  <td>NULL</td>
+                  <td>Sys</td>
+                  <td>
+                    Parent or standalone product. <code>NULL</code> for
+                    channel-level tickets. FK <code>tbl_products(id)</code> ON
+                    DELETE CASCADE as a backstop only: product delete / unlist
+                    still clears through the evaluator first, so CLEARED is
+                    audited (§7).
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>channel_id</code></td>
+                  <td>bigint</td>
+                  <td>NOT NULL</td>
+                  <td>Sys</td>
+                  <td>
+                    FK <code>tbl_channels(id)</code> ON DELETE CASCADE. Every
+                    issue type is at least channel-scoped.
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>amazon_marketplace_id</code></td>
+                  <td>bigint</td>
+                  <td>NULL</td>
+                  <td>Sys</td>
+                  <td>
+                    <code>NULL</code> for Shopify and for channel-level Amazon
+                    tickets. FK <code>tbl_amazon_marketplaces(id)</code> ON
+                    DELETE CASCADE. It is a lookup table and rows are normally
+                    never deleted (deactivation is a flag), but if one is, its
+                    tickets are meaningless and must not block the delete.
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>issue_type</code></td>
+                  <td>varchar(64)</td>
+                  <td>NOT NULL</td>
+                  <td>Sys</td>
+                  <td>
+                    CC attention family (§4.2). Validated in the app, not by a
+                    CHECK, so new families need no migration.
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>ticket_key</code></td>
+                  <td>varchar(255)</td>
+                  <td>GENERATED ALWAYS … STORED</td>
+                  <td>DB</td>
+                  <td>
+                    <code
+                      >'productId:' || COALESCE(product_id, 0)::text ||
+                      '||channelId:' || channel_id::text ||
+                      '||amazonMarketplaceId:' || COALESCE(amazon_marketplace_id,
+                      0)::text || '||issueType:' || issue_type</code
+                    >. <code>COALESCE</code> keeps the key's <code>0</code>
+                    segments and is immutable, so it is allowed here. The
+                    explicit <code>::text</code> casts are required:
+                    <code>text || bigint</code> is only STABLE and Postgres
+                    rejects it in a generated column. The column is never NULL,
+                    so the plain unique index on it enforces identity.
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>affected_variant_count</code></td>
+                  <td>integer</td>
+                  <td>NOT NULL DEFAULT 0</td>
+                  <td>Sys</td>
+                  <td>
+                    Distinct non-null <code>variant_id</code> among the items. 1
+                    for a standalone product, 0 for channel-level tickets.
+                    Second sort key.
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>status</code></td>
+                  <td>varchar(24)</td>
+                  <td>
+                    NOT NULL DEFAULT 'TODO', CHECK IN
+                    ('TODO','IN_PROGRESS','AWAITING_CHANNEL')
+                  </td>
+                  <td>User + system moves</td>
+                  <td>The lane. There is no CLEARED value.</td>
+                </tr>
+                <tr>
+                  <td><code>status_changed_at</code></td>
+                  <td>timestamptz</td>
+                  <td>NOT NULL DEFAULT NOW()</td>
+                  <td>User + system moves</td>
+                  <td>
+                    "In this stage for 3 d" on every card. Kept on the row
+                    because events are deleted after 180 days, and a "stuck in
+                    stage" sort or filter needs it here.
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>assignee_user_id</code></td>
+                  <td>bigint</td>
+                  <td>NULL</td>
+                  <td>User / primary action</td>
+                  <td>
+                    FK <code>tbl_users(id)</code> ON DELETE SET NULL. One owner
+                    per ticket. Who assigned it and when live in the
+                    <code>ASSIGNEE_CHANGED</code> event (actor, occurred_at).
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>last_evaluated_at</code></td>
+                  <td>timestamptz</td>
+                  <td>NOT NULL DEFAULT NOW()</td>
+                  <td>Sys</td>
+                  <td>
+                    Set on every evaluation that covered this ticket. Lets the
+                    sweep find stale scopes.
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>created_at</code>, <code>updated_at</code></td>
+                  <td>timestamptz</td>
+                  <td>NOT NULL DEFAULT NOW()</td>
+                  <td>—</td>
+                  <td>
+                    <code>created_at</code> is when this occurrence was first
+                    seen: the evaluator inserts the row on first detection, and
+                    a re-appearance is a new row. The CSV "detected at" reads it.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <h4><span class="num">3.1.1</span>Constraints &amp; indexes</h4>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Definition</th>
+                  <th>Serves</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>uq_issue_tickets_account_key</code></td>
+                  <td>UNIQUE (account_id, ticket_key)</td>
+                  <td>
+                    Identity; every lookup by key (dialog, mutations, deep
+                    links).
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>idx_issue_tickets_lane</code></td>
+                  <td>(account_id, status)</td>
+                  <td>
+                    Lane rows and lane counts. The order (§6.1) starts with the
+                    API-resolved issue-type order, so it is a top-N sort over
+                    the lane's rows, not an index-ordered scan; at ~50 k tickets
+                    per account (§9) that is the same scale as the counts query.
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>idx_issue_tickets_scope</code></td>
+                  <td>
+                    (account_id, channel_id, amazon_marketplace_id, issue_type)
+                  </td>
+                  <td>
+                    Evaluator scope load (§6.6), channel / market / issue type
+                    filters, counts.
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>idx_issue_tickets_product</code></td>
+                  <td>(account_id, product_id) WHERE product_id IS NOT NULL</td>
+                  <td>
+                    Product page drawer, product-scoped evaluations, product
+                    delete clearing.
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>idx_issue_tickets_product_fk</code></td>
+                  <td>(product_id) WHERE product_id IS NOT NULL</td>
+                  <td>
+                    The FK cascade's <code>DELETE … WHERE product_id = $1</code>,
+                    which has no <code>account_id</code>. Without it a bulk
+                    product delete scans the table per product.
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>idx_issue_tickets_assignee</code></td>
+                  <td>
+                    (account_id, assignee_user_id) WHERE assignee_user_id IS NOT
+                    NULL
+                  </td>
+                  <td>Assignee filter.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout">
+            <span class="t">Why the key columns and not a free-form key</span>
+            <p>
+              The four key columns are the source of truth and are what filters
+              and the diff use. <code>ticket_key</code> is derived from them by
+              the database, so the external id can never drift from the columns.
+            </p>
+          </div>
+
+          <h3 id="s3-2">
+            <span class="num">3.2</span
+            ><code>tbl_issue_ticket_items</code>
+          </h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Column</th>
+                  <th>Type</th>
+                  <th>Null / default</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>id</code></td>
+                  <td>bigserial</td>
+                  <td>PK</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td><code>ticket_id</code></td>
+                  <td>bigint</td>
+                  <td>NOT NULL</td>
+                  <td>
+                    FK <code>tbl_issue_tickets(id)</code> ON DELETE
+                    CASCADE.
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>variant_id</code></td>
+                  <td>bigint</td>
+                  <td>NULL</td>
+                  <td>
+                    <code>NULL</code> = parent / standalone product, or a
+                    channel-level item. FK <code>tbl_product_variants(id)</code>
+                    ON DELETE CASCADE as a backstop: a cascaded item doesn't
+                    update the ticket's count, so variant delete still
+                    re-evaluates through the evaluator (§7).
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>sub_issue_type</code></td>
+                  <td>varchar(64)</td>
+                  <td>NOT NULL</td>
+                  <td>
+                    §4.2, e.g. <code>NO_PRICE</code>,
+                    <code>UNSUPPORTED_FORMAT</code>,
+                    <code>CONNECTION_LOST</code>, a listing bucket.
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>created_at</code></td>
+                  <td>timestamptz</td>
+                  <td>NOT NULL DEFAULT NOW()</td>
+                  <td>
+                    When this (variant, sub type) was first seen, as on the
+                    ticket. Set on insert and never updated: it is kept while
+                    the item survives re-evaluations, and is later than the
+                    ticket's <code>created_at</code> when a variant joins an
+                    existing ticket, so the dialog can show "since 2 d" per
+                    variant.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <ul>
+            <li>
+              <code>uq_issue_ticket_items</code> UNIQUE (ticket_id, variant_id,
+              sub_issue_type) <strong>NULLS NOT DISTINCT</strong>, so two
+              parent-level rows with the same sub type collide (same pattern as
+              <code>uq_trv_scope</code> on <code>tbl_readiness_values</code>;
+              Postgres 15+). It
+              keeps plain <code>ON CONFLICT (cols)</code> working, with no
+              <code>COALESCE</code> expression index, and serves the item order
+              (variant_id ASC NULLS FIRST, then sub_issue_type).
+            </li>
+            <li>
+              <code>idx_issue_ticket_items_variant</code> (variant_id) WHERE
+              variant_id IS NOT NULL, for search, variant deletion clearing and
+              the FK cascade.
+            </li>
+            <li>
+              The detector emits <strong>one item per (variant, sub
+              type)</strong>. Some sources repeat a sub type with different
+              details, e.g. channel health emits <code>METRIC_BAD</code> once
+              per bad metric; those collapse into one item, and which metrics
+              are bad is evidence read live in the dialog.
+            </li>
+            <li>
+              No evidence is copied here (prices, ASINs, error text, image
+              URLs). The dialog reads it live, and the fix state (<em
+                >Not set / Set, not published / Publishing</em
+              >) is computed when read. Neither can go stale here.
+            </li>
+            <li>
+              No <code>updated_at</code>: an item is inserted or deleted, never
+              edited. Updates to a ticket's items are a set diff (delete gone,
+              insert new, keep the rest).
+            </li>
+          </ul>
+
+          <h3 id="s3-3">
+            <span class="num">3.3</span
+            ><code>tbl_issue_ticket_snoozes</code>
+          </h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Column</th>
+                  <th>Type</th>
+                  <th>Null / default</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>id</code></td>
+                  <td>bigserial</td>
+                  <td>PK</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td><code>ticket_id</code></td>
+                  <td>bigint</td>
+                  <td>NOT NULL</td>
+                  <td>
+                    FK tickets ON DELETE CASCADE. A cleared ticket takes its
+                    snoozes with it, so a re-appearance is not snoozed.
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>user_id</code></td>
+                  <td>bigint</td>
+                  <td>NOT NULL</td>
+                  <td>FK <code>tbl_users(id)</code> ON DELETE CASCADE.</td>
+                </tr>
+                <tr>
+                  <td><code>snoozed_until</code></td>
+                  <td>timestamptz</td>
+                  <td>NOT NULL</td>
+                  <td>
+                    From the Details-tab date picker
+                    (<code>DatePickerDialog</code>). The API rejects past dates.
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>created_at</code>, <code>updated_at</code></td>
+                  <td>timestamptz</td>
+                  <td>NOT NULL DEFAULT NOW()</td>
+                  <td>Re-snoozing updates the row.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <ul>
+            <li>
+              <code>uq_issue_ticket_snoozes</code> UNIQUE (ticket_id, user_id). It
+              serves the per-ticket <code>EXISTS</code> in the lane query.
+            </li>
+            <li>
+              <code>idx_issue_ticket_snoozes_until</code> (snoozed_until), for the
+              cleanup cron.
+            </li>
+            <li>
+              Reads treat <code>snoozed_until &lt;= NOW()</code> as not snoozed,
+              so an expired row that the cron hasn't deleted yet is harmless.
+              Read paths never write.
+            </li>
+            <li>
+              Snoozes are personal, so they are not audited (they would make the
+              shared activity feed noisy).
+            </li>
+          </ul>
+
+          <h3 id="s3-4">
+            <span class="num">3.4</span
+            ><code>tbl_issue_ticket_events</code>
+          </h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Column</th>
+                  <th>Type</th>
+                  <th>Null / default</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>id</code></td>
+                  <td>bigserial</td>
+                  <td>PK</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td><code>account_id</code></td>
+                  <td>bigint</td>
+                  <td>NOT NULL</td>
+                  <td>FK <code>tbl_accounts(id)</code> ON DELETE CASCADE.</td>
+                </tr>
+                <tr>
+                  <td><code>ticket_key</code></td>
+                  <td>varchar(255)</td>
+                  <td>NOT NULL</td>
+                  <td>
+                    No FK. It links every occurrence of the same key: CREATED →
+                    CLEARED → REAPPEARED → …
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <code>product_id</code>, <code>channel_id</code>,
+                    <code>amazon_marketplace_id</code>
+                  </td>
+                  <td>bigint</td>
+                  <td>
+                    <code>channel_id</code> NOT NULL; the other two NULL
+                  </td>
+                  <td>
+                    Copies of the key columns (NULL where the ticket's column is
+                    NULL), so the activity feed can be filtered by channel,
+                    market and product after the ticket row is deleted.
+                    <strong>No FKs</strong>: a cascade would wipe a deleted
+                    product's or channel's history, and the history must stay
+                    readable for the account.
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>issue_type</code></td>
+                  <td>varchar(64)</td>
+                  <td>NOT NULL</td>
+                  <td>Copy, for the issue type filter and the label.</td>
+                </tr>
+                <tr>
+                  <td><code>event_type</code></td>
+                  <td>varchar(24)</td>
+                  <td>NOT NULL, CHECK (§4.3)</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td><code>from_value</code>, <code>to_value</code></td>
+                  <td>varchar(64)</td>
+                  <td>NULL</td>
+                  <td>
+                    STATUS_CHANGED: statuses. ASSIGNEE_CHANGED: user ids (null =
+                    unassigned). ITEMS_CHANGED: affected counts, or for a
+                    sub-type change with the same count the sorted sub-type set
+                    (e.g. <code>ACCOUNT_AT_RISK</code> →
+                    <code>ACCOUNT_DEACTIVATED</code>). CREATED /
+                    REAPPEARED: <code>to_value</code> = affected count. CLEARED:
+                    <code>from_value</code> = the status it was cleared from.
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>actor_user_id</code></td>
+                  <td>bigint</td>
+                  <td>NULL</td>
+                  <td>
+                    FK <code>tbl_users(id)</code> ON DELETE SET NULL. NULL =
+                    system.
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>source</code></td>
+                  <td>varchar(32)</td>
+                  <td>NOT NULL</td>
+                  <td>§4.3. App-validated.</td>
+                </tr>
+                <tr>
+                  <td><code>occurred_at</code></td>
+                  <td>timestamptz</td>
+                  <td>NOT NULL DEFAULT NOW()</td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <ul>
+            <li>
+              <code>idx_issue_ticket_events_key</code> (account_id, ticket_key,
+              occurred_at DESC): the dialog history and the REAPPEARED check.
+            </li>
+            <li>
+              <code>idx_issue_ticket_events_feed</code> (account_id, occurred_at
+              DESC): recent activity, with the channel / market / issue type
+              filters applied on the rows.
+            </li>
+            <li>
+              <code>idx_issue_ticket_events_retention</code> (occurred_at): the
+              retention cron.
+            </li>
+            <li>Append-only. No <code>updated_at</code>.</li>
+          </ul>
+        </section>
+
+        <!-- ============================== 4 ============================== -->
+        <section class="doc-section" id="s4">
+          <h2><span class="num">4</span>Keys &amp; value sets</h2>
+
+          <h3 id="s4-1">
+            <span class="num">4.1</span>Ticket key &amp; item key
+          </h3>
+          <div class="keybox">
+            <span class="seg">productId:</span><span class="val">12</span
+            ><span class="sep">||</span><span class="seg">channelId:</span
+            ><span class="val">4</span><span class="sep">||</span
+            ><span class="seg">amazonMarketplaceId:</span
+            ><span class="val">2</span><span class="sep">||</span
+            ><span class="seg">issueType:</span
+            ><span class="val">MISSING_PRICE</span>
+          </div>
+          <div class="keybox">
+            <span class="seg">productId:</span><span class="val">12</span
+            ><span class="sep">||</span><span class="seg">channelId:</span
+            ><span class="val">4</span><span class="sep">||</span
+            ><span class="seg">amazonMarketplaceId:</span
+            ><span class="val">2</span><span class="sep">||</span
+            ><span class="seg">issueType:</span
+            ><span class="val">MAIN_IMAGE</span><span class="sep">||</span
+            ><span class="seg">variantId:</span><span class="val">55</span
+            ><span class="sep">||</span><span class="seg">subIssueType:</span
+            ><span class="val">UNSUPPORTED_FORMAT</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Rule</th>
+                  <th>Detail</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Fixed segments, fixed order</td>
+                  <td>
+                    Every ticket has all four segments. A segment that doesn't
+                    apply is <code>0</code> in the key and <code>NULL</code> in
+                    its column. Shopify → <code>amazonMarketplaceId:0</code>.
+                    Channel-level → <code>productId:0</code>. The parser maps
+                    <code>0</code> back to <code>NULL</code> before querying
+                    (<code>IS NULL</code>, not <code>= 0</code>).
+                  </td>
+                </tr>
+                <tr>
+                  <td>Account is not in the key</td>
+                  <td>
+                    Uniqueness is <code>(account_id, ticket_key)</code>. The API
+                    always resolves keys inside the caller's account.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Item key</td>
+                  <td>
+                    The ticket key + <code>||variantId:</code> +
+                    <code>||subIssueType:</code>, with a NULL
+                    <code>variant_id</code> written as <code>0</code>. Built by
+                    the API (not stored),
+                    used in the dialog, CSV rows and the destination-page
+                    highlight.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Parsing</td>
+                  <td>
+                    One shared parser in the API
+                    (<code>parseIssueTicketKey</code>) and one in the
+                    webapp. Split on <code>||</code>, then on the first
+                    <code>:</code>. Reject unknown segment names, missing
+                    segments and non-numeric ids (400).
+                  </td>
+                </tr>
+                <tr>
+                  <td>URL use</td>
+                  <td>
+                    The key is URL-safe with
+                    <code>encodeURIComponent</code> (<code>|</code> →
+                    <code>%7C</code>). Path params use the encoded form.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 id="s4-2"><span class="num">4.2</span>Issue taxonomy</h3>
+          <p>
+            Three levels, as the brief asks ("main issue type, then the actual
+            sub issue"): the <strong>group</strong> is the CC step, the
+            <strong>issue type</strong> is the CC family (stored on the ticket),
+            and the <strong>sub issue type</strong> is stored on each item. Only
+            the issue type and sub issue type are stored; the group comes from a
+            constant map.
+          </p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Group</th>
+                  <th>Rank · issue type</th>
+                  <th>Priority</th>
+                  <th>Sub issue types</th>
+                  <th>Key shape</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td rowspan="5">Restore access</td>
+                  <td>1 · <code>CONNECTION</code></td>
+                  <td><span class="pill pill-red">Red</span></td>
+                  <td>
+                    <code>NOT_CONNECTED</code>, <code>CONNECTION_LOST</code>
+                  </td>
+                  <td>product 0 · market 0</td>
+                </tr>
+                <tr>
+                  <td>2 · <code>ACCOUNT_HEALTH</code></td>
+                  <td><span class="pill pill-red">Red</span></td>
+                  <td>
+                    <code>ACCOUNT_DEACTIVATED</code>,
+                    <code>ACCOUNT_AT_RISK</code>,
+                    <code>STORE_UNINSTALLED</code>, <code>STORE_FROZEN</code>,
+                    <code>STORE_LOCKED</code>, <code>STORE_INACTIVE</code>
+                  </td>
+                  <td>product 0 · market 0</td>
+                </tr>
+                <tr>
+                  <td>3 · <code>MARKETPLACE_HEALTH</code></td>
+                  <td><span class="pill pill-red">Red</span></td>
+                  <td>
+                    <code>MARKETPLACE_DEACTIVATED</code>,
+                    <code>MARKETPLACE_AT_RISK</code>,
+                    <code>AHR_NOT_HEALTHY</code>, <code>METRIC_BAD</code>,
+                    <code>POLICY_BAD</code>
+                  </td>
+                  <td>product 0 · market set</td>
+                </tr>
+                <tr>
+                  <td>4 · <code>PERMISSION_REQUIRED</code></td>
+                  <td><span class="pill pill-yellow">Yellow</span></td>
+                  <td><code>PERMISSION_REQUIRED</code></td>
+                  <td>product 0 · market 0</td>
+                </tr>
+                <tr>
+                  <td>5 · <code>DATA_TRUST</code></td>
+                  <td><span class="pill pill-red">Red</span></td>
+                  <td>
+                    <code>INVENTORY_SYNC_STALE</code>,
+                    <code>ORDER_SYNC_STALE</code>
+                  </td>
+                  <td>
+                    product 0 · market set (Amazon) / market 0 (Shopify). Channel
+                    health reports Amazon data-trust problems per marketplace
+                    (<code>deriveMarketplaceHealth</code>), so DE and FR stay
+                    separate tickets.
+                  </td>
+                </tr>
+                <tr>
+                  <td rowspan="2">Restore sellability</td>
+                  <td>6 · <code>MISSING_PRICE</code></td>
+                  <td><span class="pill pill-red">Red</span></td>
+                  <td><code>NO_PRICE</code></td>
+                  <td>product · market (Amazon)</td>
+                </tr>
+                <tr>
+                  <td>7 · <code>OUT_OF_STOCK</code></td>
+                  <td><span class="pill pill-red">Red</span></td>
+                  <td><code>NO_STOCK</code></td>
+                  <td>product · market (Amazon)</td>
+                </tr>
+                <tr>
+                  <td rowspan="5">Fix listings</td>
+                  <td>8 · <code>AMAZON_LISTING_BLOCKER</code></td>
+                  <td><span class="pill pill-red">Red</span></td>
+                  <td>
+                    Listing bucket (<code>AmazonListingIssueBucket</code>):
+                    <code>SUPPRESSION_VISIBILITY</code>,
+                    <code>NOT_BUYABLE</code>,
+                    <code>STRUCTURE_PRODUCT_TYPE</code>,
+                    <code>COMPLIANCE</code>, <code>ATTRIBUTES_CONTENT</code>,
+                    <code>MEDIA</code>, <code>OTHER_VALIDATION</code>
+                  </td>
+                  <td>product · market</td>
+                </tr>
+                <tr>
+                  <td>9 · <code>AMAZON_NOT_SEARCHABLE</code></td>
+                  <td><span class="pill pill-red">Red</span></td>
+                  <td><code>NOT_DISCOVERABLE</code></td>
+                  <td>product · market</td>
+                </tr>
+                <tr>
+                  <td>10 · <code>SHOPIFY_NOT_ACTIVE</code></td>
+                  <td><span class="pill pill-red">Red</span></td>
+                  <td>
+                    <code>DRAFT</code>, <code>ARCHIVED</code>,
+                    <code>UNPUBLISHED</code>
+                  </td>
+                  <td>product · market 0</td>
+                </tr>
+                <tr>
+                  <td>11 · <code>MAIN_IMAGE</code></td>
+                  <td><span class="pill pill-red">Red</span></td>
+                  <td><code>MISSING</code>, <code>UNSUPPORTED_FORMAT</code></td>
+                  <td>product · market</td>
+                </tr>
+                <tr>
+                  <td>12 · <code>BUY_BOX_INELIGIBLE</code></td>
+                  <td><span class="pill pill-red">Red</span></td>
+                  <td>Ineligibility reason code</td>
+                  <td>product · market</td>
+                </tr>
+                <tr>
+                  <td rowspan="6">Improve catalog</td>
+                  <td>13 · <code>LOW_STOCK</code></td>
+                  <td><span class="pill pill-yellow">Yellow</span></td>
+                  <td><code>BELOW_THRESHOLD</code></td>
+                  <td>product · market (Amazon)</td>
+                </tr>
+                <tr>
+                  <td>14 · <code>STOCK_SYNC</code></td>
+                  <td><span class="pill pill-red">Red</span></td>
+                  <td>
+                    <code>QUANTITY_MISMATCH</code>, <code>PUSH_FAILING</code>
+                  </td>
+                  <td>product · market (Amazon)</td>
+                </tr>
+                <tr>
+                  <td>15 · <code>AMAZON_LISTING_WARNING</code></td>
+                  <td><span class="pill pill-yellow">Yellow</span></td>
+                  <td>Listing bucket (as above)</td>
+                  <td>product · market</td>
+                </tr>
+                <tr>
+                  <td>16 · <code>PRODUCT_TYPE_CHANGED</code></td>
+                  <td><span class="pill pill-blue">Blue</span></td>
+                  <td><code>REMAP_REQUIRED</code></td>
+                  <td>product · market</td>
+                </tr>
+                <tr>
+                  <td>17 · <code>BUY_BOX_LOST</code></td>
+                  <td><span class="pill pill-yellow">Yellow</span></td>
+                  <td><code>NOT_WINNING</code></td>
+                  <td>product · market</td>
+                </tr>
+                <tr>
+                  <td>18 · <code>BUY_BOX_AT_RISK</code></td>
+                  <td><span class="pill pill-yellow">Yellow</span></td>
+                  <td><code>AT_RISK</code></td>
+                  <td>product · market</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout warn">
+            <span class="t"
+              >Rank and priority come from the Command Center constants</span
+            >
+            <p>
+              The rank and priority above are illustrative and are
+              <strong>not stored</strong>. One API resolver reads
+              <code>COMMAND_CENTER_ATTENTION_FAMILY_ORDER</code> and
+              <code>COMMAND_CENTER_ATTENTION_SEVERITY</code>
+              (<code>resolveIssueTypeOrder(accountId)</code>,
+              <code>resolveIssuePriority(issueType)</code>) for the lane order,
+              card stripe, priority filter, facets, product drawer and CSV. If
+              the order becomes a per-account setting, only the resolver
+              changes; no ticket row is rewritten. Priority would become a
+              stored, evaluator-written column only if it ever varied within
+              one issue type.
+            </p>
+          </div>
+          <ul>
+            <li>
+              <strong>Stock rule (decision 2026-10-23):</strong>
+              <code>OUT_OF_STOCK</code> / <code>LOW_STOCK</code> /
+              <code>STOCK_SYNC</code> use exactly the Command Center classifier:
+              warehouse quantity for mapped non-FBA listings, otherwise the
+              remote quantity. This is the one deliberate exception to "external
+              only", so the counts on both pages match.
+            </li>
+            <li>
+              <strong>Mutually exclusive stock types:</strong> an item is in at
+              most one of out of stock → low stock → stock sync (the CC rule).
+            </li>
+            <li>
+              <strong>Blocker hides warning:</strong> a product × marketplace
+              with an <code>AMAZON_LISTING_BLOCKER</code> ticket gets no
+              <code>AMAZON_LISTING_WARNING</code> ticket.
+            </li>
+          </ul>
+
+          <h3 id="s4-3">
+            <span class="num">4.3</span>Status, priority, events, sources
+          </h3>
+          <div class="grid2">
+            <div class="box">
+              <h5>status (CHECK)</h5>
+              <p>
+                <code>TODO</code> · <code>IN_PROGRESS</code> ·
+                <code>AWAITING_CHANNEL</code>
+              </p>
+            </div>
+            <div class="box">
+              <h5>priority (derived, not a column)</h5>
+              <p>
+                <code>RED</code> · <code>YELLOW</code> · <code>BLUE</code>,
+                from the issue type (§4.2)
+              </p>
+            </div>
+            <div class="box">
+              <h5>event_type (CHECK)</h5>
+              <p>
+                <code>CREATED</code> · <code>REAPPEARED</code> ·
+                <code>ITEMS_CHANGED</code> · <code>STATUS_CHANGED</code> ·
+                <code>ASSIGNEE_CHANGED</code> · <code>CLEARED</code>
+              </p>
+            </div>
+            <div class="box">
+              <h5>source (app-validated)</h5>
+              <p>
+                <code>USER</code> · <code>PRIMARY_ACTION</code> ·
+                <code>PUBLISH_STARTED</code> · <code>FS_RESULT</code> ·
+                <code>BS_IMPORT</code> · <code>STOCK_PUBLISH</code> ·
+                <code>PRICE_PUBLISH</code> · <code>AMAZON_NOTIFICATION</code> ·
+                <code>SHOPIFY_WEBHOOK</code> · <code>BUY_BOX_REFRESH</code> ·
+                <code>CHANNEL_HEALTH</code> · <code>DATA_SYNC</code> ·
+                <code>PRODUCT_TYPE_CHANGE</code> · <code>SCOPE_REMOVED</code> ·
+                <code>SWEEP</code> · <code>SEED</code>
+              </p>
+            </div>
+          </div>
+          <p>
+            <code>PRIMARY_ACTION</code> and <code>PUBLISH_STARTED</code> are the
+            system moves caused by a user click: the actor is the user who
+            clicked (the primary action on the board, or Publish on the product
+            page) and the source names the move. A <code>PUBLISH_STARTED</code>
+            move from price auto publish has no click, so its actor is NULL.
+            Every other non-<code
+              >USER</code
+            >
+            source has <code>actor_user_id = NULL</code>.
+            <code>SEED</code> (first deploy) writes tickets and items but no
+            events, so recent activity doesn't start with every pre-existing
+            issue listed as created.
+          </p>
+
+          <h3 id="s4-4">
+            <span class="num">4.4</span>Constants (not admin settings)
+          </h3>
+          <p>
+            Nothing is read from <code>tbl_action_engine_settings</code> or the
+            admin panel. New constants live in
+            <code>api/apps/api-main/src/core/constants/constants.ts</code>
+            (<code>ISSUE_TICKET_*</code>, not tied to the page name):
+          </p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Constant</th>
+                  <th>Value</th>
+                  <th>Used by</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>ISSUE_TICKET_GROUPS</code></td>
+                  <td>family → group (the 4 CC steps)</td>
+                  <td>Filter dialog, breakdown drawer.</td>
+                </tr>
+                <tr>
+                  <td><code>ISSUE_TICKET_PRIORITY_BY_SEVERITY</code></td>
+                  <td>critical → RED, warning → YELLOW, info → BLUE</td>
+                  <td>API priority resolver (read time).</td>
+                </tr>
+                <tr>
+                  <td><code>ISSUE_TICKET_EVALUATION_DEBOUNCE_MS</code></td>
+                  <td>10 000</td>
+                  <td>Trigger service (job delay / merge window).</td>
+                </tr>
+                <tr>
+                  <td><code>ISSUE_TICKET_SWEEP_WINDOW_MINUTES</code></td>
+                  <td>240</td>
+                  <td>Nightly sweep account staggering.</td>
+                </tr>
+                <tr>
+                  <td><code>ISSUE_TICKET_EVENT_RETENTION_DAYS</code></td>
+                  <td>180</td>
+                  <td>Events cleanup cron.</td>
+                </tr>
+                <tr>
+                  <td><code>ISSUE_TICKET_RECENT_ACTIVITY_DAYS</code></td>
+                  <td>7</td>
+                  <td>Recent activity in the right-edge drawer.</td>
+                </tr>
+                <tr>
+                  <td><code>ISSUE_TICKET_LANE_PAGE_SIZE</code></td>
+                  <td>30</td>
+                  <td>Lane infinite scroll.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>
+            Stock thresholds and Buy Box thresholds stay where the Command
+            Center already reads them. They are not duplicated.
+          </p>
+        </section>
+
+        <!-- ============================== 5 ============================== -->
+        <section class="doc-section" id="s5">
+          <h2><span class="num">5</span>Ownership &amp; lifecycle</h2>
+
+          <h3 id="s5-1"><span class="num">5.1</span>Who writes which column</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Writer</th>
+                  <th>May write</th>
+                  <th>Never writes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Evaluator</td>
+                  <td>
+                    Insert / delete tickets; key columns;
+                    <code>affected_variant_count</code>,
+                    <code>last_evaluated_at</code>; items; events with a system
+                    source. One move: AWAITING_CHANNEL → IN_PROGRESS, only when
+                    the evaluation's sources include the publish kind that fixes
+                    that issue type (<code>PRICE_PUBLISH</code> /
+                    <code>STOCK_PUBLISH</code> / <code>FS_RESULT</code>), no item
+                    is still <code>PUBLISHING</code>, and the issue is still
+                    reported. Written as a conditional
+                    <code>UPDATE … WHERE status = 'AWAITING_CHANNEL'</code>.
+                  </td>
+                  <td>Assignee column, snoozes, any other status move.</td>
+                </tr>
+                <tr>
+                  <td>Publish-start hook</td>
+                  <td>
+                    One move: TODO / IN_PROGRESS → AWAITING_CHANNEL for tickets
+                    in the published scope whose issue type that publish kind
+                    fixes and whose items are not <code>NOT_FIXED</code>
+                    (<code>READY_TO_PUBLISH</code> or <code>PUBLISHING</code>, as
+                    <code>sync_in_progress</code> may already be set);
+                    <code>status_changed_at</code>; STATUS_CHANGED with source
+                    PUBLISH_STARTED, actor = the publishing user (NULL for price
+                    auto publish).
+                  </td>
+                  <td>Anything else; tickets the publish doesn't fix.</td>
+                </tr>
+                <tr>
+                  <td>Delete path (<code>clearScope</code>)</td>
+                  <td>
+                    In the product / variant delete transaction, before the
+                    delete: CLEARED events (source SCOPE_REMOVED), delete the
+                    product's tickets or the variant's items, recount
+                    <code>affected_variant_count</code>, delete a ticket left
+                    with no items.
+                  </td>
+                  <td>Status, assignee, snoozes of surviving tickets.</td>
+                </tr>
+                <tr>
+                  <td>User mutations</td>
+                  <td>
+                    <code>status</code> + <code>status_changed_at</code>;
+                    <code>assignee_user_id</code>; own snooze rows; events with
+                    source USER / PRIMARY_ACTION.
+                  </td>
+                  <td>Insert or delete tickets, items, system columns.</td>
+                </tr>
+                <tr>
+                  <td>Cron</td>
+                  <td>Delete expired snoozes; delete events past retention.</td>
+                  <td>Tickets.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 id="s5-2"><span class="num">5.2</span>Lifecycle walk-through</h3>
+          <p>
+            Product 12, Amazon channel 4, DE (2), 4 variants, 3 of them have no
+            price on Amazon.
+          </p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>What happens</th>
+                  <th><code>tickets</code></th>
+                  <th><code>items</code></th>
+                  <th><code>events</code></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>BS import evaluates the scope</td>
+                  <td>INSERT status TODO, count 3 (shown Red: MISSING_PRICE)</td>
+                  <td>variants 51, 52, 53 · NO_PRICE</td>
+                  <td>CREATED, to 3, source BS_IMPORT</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>Priya clicks <em>Open Price</em></td>
+                  <td>status IN_PROGRESS, assignee Priya</td>
+                  <td>—</td>
+                  <td>
+                    STATUS_CHANGED TODO→IN_PROGRESS, ASSIGNEE_CHANGED
+                    null→Priya, actor Priya, source PRIMARY_ACTION
+                  </td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>
+                    On the Pricing tab she sets prices and clicks the page's
+                    price <em>Publish</em>
+                  </td>
+                  <td>status AWAITING_CHANNEL</td>
+                  <td>—</td>
+                  <td>STATUS_CHANGED, actor Priya, source PUBLISH_STARTED</td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td>Price publish result: 51 and 52 fixed, 53 rejected</td>
+                  <td>count 1, status IN_PROGRESS</td>
+                  <td>51, 52 deleted</td>
+                  <td>
+                    ITEMS_CHANGED 3→1, STATUS_CHANGED
+                    AWAITING_CHANNEL→IN_PROGRESS (system, PRICE_PUBLISH)
+                  </td>
+                </tr>
+                <tr>
+                  <td>5</td>
+                  <td>Next price publish fixes 53</td>
+                  <td>DELETE (snoozes cascade)</td>
+                  <td>cascade</td>
+                  <td>CLEARED, from AWAITING_CHANNEL, source PRICE_PUBLISH</td>
+                </tr>
+                <tr>
+                  <td>6</td>
+                  <td>
+                    A week later Amazon drops the price of 51 again (sweep)
+                  </td>
+                  <td>INSERT fresh TODO, unassigned</td>
+                  <td>51 · NO_PRICE</td>
+                  <td>
+                    REAPPEARED (a past CLEARED exists for the key), source SWEEP
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>
+            On re-appearance the previous assignee is not restored (decision §5
+            #6). The dialog history shows who owned it before.
+          </p>
+        </section>
+
+        <!-- ============================== 6 ============================== -->
+        <section class="doc-section" id="s6">
+          <h2><span class="num">6</span>Read queries</h2>
+          <p class="lead">
+            The query shapes the schema is indexed for. Exact SQL is written per
+            section during the build.
+          </p>
+
+          <h3 id="s6-1"><span class="num">6.1</span>Lane page</h3>
+          <pre class="sql"><span class="kw">SELECT</span> t.*
+<span class="kw">FROM</span> tbl_issue_tickets t
+<span class="kw">WHERE</span> t.account_id = :accountId
+  <span class="kw">AND</span> t.status = :status
+  <span class="kw">AND</span> t.channel_id = <span class="kw">ANY</span>(:allowedChannelIds)            <span class="c">-- user's channel access</span>
+  <span class="c">-- optional filters: channel, issue types, assignee (incl. unassigned);</span>
+  <span class="c">-- marketplace: AND (t.amazon_marketplace_id = :m OR t.amazon_marketplace_id IS NULL)  -- keeps channel-wide tickets</span>
+  <span class="c">-- a priority filter is expanded by the API to issue_type = ANY(:issueTypesOfThatPriority)</span>
+  <span class="kw">AND NOT EXISTS</span> (                                        <span class="c">-- hide my active snoozes</span>
+        <span class="kw">SELECT</span> 1 <span class="kw">FROM</span> tbl_issue_ticket_snoozes s
+        <span class="kw">WHERE</span> s.ticket_id = t.id <span class="kw">AND</span> s.user_id = :userId <span class="kw">AND</span> s.snoozed_until &gt; NOW())
+<span class="kw">ORDER BY</span> array_position(:issueTypeOrder, t.issue_type),       <span class="c">-- API-resolved order, e.g. '{CONNECTION,ACCOUNT_HEALTH,…}'</span>
+         t.affected_variant_count <span class="kw">DESC</span>, t.product_id <span class="kw">NULLS FIRST</span>, t.channel_id, t.amazon_marketplace_id <span class="kw">NULLS FIRST</span>
+<span class="kw">LIMIT</span> :limit <span class="kw">OFFSET</span> :offset</pre>
+          <ul>
+            <li>
+              The <strong>Snoozed</strong> filter turns
+              <code>NOT EXISTS</code> into <code>EXISTS</code> (only my snoozed
+              tickets).
+            </li>
+            <li>
+              The page is then enriched with one query per concern for the
+              visible ids only: product name / image / SKU, assignee name /
+              avatar, item summary, and the fix state per item (baselines +
+              <code>sync_in_progress</code> flags).
+            </li>
+            <li>
+              A <strong>Fix state</strong> filter (e.g. "Set in Categra · not
+              published") is an extra <code>EXISTS</code> on the items joined to
+              the baseline tables. It is the only filter that touches non-ticket
+              tables, so it is applied after the indexed filters.
+            </li>
+          </ul>
+
+          <h3 id="s6-2"><span class="num">6.2</span>Counts &amp; facets</h3>
+          <pre
+            class="sql"
+          ><span class="kw">SELECT</span> status, <span class="kw">COUNT</span>(*) <span class="kw">AS</span> tickets, <span class="kw">SUM</span>(<span class="kw">GREATEST</span>(affected_variant_count, 1)) <span class="kw">AS</span> items
+<span class="kw">FROM</span> tbl_issue_tickets t
+<span class="kw">WHERE</span> <span class="c">/* same filters + snooze rule as 6.1 */</span>
+<span class="kw">GROUP BY</span> status</pre>
+          <p>
+            The filter dialog's facet counts (per issue type, channel, market,
+            assignee) use the same <code>WHERE</code> grouped by that column.
+            Priority facets and the product drawer's "3 Red · 1 Yellow" group
+            by <code>issue_type</code> and the API sums the groups per
+            priority. The "N tickets · M items" header after a Command Center
+            hand-off reads from this query.
+          </p>
+
+          <h3 id="s6-3"><span class="num">6.3</span>Search</h3>
+          <p>
+            Searches product name, variant name, product / variant SKU and ASIN.
+            It is an <code>EXISTS</code> over two branches, so a ticket matches
+            on its parent or any of its items:
+          </p>
+          <ul>
+            <li>
+              Parent: <code>tbl_products</code> (name in base language, SKU) and
+              the product's Amazon listing ASIN
+              (<code>tbl_product_channel_marketplaces</code>).
+            </li>
+            <li>
+              Items: <code>tbl_product_variants</code> (name, SKU) and the
+              variant ASIN (<code>tbl_variant_marketplaces</code>) for
+              <code>variant_id IS NOT NULL</code>.
+            </li>
+          </ul>
+          <p>
+            Matching is <code>ILIKE</code> on the joined values, like the v1 and
+            products-list search. Channel-level tickets (<code
+              >product_id IS NULL</code
+            >) never match a search.
+          </p>
+
+          <h3 id="s6-4"><span class="num">6.4</span>Ticket dialog</h3>
+          <ol>
+            <li>
+              Ticket by <code>(account_id, ticket_key)</code>. Not found → 404
+              <code>TICKET_CLEARED</code>.
+            </li>
+            <li>
+              Items ordered by
+              <code>variant_id NULLS FIRST, sub_issue_type</code> (parent row
+              first), joined
+              to the variant name / SKU / ASIN.
+            </li>
+            <li>
+              Live evidence per item from the issue type's source tables (price
+              baseline vs live price, remote vs warehouse stock, channel errors,
+              Buy Box status…).
+            </li>
+            <li>
+              History: <code>ticket_events</code> by key, newest first. It spans
+              earlier occurrences too.
+            </li>
+          </ol>
+
+          <h3 id="s6-5">
+            <span class="num">6.5</span>Breakdown &amp; recent activity
+          </h3>
+          <ul>
+            <li>
+              <strong>Category breakdown</strong> (right-edge drawer): the
+              counts query grouped by <code>issue_type</code>, rolled up to
+              groups with the constant map. It uses the board's current filters
+              (excluding the issue type filter itself, so the breakdown can
+              switch between types).
+            </li>
+            <li>
+              <strong>Recent activity</strong>: <code>ticket_events</code> for
+              the account in the last
+              <code>ISSUE_TICKET_RECENT_ACTIVITY_DAYS</code>, filtered by
+              the board's channel / market / issue type on the copied columns
+              (market again includes NULL, channel-wide rows), plus the caller's
+              channel access. Newest first, 5 in the drawer and a paginated "See
+              all". The deploy seed writes no events, so it never appears
+              here.
+            </li>
+          </ul>
+
+          <h3 id="s6-6"><span class="num">6.6</span>Evaluator scope diff</h3>
+          <pre
+            class="sql"
+          ><span class="c">-- load the current state of exactly the evaluated scope</span>
+<span class="kw">SELECT</span> t.id, t.ticket_key, t.status, i.variant_id, i.sub_issue_type
+<span class="kw">FROM</span> tbl_issue_tickets t
+<span class="kw">LEFT JOIN</span> tbl_issue_ticket_items i <span class="kw">ON</span> i.ticket_id = t.id
+<span class="kw">WHERE</span> t.account_id = :accountId <span class="kw">AND</span> t.channel_id = :channelId
+  <span class="kw">AND</span> (t.amazon_marketplace_id = <span class="kw">ANY</span>(:marketplaceIds)
+       <span class="kw">OR</span> (:includeNoMarketplace <span class="kw">AND</span> t.amazon_marketplace_id <span class="kw">IS NULL</span>))   <span class="c">-- Shopify / channel-level</span>
+  <span class="kw">AND</span> t.issue_type = <span class="kw">ANY</span>(:issueTypes)
+  <span class="kw">AND</span> (:productIds <span class="kw">IS NULL OR</span> t.product_id = <span class="kw">ANY</span>(:productIds))
+<span class="kw">FOR UPDATE OF</span> t</pre>
+          <p>
+            Runs inside the transaction that holds
+            <code>pg_advisory_xact_lock(account_id, channel_id)</code>. The
+            REAPPEARED check reads <code>ticket_events</code> for the new keys
+            only (<code>event_type = 'CLEARED'</code>, via
+            <code>idx_issue_ticket_events_key</code>).
+          </p>
+        </section>
+
+        <!-- ============================== 7 ============================== -->
+        <section class="doc-section" id="s7">
+          <h2><span class="num">7</span>Retention &amp; maintenance</h2>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Job</th>
+                  <th>Schedule</th>
+                  <th>Statement</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Expired snoozes</td>
+                  <td>Daily</td>
+                  <td>
+                    <code
+                      >DELETE FROM tbl_issue_ticket_snoozes WHERE
+                      snoozed_until &lt;= NOW()</code
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>Event retention</td>
+                  <td>Daily</td>
+                  <td>
+                    <code
+                      >DELETE … ticket_events WHERE occurred_at &lt; NOW() -
+                      ISSUE_TICKET_EVENT_RETENTION_DAYS</code
+                    >, in batches of 10 000.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Nightly sweep</td>
+                  <td>Nightly, staggered per account</td>
+                  <td>
+                    Full evaluation of every channel. It writes tickets, not
+                    maintenance, but it is the safety net for drift.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>
+            Clearing on scope removal uses source <code>SCOPE_REMOVED</code>.
+            <strong>Product and variant deletes</strong> call
+            <code>clearScope</code> synchronously, inside the delete
+            transaction and before the delete, so a CLEARED event is written and
+            ticket counts stay right; a queued evaluation would run after the
+            commit, when the cascade had already removed the rows.
+            <strong>Unlisting and marketplace deactivation</strong> delete no
+            rows, so they go through the normal queued evaluation. The
+            <code>product_id</code> / <code>variant_id</code> FK cascades are
+            only a backstop for a delete path that doesn't call
+            <code>clearScope</code>: they remove rows silently (no CLEARED event, and a cascaded item leaves
+            the ticket's <code>affected_variant_count</code> stale, possibly with
+            zero items). The nightly sweep corrects what a cascade leaves
+            behind. Channel deletion is the FK cascade on
+            <code>channel_id</code>; its events stay, since events have no
+            FKs.
+          </p>
+        </section>
+
+        <!-- ============================== 8 ============================== -->
+        <section class="doc-section" id="s8">
+          <h2><span class="num">8</span>Migration &amp; entities</h2>
+          <h3 id="s8-1"><span class="num">8.1</span>One migration</h3>
+          <p>
+            Created with
+            <code
+              >cd db-migrations &amp;&amp; npm run migrate:create -- --name
+              create-issue-ticket-tables</code
+            >
+            (the CLI generates the timestamp).
+          </p>
+          <ul>
+            <li>
+              <strong>up</strong>: create the 4 tables in FK order (tickets →
+              items, snoozes → events). <code>ticket_key</code> and the CHECKs
+              are added with raw SQL (<code
+                >ALTER TABLE … ADD COLUMN ticket_key varchar(255) GENERATED
+                ALWAYS AS (…) STORED</code
+              >), as <code>queryInterface.createTable</code> can't express them.
+              Then the indexes from §3; the items unique constraint and the
+              <code>NULLS FIRST</code> lane index are raw SQL too
+              (<code>addIndex</code> can't express <code>NULLS NOT
+              DISTINCT</code>).
+            </li>
+            <li>
+              <strong>down</strong>: drop the 4 tables in reverse order. There
+              is no data to restore: tickets are re-seeded by the first sweep.
+            </li>
+            <li>No data migration from the v1 tables (decision §5 #4).</li>
+          </ul>
+          <h3 id="s8-2"><span class="num">8.2</span>Entities</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>File (<code>api/apps/api-main/src/entities/</code>)</th>
+                  <th>Class</th>
+                  <th>Associations</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>issueTicket.entity.ts</code></td>
+                  <td><code>IssueTicket</code></td>
+                  <td>
+                    BelongsTo Account, Channel, Product, AmazonMarketplace (all
+                    <code>onDelete: 'CASCADE'</code>), User (assignee,
+                    <code>onDelete: 'SET NULL'</code>); HasMany
+                    items, snoozes (<code>onDelete: 'CASCADE'</code>).
+                    <code>productId</code> / <code>amazonMarketplaceId</code>
+                    are <code>allowNull: true</code>. <code>ticketKey</code> is read-only
+                    (<code
+                      >@Column({ type: DataType.STRING, allowNull: false
+                      })</code
+                    >, never set on create).
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>issueTicketItem.entity.ts</code></td>
+                  <td><code>IssueTicketItem</code></td>
+                  <td>
+                    BelongsTo ticket (CASCADE), ProductVariant (CASCADE,
+                    <code>variantId</code> <code>allowNull: true</code>).
+                    <code>timestamps: true, createdAt: 'created_at', updatedAt:
+                    false</code>.
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>issueTicketSnooze.entity.ts</code></td>
+                  <td><code>IssueTicketSnooze</code></td>
+                  <td>BelongsTo ticket, User (both CASCADE).</td>
+                </tr>
+                <tr>
+                  <td><code>issueTicketEvent.entity.ts</code></td>
+                  <td><code>IssueTicketEvent</code></td>
+                  <td>
+                    BelongsTo Account (CASCADE), User (actor, SET NULL). No
+                    association on the copied key columns. <code>timestamps: false</code>.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>
+            All four are exported from the entities index and registered where
+            the other entities are, following the
+            <code>/new-entity</code> command.
+          </p>
+        </section>
+
+        <!-- ============================== 9 ============================== -->
+        <section class="doc-section" id="s9">
+          <h2><span class="num">9</span>Scale notes</h2>
+          <ul>
+            <li>
+              <strong>Volume</strong>: one ticket per product × channel ×
+              marketplace × type, not per variant. A 50 000-product account
+              across 2 channels and 5 markets with 10 % of listings affected is
+              roughly 50 k tickets and a few hundred k items. Plain B-tree
+              indexes are enough; no partitioning.
+            </li>
+            <li>
+              <strong>Read cost</strong> is an indexed range scan of the lane
+              (<code>(account_id, status)</code>), a top-N sort for the
+              API-resolved issue-type order, and enrichment of one page (≤ 30
+              ids). The sort reads the same rows the counts query already reads.
+              There is no snapshot build and no cache.
+            </li>
+            <li>
+              <strong>Write cost</strong> is set-based per scope: one detector
+              pass, one diff, bulk insert / delete. Debounce + merged product
+              ids keep a 5 000-product import to a handful of evaluations.
+            </li>
+            <li>
+              <strong>Concurrency</strong>:
+              <code>pg_advisory_xact_lock(account_id, channel_id)</code>
+              serialises evaluations of one channel. User mutations lock only
+              their row (<code>UPDATE … WHERE id</code>). The evaluator never
+              writes the assignee or snoozes; its one status write (Awaiting
+              channel → In progress) and the publish-start hook's move are
+              conditional on the current status (<code>WHERE status =
+              …</code>), so neither overwrites a move a user made a moment
+              earlier. Trigger debounce uses a time-bucketed job id plus a Redis
+              set of product ids, so no trigger is lost while a job runs (plan
+              §4.4).
+            </li>
+            <li>
+              <strong>Events growth</strong> is bounded by the retention cron.
+              ITEMS_CHANGED is logged only when the affected count or the
+              sub-type set changes, not on every re-evaluation.
+            </li>
+          </ul>
+        </section>
+
+        <!-- ============================== 10 ============================== -->
+        <section class="doc-section" id="s10">
+          <h2><span class="num">10</span>Appendix: v1 tables</h2>
+          <p>
+            Action Center v1 stays live while V2 is built. Its tables are
+            neither read nor written by any V2 code, and none of them is dropped
+            in this project.
+          </p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>v1 table</th>
+                  <th>V2 counterpart</th>
+                  <th>In this project</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>tbl_action_center_issue_workflows</code></td>
+                  <td>
+                    <code>tickets.status</code> + <code>ticket_snoozes</code>
+                  </td>
+                  <td>Untouched, still used by v1.</td>
+                </tr>
+                <tr>
+                  <td><code>tbl_action_center_issue_assignments</code></td>
+                  <td><code>tickets.assignee_user_id</code></td>
+                  <td>Untouched.</td>
+                </tr>
+                <tr>
+                  <td><code>tbl_action_center_lifecycle_events</code></td>
+                  <td><code>ticket_events</code></td>
+                  <td>Untouched.</td>
+                </tr>
+                <tr>
+                  <td><code>tbl_action_engine_settings</code></td>
+                  <td>Constants (§4.4)</td>
+                  <td>Untouched; V2 never reads it.</td>
+                </tr>
+                <tr>
+                  <td>
+                    <code>tbl_amazon_event_action_center_materializations</code>
+                  </td>
+                  <td>
+                    Buy Box types read <code>tbl_product_buy_box_statuses</code>
+                  </td>
+                  <td>Untouched.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout">
+            <span class="t">Later, not now</span>
+            <p>
+              Dropping the v1 tables belongs to the v1 removal, once V2 replaces
+              it. That project removes the v1 module, page and tables together,
+              so nothing is half-removed in between.
+            </p>
+          </div>
+        </section>
+      </main>
+    </div>
+    <button id="to-top" aria-label="Back to top" onclick="scrollTo({ top: 0 })">
+      ↑
+    </button>
+    <script>
+      (function () {
+        var links = {};
+        document.querySelectorAll('#toc a').forEach(function (a) {
+          links[a.getAttribute('href').slice(1)] = a;
+        });
+        var heads = Array.prototype.filter.call(
+          document.querySelectorAll('main section, main h3'),
+          function (h) {
+            return links[h.id];
+          },
+        );
+        var bar = document.getElementById('progress'),
+          top = document.getElementById('to-top'),
+          current = null;
+        function onScroll() {
+          var h = document.documentElement.scrollHeight - innerHeight;
+          bar.style.width = (h > 0 ? (scrollY / h) * 100 : 0) + '%';
+          top.classList.toggle('show', scrollY > 600);
+          var pick = null;
+          for (var i = 0; i < heads.length; i++) {
+            if (heads[i].getBoundingClientRect().top < 140) pick = heads[i];
+          }
+          var id = pick ? pick.id : null;
+          if (id === current) return;
+          current = id;
+          document.querySelectorAll('#toc a.active').forEach(function (a) {
+            a.classList.remove('active');
+          });
+          if (id) links[id].classList.add('active');
+        }
+        addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+        top.addEventListener('click', function () {
+          scrollTo({ top: 0 });
+        });
+      })();
+    </script>
+  </body>
+</html>

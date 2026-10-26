@@ -1,15 +1,20 @@
 ## webapp & api & db-migrations repo only
 
-Task 1: Make sure the expected behaviour is there, if not then do the required changes + remove the unused code
+Task 1: 
 
 ### Description
 
-- In case of attribute group labels translation
-  - For non-amazon groups, It should translate into 4 interface languages + account enabled languages from AI
-  - For amazon groups: It should write down the translations while fetching schema into the 4 interface languages so lables into those 4 interface languages only, amazon groups need not to be translated into account languages
-
-- Make sure into details tab, it should present the group label as into current interface language (fallback chain: account base language -> tbl_attribute_groups - label -> tbl_attribute_groups - name)
-  - for all kinds of attribute groups (master, amazon, shopify)
+- issue_type_rank and priority are needed or not, what those column indicates and how they are useful? because priority can be derived from app constants, consider a
+  case where in future the sorting of tickets by issue type becomes dynamic
+- isn't there sub issue type within the tickets table, ex. what if an issue type is account health related (mimic from command center) but for C1 it is account health
+at risk and for C2 it is account de-activated -> and explain how a practical sub issue will vary between variants of a same tickets and is there any case happen that
+a ticket which has no variants can have multiple sub issues. Also consider in mind that whenever we are redirected from command center for channel health related
+button then all kinds of related tickets should be filtered even if the different channsl under the hood holds slightly different issues
+- why do we need column status_changed_at (anyway it will be recorded within the events tracking table), same goes for assigned_at
+- I think we don't need assigned_by_user_id as the UI don't care about who assigned the ticket
+- Why do we need detected_at at this stage
+- why do we need issue_type into events table, isn't it already present within the tickets
+- should we make the feature to publish directly from action center ticket, because we need to handle the sockets, block the button with conditions similar to product list has, will it be better the button will redirect to the product page with q=channels, where we will provide the context bar and user will publish on his own
 
 ### Context
 
