@@ -35,7 +35,7 @@ Returns `ChannelSellableCounts[]`, each row shaped as:
 ```ts
 {
 	channelId, sellableCount, approvedCount, inSyncCount, outOfSyncCount,
-	syncedWithInternalErrorsCount, syncedWithExternalErrorsCount, notSyncedCount, issueCount
+	importFailed, importedWithIssues, notSyncedCount, issueCount
 }
 ```
 
@@ -57,10 +57,10 @@ Amazon and non-Amazon channels track "is this item actually live/approved" diffe
 - **Amazon**: a product/variant can be pushed to *multiple marketplaces* (via
   `tbl_product_channel_marketplaces` / `tbl_variant_marketplaces`), each with its own `sync_status`.
   So "in sync" for Amazon means **all** of an item's marketplaces report `SUCCESS`
-  (`bool_and(pcm.sync_status = 'SUCCESS')`), and "out of sync" means **any** marketplace reports
-  `OUT_OF_SYNC` (`bool_or(...)`). Internal-error detection also happens per marketplace, matched via
-  `tbl_channel_product_errors` filtered on `type = CATEGRA` (Categra's own validation errors, as
-  opposed to errors Amazon itself returned).
+  (`bool_and(COALESCE(pcm.sync_status = 'SUCCESS', FALSE))`, so a NULL status is not in sync), and "out of sync" means **any** marketplace reports
+  `OUT_OF_SYNC` (`bool_or(...)`). Channel-error detection also happens per marketplace, matched via
+  `tbl_channel_product_errors` filtered on `type != CATEGRA` (errors Amazon itself returned, as
+  opposed to Categra's own validation errors).
 - **Non-Amazon (Shopify)**: there's one `sync_status` directly on `tbl_product_channels` /
   `tbl_product_variant_channels`, so counting is a plain `GROUP BY ... sync_status`.
 
@@ -78,32 +78,38 @@ This is why the query has parallel CTE pairs like `standalone_amazon_per_product
 
 3. **`standalone_amazon_per_product`** — one row per (channel, standalone product) on Amazon channels.
    Aggregates across all of that product's marketplaces to derive `in_sync`, `out_of_sync`, and
-   `has_internal_error` flags. Excludes rows still `is_loading` (`HAVING bool_or(pcm.is_loading) = FALSE`)
-   — i.e., a sync currently in progress isn't counted yet either way.
+   `has_external_error` flags. Excludes **syncing** products: any active PCM with `is_loading` or
+   `sync_in_progress` set (`HAVING NOT bool_or(...)`, i.e. any marketplace syncing → whole product syncing).
 4. **`standalone_non_amazon_success`** — per (channel, sync_status) count of standalone products on
    non-Amazon channels, restricted to `sync_status IN CHANNEL_PUBLISHED_STATUSES` (`SUCCESS` or
    `OUT_OF_SYNC` — see `CONSTANTS.CHANNEL_PUBLISHED_STATUSES`, `constants.ts:176-180`; `ERROR` is
-   explicitly commented out as "not being used currently") and `is_loading = FALSE`.
+   explicitly commented out as "not being used currently") and PC not syncing (`is_loading` and
+   `sync_in_progress` both false).
 5. **`variant_amazon_per_variant`** — the variant-level mirror of #3, joined through
-   `tbl_variant_marketplaces`.
-6. **`variant_non_amazon_success`** — the variant-level mirror of #4.
+   `tbl_variant_marketplaces`. A variant is syncing if any of its PCM **or** VM rows has either flag set.
+6. **`variant_non_amazon_success`** — the variant-level mirror of #4; syncing if PC **or** VC has either flag set.
+
+**Syncing rule:** Amazon reads only PCM/VM flags; other channels read only PC/VC flags. Syncing entities
+stay in `sellableCount`, drop out of every Sync bucket (In Sync / Out of Sync) and every Listing count
+(Approved / Imported with Issues) and `issueCount`, so they land in `notSyncedCount`. Joins require
+`is_deleted = FALSE` on P/V/PC/VC/PCM/VM and `is_active`/`status = TRUE` on PC/VC/PCM/VM/ACM.
 
 7. **`issue_count_agg`** — counts open entries in `tbl_channel_product_errors` where
    `type != CATEGRA` (i.e., **external** errors surfaced from the channel itself, not Categra's own
    validation) that belong to a product/variant *currently known to be published* (matched via
    `EXISTS` against the `standalone_amazon_per_product` / `variant_amazon_per_variant` CTEs). This
-   feeds `issueCount` — "problems on already-live listings," distinct from `syncedWithExternalErrorsCount`.
+   feeds `issueCount` — "problems on already-live listings," distinct from `importedWithIssues`.
 
-8. **`internal_error_agg`** — counts **Categra-side** errors (`type = CATEGRA`) that are channel-level
-   (`product_id IS NULL`), i.e. not tied to a specific product. Counted distinctly by `error_code` for
+8. **`import_failed_agg`** — counts **Categra-side** errors (`type = CATEGRA`) that are channel-level
+   (`product_id IS NULL`) from imports (`action_type = IMPORT`). Counted distinctly by `error_code` (Shopify external id; task-level rows with `error_code = CATEGRA` excluded) for
    Shopify, by `sku` for other channel types (reflecting how each channel type reports these errors).
-   Feeds `syncedWithInternalErrorsCount`.
+   Feeds `importFailed`.
 
-9. **`external_error_agg`** — the more complex one. Counts items that are synced (in_sync or
-   out_of_sync) **but do not have** a Categra-internal error, and **do** have some other
-   (`type != CATEGRA`) error recorded against them — i.e., "we pushed it, our side is fine, but the
+9. **`imported_with_issues_agg`** — the more complex one. Counts items that are synced (in_sync or
+   out_of_sync) and **do** have some
+   (`type != CATEGRA`) channel error recorded against them (Amazon: `has_external_error`, per marketplace) — i.e., "it's live, but the
    channel rejected/flagged it." Built as a `UNION ALL` of all four combinations (standalone/variant ×
-   Amazon/non-Amazon). Feeds `syncedWithExternalErrorsCount`.
+   Amazon/non-Amazon). Feeds `importedWithIssues`.
 
 10. **`in_sync_agg`** / **`out_of_sync_agg`** — union together the `in_sync`/`out_of_sync` counts (or
     matching `sync_status`) across all four standalone/variant × Amazon/non-Amazon combinations, then
@@ -114,12 +120,12 @@ This is why the query has parallel CTE pairs like `standalone_amazon_per_product
 ```
 channelId          = c.id
 sellableCount       = standalone_products.sellable_count + variant_products.sellable_count
-approvedCount       = inSyncCount + outOfSyncCount - syncedWithExternalErrorsCount
+approvedCount       = inSyncCount + outOfSyncCount - importedWithIssues
 inSyncCount         = in_sync_agg.count
 outOfSyncCount      = out_of_sync_agg.count
-syncedWithInternalErrorsCount = internal_error_agg.count
-syncedWithExternalErrorsCount = external_error_agg.count
-notSyncedCount      = c.uncreated_sellable_count + sellableCount - inSyncCount - outOfSyncCount - syncedWithInternalErrorsCount
+importFailed = import_failed_agg.count
+importedWithIssues = imported_with_issues_agg.count
+notSyncedCount      = c.uncreated_sellable_count + sellableCount - inSyncCount - outOfSyncCount - importFailed
 issueCount          = issue_count_agg.count
 ```
 
@@ -128,7 +134,11 @@ Notes:
   external error — i.e., "successfully live on the channel, channel-side, right now."
 - `notSyncedCount` starts from `c.uncreated_sellable_count` (a column on `tbl_channels` tracking items
   that were never even attempted) and adds the sellable items that exist but haven't landed in either
-  sync bucket nor been marked with an internal error — the "still pending" pool.
+  sync bucket nor been marked with an internal error — the "still pending" pool, which includes every
+  entity whose BS loader (`is_loading`) or FS flag (`sync_in_progress`) is currently set.
+- Counts are pushed over the channel socket by BS per batch and by FS at publish start, per Amazon FS
+  job complete/fail, per Shopify FS batch/finish/fail, and on orphaned-task cleanup
+  (`ChannelService.refreshChannelSellableCounts`).
 - All joins from the main `SELECT` are `LEFT JOIN`s against `tbl_channels`, so **every channel on the
   account appears in the result even if it has zero activity** (all counts `COALESCE`'d to 0).
 
@@ -145,8 +155,7 @@ Notes:
 
 The raw result is shaped for the frontend via `populateChannelSellableCounts()`
 (`api/apps/api-main/src/common/lib/utils.ts:982-995`), which null-coalesces every field to `0` and
-renames a couple of columns (`syncedWithInternalErrorsCount` → `importFailed`,
-`syncedWithExternalErrorsCount` → `importedWithIssues`).
+passes the columns through unchanged (`importFailed`, `importedWithIssues`).
 
 ## Related sibling: `getMasterSellableCount`
 
