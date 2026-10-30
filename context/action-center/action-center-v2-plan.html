@@ -1545,9 +1545,13 @@
                   <td>Marketplace</td>
                   <td>All · one marketplace</td>
                   <td>
-                    Enabled for an Amazon channel. A marketplace also shows that
-                    channel's channel-wide tickets (marketplace NULL: connection,
-                    account health, permission), since they block every market.
+                    Enabled for an Amazon channel. A marketplace also shows the
+                    marketplace-less tickets (marketplace NULL) of the Amazon
+                    channels that own it: the channel-wide ones (connection,
+                    account health, permission) and the product-level main image
+                    and product type changed tickets, whose key is product ×
+                    channel only. Other Amazon channels' tickets and Shopify
+                    tickets do not show.
                   </td>
                 </tr>
                 <tr>
@@ -1906,6 +1910,48 @@
               inline stock/price editing, the remediation banner with skip/next,
               supporting/technical sections, the three counters
               (actions/signals/sync).
+            </li>
+          </ul>
+
+          <h4>Snoozed tickets in the product drawer</h4>
+          <p>
+            The drawer hides the caller's snoozed tickets by default, so a
+            snoozed ticket neither lists nor counts in the trigger badge. The
+            drawer says how many it is hiding and lets the user reveal them.
+            "Scope" is this product across the channels and markets the caller
+            can see.
+          </p>
+          <ul>
+            <li>
+              <strong>Footer strip</strong>: when the scope has snoozed
+              tickets, a quiet one-line strip sits under the last group:
+              <em>"2 snoozed tickets hidden"</em> with a text button
+              <strong>Show</strong>. With none, nothing renders. When there
+              are no open tickets and only snoozed ones, the empty state reads
+              <em>"No open tickets · 2 snoozed"</em> with the same Show button.
+            </li>
+            <li>
+              <strong>After Show</strong>: the snoozed tickets join the list in
+              board order, each with a muted "Snoozed until 14 Nov" chip and the
+              ⋮ item <em>Unsnooze</em> in place of <em>Snooze for me</em>. The
+              strip turns into <strong>Hide snoozed</strong>. The choice lasts
+              for this drawer session only and resets to hidden on close.
+            </li>
+            <li>
+              <strong>Trigger badge</strong>: unchanged by Show. It counts
+              unsnoozed tickets only (<code>priorityCounts</code> is computed
+              in SQL over all of them, not over the first 200 cards).
+            </li>
+            <li>
+              <strong>Unsnoozing inside the drawer</strong> updates the card in
+              place, drops the strip count by one and raises the badge.
+            </li>
+            <li>
+              <strong>API</strong>: <code>POST products/:productId/tickets</code>
+              takes <code>{ includeSnoozed?: boolean }</code> and returns
+              <code>{ cards, hasMore, priorityCounts, snoozedCount }</code>.
+              <code>snoozedCount</code> is the caller's own snoozed tickets of
+              the product; <code>hasMore</code> is true past the 200-card cap.
             </li>
           </ul>
 
@@ -2683,9 +2729,11 @@
                   <td>V2 board</td>
                   <td>
                     Channel / market filter. <code>marketplaceId</code> matches
-                    <code>amazon_marketplace_id = :m OR IS NULL</code> within the
-                    channel, so channel-wide tickets stay visible when the
-                    Command Center hands off with a market selected.
+                    <code>amazon_marketplace_id = :m</code>, or a NULL marketplace
+                    on an Amazon channel that owns <code>:m</code>, so
+                    channel-wide, main image and product type changed tickets stay
+                    visible when the Command Center hands off with a market
+                    selected.
                   </td>
                 </tr>
                 <tr>
