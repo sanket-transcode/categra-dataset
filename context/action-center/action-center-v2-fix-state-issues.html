@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Action Center V2 Fix State Issues</title>
+<style>
+:root {
+	--bg: #0b0d12; --surface: #12151c; --surface-2: #181c25; --surface-3: #1f2430;
+	--text: #e8eaf0; --muted: #a3a9b6; --faint: #6f7685;
+	--border: #242a36; --border-strong: #323949;
+	--accent: #8b8cff; --accent-2: #5eead4; --accent-soft: #23244a; --accent-text: #c9c8ff;
+	--code-bg: #1d212b; --code-text: #f5a8d4;
+	--red: #ff8a80; --red-bg: #3a1618;
+	--yellow: #f7c56b; --yellow-bg: #33270c;
+	--blue: #8db6ff; --blue-bg: #14264a;
+	--green: #77dba3; --green-bg: #0f2f1e;
+	--slate: #b3bccb; --slate-bg: #252a34;
+	--shadow: 0 1px 2px rgba(0,0,0,.35), 0 8px 28px rgba(0,0,0,.28);
+	color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.65 Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code { background: var(--code-bg); color: var(--code-text); padding: 1px 6px; border-radius: 5px; font: 13px/1.5 "JetBrains Mono", Consolas, monospace; overflow-wrap: anywhere; }
+pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; overflow-x: auto; font: 13px/1.6 "JetBrains Mono", Consolas, monospace; color: var(--text); }
+pre code { background: none; padding: 0; color: inherit; }
+
+.layout { display: grid; grid-template-columns: 280px minmax(0, 1fr); min-height: 100vh; }
+aside { position: sticky; top: 0; height: 100vh; overflow-y: auto; border-right: 1px solid var(--border); background: var(--surface); padding: 22px 14px 40px; }
+.brand { font-weight: 700; font-size: 14px; padding: 0 8px 4px; }
+.brand-sub { color: var(--faint); font-size: 12px; padding: 0 8px 16px; }
+nav ul { list-style: none; margin: 0; padding: 0; }
+nav a { display: flex; gap: 8px; padding: 5px 8px; border-radius: 7px; color: var(--muted); font-size: 13px; line-height: 1.4; }
+nav a:hover { background: var(--surface-2); color: var(--text); text-decoration: none; }
+nav .num { color: var(--faint); min-width: 22px; font-variant-numeric: tabular-nums; }
+nav .grp { color: var(--faint); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; padding: 14px 8px 4px; }
+
+main { padding: 40px clamp(16px, 4vw, 56px) 120px; max-width: 1100px; width: 100%; }
+h1 { font-size: 28px; line-height: 1.25; margin: 0 0 8px; }
+h2 { font-size: 21px; margin: 0 0 4px; line-height: 1.3; }
+h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .07em; color: var(--faint); margin: 20px 0 6px; }
+.lede { color: var(--muted); margin: 0 0 28px; max-width: 820px; }
+.section-title { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--accent-text); margin: 42px 0 14px; }
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px 26px; margin: 0 0 22px; box-shadow: var(--shadow); }
+.meta { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 4px; }
+.pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 9px; border-radius: 999px; background: var(--slate-bg); color: var(--slate); }
+.pill.high { background: var(--red-bg); color: var(--red); }
+.pill.med { background: var(--yellow-bg); color: var(--yellow); }
+.pill.low { background: var(--blue-bg); color: var(--blue); }
+.pill.effort { background: var(--green-bg); color: var(--green); }
+.example { background: var(--surface-2); border-left: 3px solid var(--yellow); border-radius: 8px; padding: 12px 16px; }
+.solution { background: var(--surface-2); border-left: 3px solid var(--green); border-radius: 8px; padding: 12px 16px; }
+.example p, .solution p { margin: 0 0 8px; }
+.example p:last-child, .solution p:last-child { margin-bottom: 0; }
+ul.tight, ol.tight { margin: 6px 0; padding-left: 20px; }
+ul.tight li, ol.tight li { margin: 3px 0; }
+.where { color: var(--muted); font-size: 13px; }
+.note { color: var(--muted); font-size: 13px; margin-top: 10px; }
+
+.table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; margin: 10px 0 18px; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { background: var(--surface-2); color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }
+tr:last-child td { border-bottom: 0; }
+td.n { color: var(--faint); font-variant-numeric: tabular-nums; width: 36px; }
+
+.badge { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 6px; border: 1px solid var(--border-strong); white-space: nowrap; }
+.badge.gray { color: var(--slate); background: var(--slate-bg); }
+.badge.amber { color: var(--yellow); background: var(--yellow-bg); }
+.badge.blue { color: var(--blue); background: var(--blue-bg); }
+.badge.green { color: var(--green); background: var(--green-bg); }
+
+@media (max-width: 900px) {
+	.layout { grid-template-columns: 1fr; }
+	aside { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--border); }
+	.card { padding: 18px 16px; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside>
+	<div class="brand">Action Center V2</div>
+	<div class="brand-sub">Fix state — issues &amp; solutions · 2026-11-02</div>
+	<nav>
+		<ul>
+			<li><a href="#summary"><span class="num">·</span>Summary</a></li>
+			<li><a href="#background"><span class="num">·</span>How fix state works today</a></li>
+			<li class="grp">Ticket-level roll-up</li>
+			<li><a href="#i1"><span class="num">1</span>Roll-up is too optimistic</a></li>
+			<li><a href="#i2"><span class="num">2</span>Publish hook moves the whole ticket</a></li>
+			<li><a href="#i3"><span class="num">3</span>Publishing hidden when mixed</a></li>
+			<li class="grp">Rules</li>
+			<li><a href="#i4"><span class="num">4</span>Parent flags apply to variants</a></li>
+			<li><a href="#i5"><span class="num">5</span>Listing types count unrelated edits</a></li>
+			<li><a href="#i6"><span class="num">6</span>Buy box: any price edit = fixed</a></li>
+			<li><a href="#i7"><span class="num">7</span>STOCK_SYNC always amber</a></li>
+			<li><a href="#i8"><span class="num">8</span>Stock checks only look at Categra</a></li>
+			<li><a href="#i9"><span class="num">9</span>Main image checks extension only</a></li>
+			<li><a href="#i10"><span class="num">10</span>Badge falls back after publish</a></li>
+			<li class="grp">Labels</li>
+			<li><a href="#i11"><span class="num">11</span>"Not set in Categra" wording</a></li>
+			<li><a href="#i12"><span class="num">12</span>Missing state defaults to "Not set"</a></li>
+			<li class="grp">Performance &amp; workflow</li>
+			<li><a href="#i13"><span class="num">13</span>Cost on every board read</a></li>
+			<li><a href="#i14"><span class="num">14</span>No bulk path for ready tickets</a></li>
+			<li><a href="#order"><span class="num">·</span>Suggested order</a></li>
+		</ul>
+	</nav>
+</aside>
+
+<main>
+<h1>Action Center V2 — fix state: issues and solutions</h1>
+<p class="lede">Each issue below has the problem, where it lives in the code, a realistic example and the recommended solution. It's based on a static read of <code>api/</code> and <code>webapp/</code> as of 2026-11-02. Nothing was run against a database.</p>
+
+<div class="section-title" id="summary">Summary</div>
+<div class="table-wrap"><table>
+<tr><th>#</th><th>Issue</th><th>Severity</th><th>Fix size</th></tr>
+<tr><td class="n">1</td><td>Ticket roll-up picks "ready" if any one item is ready</td><td><span class="pill high">High</span></td><td>Small (API rule + webapp counts)</td></tr>
+<tr><td class="n">2</td><td>Publish hook moves the whole ticket to Awaiting channel on one ready item</td><td><span class="pill high">High</span></td><td>Small</td></tr>
+<tr><td class="n">3</td><td>An in-flight publish is invisible when other items are not set</td><td><span class="pill low">Low</span></td><td>Small (webapp only)</td></tr>
+<tr><td class="n">4</td><td>Parent → variant flag derivation is correct; one incremental-publish edge to check</td><td><span class="pill low">Low</span></td><td>Check only</td></tr>
+<tr><td class="n">5</td><td>Listing types turn amber after unrelated edits</td><td><span class="pill med">Medium</span></td><td>Medium</td></tr>
+<tr><td class="n">6</td><td>Buy box types treat any price edit as the fix</td><td><span class="pill med">Medium</span></td><td>Medium</td></tr>
+<tr><td class="n">7</td><td>STOCK_SYNC is always "Set · not published"</td><td><span class="pill low">Low</span></td><td>Small</td></tr>
+<tr><td class="n">8</td><td>Stock "ready" never checks what was pushed</td><td><span class="pill med">Medium</span></td><td>Medium</td></tr>
+<tr><td class="n">9</td><td>Main image "ready" only checks the file extension</td><td><span class="pill low">Low</span></td><td>Small–Medium</td></tr>
+<tr><td class="n">10</td><td>After a successful publish the badge drops back to "Not set in Categra"</td><td><span class="pill high">High</span></td><td>Medium</td></tr>
+<tr><td class="n">11</td><td>"Not set in Categra" is the wrong message for most types</td><td><span class="pill med">Medium</span></td><td>Small (translations)</td></tr>
+<tr><td class="n">12</td><td>An item with no computed state shows "Not set"</td><td><span class="pill low">Low</span></td><td>Tiny</td></tr>
+<tr><td class="n">13</td><td>Fix state is recomputed per item on every read</td><td><span class="pill med">Medium</span></td><td>Medium</td></tr>
+<tr><td class="n">14</td><td>No filter or bulk publish for ready tickets</td><td><span class="pill low">Low</span></td><td>Medium</td></tr>
+</table></div>
+
+<div class="section-title" id="background">How fix state works today</div>
+<div class="card">
+<p style="margin-top:0">Fix state is <strong>computed when it's read, never stored</strong>. One SQL CASE in <code>buildItemFixCte</code> (<code>issue-tickets.sql.ts:314</code>) gives each ticket item (a variant or the parent) one of four states. <code>summariseFixStates</code> (<code>issue-ticket-primary-actions.ts:15</code>) then rolls the items up into one state for the ticket.</p>
+<div class="table-wrap"><table>
+<tr><th>State</th><th>Badge</th><th>Item rule (first match wins)</th></tr>
+<tr><td><code>NOT_APPLICABLE</code></td><td>no badge</td><td>Channel-level types, PRODUCT_TYPE_CHANGED, FBA stock</td></tr>
+<tr><td><code>PUBLISHING</code></td><td><span class="badge blue">Publishing…</span></td><td><code>sync_in_progress</code> on PCM/VM (Amazon) or PC/PVC (Shopify) in scope</td></tr>
+<tr><td><code>READY_TO_PUBLISH</code></td><td><span class="badge amber">Set · not published</span></td><td>Price: price baseline + live price &gt; 0 · Stock: mapped non-FC warehouse has stock (&gt; threshold for LOW) · STOCK_SYNC: always · Main image: media baseline + allowed-extension main image · Listing / Shopify not active: OUT_OF_SYNC or any price/media baseline</td></tr>
+<tr><td><code>NOT_FIXED</code></td><td><span class="badge gray">Not set in Categra</span></td><td>Everything else</td></tr>
+</table></div>
+<p>Ticket roll-up: no items → not applicable. Only publishing (and not-applicable) items → publishing. Otherwise the lowest rank wins: <code>READY_TO_PUBLISH 0 &lt; NOT_FIXED 1 &lt; PUBLISHING 2 &lt; NOT_APPLICABLE 3</code>. The API also returns <code>fixStateCounts</code>, but the webapp never reads it.</p>
+<h3>How the solutions decide "ready"</h3>
+<p>The solutions below all split the question the same way:</p>
+<ul class="tight">
+<li><strong>Is there an unpublished change?</strong> The baseline answers this. A baseline row exists only while Categra differs from what was last sent, and it's deleted when the value goes back or the publish succeeds.</li>
+<li><strong>Is it the change this issue needs?</strong> The baseline's <em>content</em> answers this. Every baseline records which value changed and what was last sent:
+<ul class="tight">
+<li><code>tbl_price_sync_baselines.price_type</code> + <code>previous_price_data</code>;</li>
+<li><code>tbl_attribute_sync_baselines.attribute_id</code> / <code>hierarchy_id</code> + <code>previous_sync_value</code>;</li>
+<li><code>tbl_variant_attribute_sync_baselines.product_variant_attribute_id</code>;</li>
+<li><code>tbl_product_media_sync_baselines.previous_sync_value</code>, a list of <code>{digitalAssetsId, isMainImage, sequence, …}</code>;</li>
+<li><code>tbl_misc_sync_baselines.baseline_type</code> (category, condition, shipping template, …).</li>
+</ul></li>
+<li><strong>Was the fix already sent?</strong> Only this question uses time: a successful publish after the item appeared (<a href="#i8">#8</a>, <a href="#i10">#10</a>).</li>
+</ul>
+<p style="margin-bottom:0">Don't compare edit time with the item's <code>created_at</code> to decide "ready", for two reasons. An unpublished edit made <em>before</em> the issue appeared can still be the fix. And the evaluator deletes and re-creates an item whenever its (variant, sub-type) identity changes (<code>issue-ticket-evaluator.service.ts:354-365</code>), which resets <code>created_at</code>.</p>
+</div>
+
+<div class="section-title">Ticket-level roll-up</div>
+
+<div class="card" id="i1">
+<h2>1. Roll-up is too optimistic</h2>
+<div class="meta"><span class="pill high">High</span><span class="pill effort">Small</span></div>
+<h3>Problem</h3>
+<p>A ready item outranks a not-set item, so <strong>one ready variant makes the whole ticket "Set · not published"</strong>. The primary button then becomes "Review &amp; publish" and opens the <em>publish</em> tab instead of the <em>fix</em> tab. The per-state counts that would show the real split are sent to the webapp but never shown.</p>
+<p class="where">Where: <code>issue-ticket-primary-actions.ts:15-20</code> (rank sort), <code>:58-63</code> (button) · <code>ISSUE_TICKET_FIX_STATE_RANK</code> in <code>constants.ts:2719</code> · <code>action-center-v2-ticket-card.tsx:230</code> · <code>fixStateCounts</code> is unused in the webapp.</p>
+<h3>Example</h3>
+<div class="example">
+<p><strong>MISSING_PRICE</strong> on "Linen Shirt" · Amazon DE · 12 variants. The user sets a price for <em>S / White</em> only.</p>
+<p>Card: <span class="badge amber">Set · not published</span> + <strong>Review &amp; publish</strong>. The user publishes, believes the ticket is done, and 11 variants still have no price.</p>
+</div>
+<h3>Solution</h3>
+<div class="solution">
+<ol class="tight">
+<li><strong>Make the roll-up pessimistic.</strong> If any item is <code>NOT_FIXED</code>, the ticket is <code>NOT_FIXED</code>. Ready only when no item is not set. Swap the first two ranks: <code>NOT_FIXED 0, READY_TO_PUBLISH 1, PUBLISHING 2, NOT_APPLICABLE 3</code>. Keep the existing "only publishing → publishing" short-circuit.</li>
+<li><strong>Show the split on mixed tickets.</strong> The webapp already gets <code>fixStateCounts</code>. When the ticket has more than one actionable item and the states are mixed, render <span class="badge gray">1 / 12 set</span> instead of the plain label. Use the same text in the dialog header and the context-bar hint.</li>
+<li><strong>The button follows the new roll-up.</strong> Mixed → type's fix action ("Open Price") to the fix tab. "Review &amp; publish" only when nothing is left not set.</li>
+<li><strong>Dialog:</strong> sort items not set → ready → publishing so the outstanding ones are on top.</li>
+</ol>
+<p>No schema change. The CSV stays per item.</p>
+</div>
+</div>
+
+<div class="card" id="i2">
+<h2>2. Publish hook moves the whole ticket to Awaiting channel</h2>
+<div class="meta"><span class="pill high">High</span><span class="pill effort">Small</span></div>
+<h3>Problem</h3>
+<p>When a publish starts, the hook moves a To-do / In-progress ticket to <code>AWAITING_CHANNEL</code> if <strong>any</strong> of its items is ready or publishing. The items that are still not set go with it. The evaluator moves the ticket back to In progress only once the fixing publish is evaluated. If that result never reports, it waits for the nightly sweep. Until then the unfixed variants are out of the work lanes.</p>
+<p class="where">Where: <code>issue-ticket-publish-hook.service.ts:59-94</code> (the <code>fixable</code> set → <code>ticketIds</code>) · release in <code>issue-ticket-evaluator.service.ts:390-414</code>.</p>
+<h3>Example</h3>
+<div class="example">
+<p>LOW_STOCK on "Trail Runner" · Shopify · 8 variants. The user maps a warehouse for 2 sizes and the stock publish starts.</p>
+<p>The ticket jumps to <strong>Awaiting channel</strong>. The other 6 variants are still low on stock, but nobody sees them in To-do. If the stock result doesn't come back, the ticket sits there until the nightly sweep, then reappears in <em>In progress</em> rather than To-do.</p>
+</div>
+<h3>Solution</h3>
+<div class="solution">
+<ol class="tight">
+<li>In the hook, move a ticket only when <strong>none of its actionable items are <code>NOT_FIXED</code></strong> after the publish starts. That means every item is ready, publishing or not applicable. Resolve fix states for <em>all</em> items of the candidate tickets, not just those in the publish scope.</li>
+<li>When only some items are covered, keep the status. Write an activity event (e.g. <code>PUBLISH_STARTED</code> with "2 of 8") so the timeline still shows that something was sent.</li>
+<li>This matches the pessimistic roll-up from <a href="#i1">#1</a>. A ticket is "awaiting the channel" only when the user has nothing left to do on it.</li>
+</ol>
+</div>
+</div>
+
+<div class="card" id="i3">
+<h2>3. An in-flight publish is hidden when other items are not set</h2>
+<div class="meta"><span class="pill low">Low</span><span class="pill effort">Small</span></div>
+<h3>Problem</h3>
+<p>With some items publishing and others not set, the roll-up shows the not-set state. The card gives no hint that a publish is already running for part of the ticket.</p>
+<p class="where">Where: <code>summariseFixStates</code> · card badge in <code>action-center-v2-ticket-card.tsx:230-237</code>.</p>
+<h3>Example</h3>
+<div class="example">
+<p>MAIN_IMAGE on "Ceramic Mug" · 5 colour variants. 3 are being published, 2 still have no image. The card shows only <span class="badge gray">Not set in Categra</span>. A teammate opens it, re-uploads the 3 images that are already on their way, and publishes again.</p>
+</div>
+<h3>Solution</h3>
+<div class="solution">
+<p>Render a second, quiet chip from <code>fixStateCounts.PUBLISHING</code> when it's above 0 and the ticket isn't fully publishing: <span class="badge gray">2 / 5 set</span> <span class="badge blue">3 publishing</span>. Webapp only. Show the same per-item badges in the dialog, as today.</p>
+</div>
+</div>
+
+<div class="section-title">Rules</div>
+
+<div class="card" id="i4">
+<h2>4. Product-level flags apply to variants (only one edge to check)</h2>
+<div class="meta"><span class="pill low">Low</span><span class="pill effort">Check only</span></div>
+<h3>Problem</h3>
+<p>This turned out to be mostly <strong>not an issue</strong>. Forward sync flags only one level, and the fix-state SQL derives the state one way, parent → variant, which matches it:</p>
+<ul class="tight">
+<li><strong>Parent publish:</strong> only the PCM row gets <code>sync_in_progress = true</code>. The variant (VM) rows aren't touched, because publishing the product sends every variant.</li>
+<li><strong>Variant-only publish</strong> (<code>marketplaceIsVariantSync</code>): only the selected variants' VM rows get the flag. The PCM row doesn't.</li>
+<li><strong>Variant item:</strong> publishing if the parent PCM <em>or</em> its own VM is in progress.</li>
+<li><strong>Parent item:</strong> PCM only; the VM branch requires a <code>variant_id</code>. A few variants in flight don't make the parent publishing.</li>
+</ul>
+<p>The same parent → variant rule applies to <code>OUT_OF_SYNC</code>. After the <a href="#i5">#5</a> rework that's only the fallback for listing issues that name no attribute.</p>
+<p><strong>The remaining edge.</strong> In an incremental publish where the parent publishes, <code>marketplaceIsVariantSync = !parentPublishes</code> is false. So only the PCM row is flagged, and only the parent scope goes into <code>tbl_publish_inflight_scopes</code>. If that publish can send the parent plus only <em>some</em> variants, every variant item shows "Publishing…", including the ones not sent.</p>
+<p class="where">Where: <code>amazon-product-fs.service.ts:1925-1945</code> (parent flag, <code>marketplaceIsVariantSync</code>), <code>:2090-2115</code> (variant flag), <code>:2175</code> · <code>scopeFlagSql</code> in <code>issue-tickets.sql.ts:185-218</code>.</p>
+<h3>Example</h3>
+<div class="example">
+<p>Only if the edge exists: MISSING_PRICE on "Linen Shirt" · Amazon DE · 12 variant items. An incremental publish sends the parent's title change plus the prices of 2 variants. Only the PCM row is flagged, so all 12 items show <span class="badge blue">Publishing…</span>, and the 10 variants still without a price disappear from "not set".</p>
+</div>
+<h3>Solution</h3>
+<div class="solution">
+<ol class="tight">
+<li><strong>No change</strong> to the flag toggling or to <code>scopeFlagSql</code>. The one-way parent → variant derivation is correct.</li>
+<li><strong>Check:</strong> does the variant loop in the parent-publishes incremental branch send every variant, or only the selected ones? If every variant, close this item.</li>
+<li><strong>Only if it sends a subset:</strong> in that branch also set <code>sync_in_progress</code> on the VM rows of the variants actually sent, and register their variant scopes. Variant items then read their own flag, and the parent flag no longer stands in for "all variants". The SQL stays as it is.</li>
+</ol>
+</div>
+</div>
+
+<div class="card" id="i5">
+<h2>5. Listing types turn amber after unrelated edits</h2>
+<div class="meta"><span class="pill med">Medium</span><span class="pill effort">Medium</span></div>
+<h3>Problem</h3>
+<p>For AMAZON_LISTING_BLOCKER / WARNING / NOT_SEARCHABLE and SHOPIFY_NOT_ACTIVE, "ready" means "<em>anything</em> in scope differs from the channel". That's OUT_OF_SYNC, or any price baseline, or any media baseline. The rule doesn't check whether the changed value is the one the issue is about.</p>
+<p class="where">Where: <code>issue-tickets.sql.ts:333-334</code>.</p>
+<h3>Example</h3>
+<div class="example">
+<p>A blocker on "Desk Lamp" · Amazon UK: <em>"Missing required attribute: voltage"</em>. A pricing manager drops the price by £2. A price baseline is created.</p>
+<p>The blocker ticket shows <span class="badge amber">Set · not published</span> + <strong>Review &amp; publish</strong>. Voltage is still empty, and the publish is rejected again.</p>
+</div>
+<h3>Solution</h3>
+<div class="solution">
+<ol class="tight">
+<li><strong>Match the baseline to the issue's attribute.</strong> When the item's error rows (<code>tbl_channel_product_errors</code>) carry an <code>amazon_attribute_hierarchy_id</code>, the item is ready only if an attribute baseline exists for the same scope and the same attribute:
+<ul class="tight">
+<li>parent: <code>tbl_attribute_sync_baselines.hierarchy_id</code> on (product, channel, marketplace);</li>
+<li>variant: the matching <code>tbl_variant_attribute_sync_baselines</code> row, resolved through <code>product_variant_attribute_id</code> → attribute.</li>
+</ul>
+In the example, voltage has no baseline, so the item stays not set.</li>
+<li><strong>Issues that name a product type or category</strong> match a <code>tbl_misc_sync_baselines</code> row of the matching <code>baseline_type</code> (e.g. <code>AMAZON_CATEGORY</code>).</li>
+<li><strong>Issues that name no attribute</strong> (generic suppression, SHOPIFY_NOT_ACTIVE): ready when the item's <em>own</em> scope has any attribute or misc baseline, or is OUT_OF_SYNC (own row, or the parent row for a variant item; see <a href="#i4">#4</a>).</li>
+<li><strong>Drop the price and media baselines</strong> from this rule. Those changes have their own ticket types.</li>
+<li><strong>Use a more honest label</strong> for the fallback case in rule 3: <span class="badge amber">Edited · not published</span> (see <a href="#i11">#11</a>). An edit there isn't proof of a fix until Amazon re-validates.</li>
+</ol>
+<p class="note">Edit time plays no part: an unpublished voltage change made before the blocker appeared is still the fix.</p>
+</div>
+</div>
+
+<div class="card" id="i6">
+<h2>6. Buy box types treat any price edit as the fix</h2>
+<div class="meta"><span class="pill med">Medium</span><span class="pill effort">Medium</span></div>
+<h3>Problem</h3>
+<ul class="tight">
+<li>All four price types are ready as soon as <em>any</em> price baseline exists and the price is above 0. The baseline's <code>price_type</code> is ignored, so a list price, sale price or business price change counts too.</li>
+<li>For BUY_BOX_LOST / AT_RISK / INELIGIBLE the rule never compares the new price with the buy box or expected price.</li>
+<li>Ineligibility is often not about price at all: account metrics, fulfilment, condition.</li>
+<li>The <code>PRICE</code> publish kind only lists MISSING_PRICE. A price publish therefore never moves a buy box ticket to Awaiting channel, even when the badge said "ready".</li>
+</ul>
+<p class="where">Where: <code>PRICE_ISSUE_TYPES</code> branch in <code>issue-tickets.sql.ts:319-320</code> · <code>ISSUE_TICKET_ISSUE_TYPES_BY_PUBLISH_KIND.PRICE</code> in <code>constants.ts:2698</code>.</p>
+<h3>Example</h3>
+<div class="example">
+<p>BUY_BOX_LOST on "USB-C Hub" · Amazon FR. Buy box at €23.49, our offer at €24.99. The user changes the price to €24.89.</p>
+<p>The card turns <span class="badge amber">Set · not published</span>. After the publish the buy box is still lost, and the ticket stays in To-do with no "awaiting" step.</p>
+</div>
+<h3>Solution</h3>
+<div class="solution">
+<ol class="tight">
+<li><strong>All price types:</strong> count only baselines whose <code>price_type</code> is <code>OFFER_PRICE</code>. A business-price edit on a MISSING_PRICE item no longer marks it ready. <code>SALE_PRICE</code> could count if the sale is live now; leave that out until someone asks for it.</li>
+<li><strong>LOST / AT_RISK:</strong> ready only when the live price is at or below the target from the buy box data the detector already reads. The target is the buy box landed price for LOST and the expected price for AT_RISK. Otherwise not set, with a hint like "€24.89 is still above the buy box (€23.49)".</li>
+<li><strong>INELIGIBLE:</strong> treat it as not applicable for fix state, unless the eligibility reason is price. Point the primary action at the reasons ("View eligibility"), not the price tab.</li>
+<li>Add LOST / AT_RISK to the <code>PRICE</code> publish kind, so a qualifying price publish moves them to Awaiting channel like MISSING_PRICE.</li>
+</ol>
+</div>
+</div>
+
+<div class="card" id="i7">
+<h2>7. STOCK_SYNC is always "Set · not published"</h2>
+<div class="meta"><span class="pill low">Low</span><span class="pill effort">Small</span></div>
+<h3>Problem</h3>
+<p>STOCK_SYNC is hard-coded to ready unless it's FBA or publishing. The amber badge is always on, so it tells the user nothing. The real problem is a failed or diverged stock sync, which has nothing to "set".</p>
+<p class="where">Where: <code>issue-tickets.sql.ts:324</code>.</p>
+<h3>Example</h3>
+<div class="example">
+<p>STOCK_SYNC on "Yoga Mat" · Shopify: the last stock push failed with a 422. The card says <span class="badge amber">Set · not published</span>, and the button says "Review &amp; publish". Nothing was set, and the user doesn't know a retry is the fix.</p>
+</div>
+<h3>Solution</h3>
+<div class="solution">
+<p>Classify STOCK_SYNC as <code>NOT_APPLICABLE</code> for fix state (no badge). Give it a dedicated action, "Retry stock sync", that re-queues the stock push for the ticket's items. Publishing still shows while the retry is in flight.</p>
+</div>
+</div>
+
+<div class="card" id="i8">
+<h2>8. Stock "ready" never checks what was pushed</h2>
+<div class="meta"><span class="pill med">Medium</span><span class="pill effort">Medium</span></div>
+<h3>Problem</h3>
+<ul class="tight">
+<li>OUT_OF_STOCK / LOW_STOCK are ready whenever Categra's mapped non-FC warehouses hold stock (above the threshold for LOW).</li>
+<li>Nothing compares that with the quantity last pushed to the channel. "Not published" can't be told apart from "published, the channel hasn't caught up".</li>
+<li>Not set mixes two different causes: no warehouse mapped, and no stock.</li>
+</ul>
+<p class="where">Where: <code>issue-tickets.sql.ts:321-330</code> and the <code>st</code> lateral at <code>:339-360</code>.</p>
+<h3>Example</h3>
+<div class="example">
+<p>OUT_OF_STOCK on "Water Bottle" · Amazon DE (FBM). 40 units arrive and the stock push succeeds. Amazon's listing report still shows 0 for a few hours.</p>
+<p>The card stays <span class="badge amber">Set · not published</span>, so the user publishes again. On a second product, 50 units sit in an unmapped warehouse and the card says <span class="badge gray">Not set in Categra</span>. The stock <em>is</em> set; the mapping is what's missing.</p>
+</div>
+<h3>Solution</h3>
+<div class="solution">
+<ol class="tight">
+<li>Stock has no baseline table, so compare Categra's quantity with the last successfully pushed quantity for the scope (the stock sync's own record of what it sent):
+<ul class="tight">
+<li>Different and enough stock → ready ("Stock set · not published"). This is the stock equivalent of "a baseline exists"; no time condition.</li>
+<li>Equal, and that push succeeded <em>after the item appeared</em> → waiting for channel (see <a href="#i10">#10</a>). Time is used here only to answer "was the fix already sent?". An older push of the same quantity is what the channel already saw when it raised the issue.</li>
+</ul></li>
+<li>Split not set by cause and show it as hint text: "No warehouse mapped to this channel" versus "No stock in mapped warehouses".</li>
+</ol>
+<p class="note">Check first: where the stock sync stores the last pushed quantity per channel / marketplace / variant. If it doesn't store it, record it on a successful push before building this.</p>
+</div>
+</div>
+
+<div class="card" id="i9">
+<h2>9. Main image "ready" only checks the file extension</h2>
+<div class="meta"><span class="pill low">Low</span><span class="pill effort">Small–Medium</span></div>
+<h3>Problem</h3>
+<p>Ready means a media baseline exists and a main image (channel or master) has an Amazon-allowed extension. Amazon's actual rejection reasons aren't checked: pixel size, white background, watermark. Any media change also counts, even on a different image.</p>
+<p class="where">Where: <code>issue-tickets.sql.ts:244-248</code>, <code>:279-286</code>, <code>:331-332</code>.</p>
+<h3>Example</h3>
+<div class="example">
+<p>MAIN_IMAGE on "Leather Wallet" · Amazon UK, rejected because it's under 1000 px. The user adds a lifestyle shot as a <em>secondary</em> image, which creates a media baseline. The card shows <span class="badge amber">Set · not published</span>, while the main image is still the 800 px file.</p>
+</div>
+<h3>Solution</h3>
+<div class="solution">
+<ol class="tight">
+<li><strong>Compare against the baseline's main image.</strong> Ready when the media baseline exists <em>and</em> the current main image differs from the main image in the baseline:
+<ul class="tight">
+<li>current: <code>tbl_product_media_linkers.digital_assets_id</code> where <code>is_main_image</code> (channel scope, else master);</li>
+<li>baseline: the <code>digitalAssetsId</code> of the <code>previous_sync_value</code> element with <code>isMainImage = true</code>.</li>
+</ul>
+A secondary-image change keeps them equal, so the item stays not set. No time condition.</li>
+<li><strong>Reuse the pre-send image checks</strong> forward sync already runs (extension, plus dimensions where they're stored) instead of a separate extension list.</li>
+</ol>
+</div>
+</div>
+
+<div class="card" id="i10">
+<h2>10. After a successful publish the badge falls back to "Not set in Categra"</h2>
+<div class="meta"><span class="pill high">High</span><span class="pill effort">Medium</span></div>
+<h3>Problem</h3>
+<p>Ready is based on "Categra differs from the channel": a baseline row, or OUT_OF_SYNC. Both are out-of-sync markers, so a successful publish clears them. Between the publish succeeding and the channel clearing the issue, the item matches no ready rule and falls through to <span class="badge gray">Not set in Categra</span>. This is the worst message to show right after the user fixed it. Buy box tickets (<a href="#i6">#6</a>) aren't moved to Awaiting channel at all, so they show this in a work lane.</p>
+<p class="where">Where: the ready rules in <code>issue-tickets.sql.ts:319-334</code> all depend on baselines / OUT_OF_SYNC · release timing in <code>issue-ticket-evaluator.service.ts:390-414</code>.</p>
+<h3>Example</h3>
+<div class="example">
+<p>MISSING_PRICE on "Garden Hose" · Amazon IT. The user sets €19.90 and publishes. The feed succeeds and the baseline is removed. Amazon's listing still reports no offer for ~20 minutes.</p>
+<p>The card (now in Awaiting channel) reads <span class="badge gray">Not set in Categra</span>. The user opens it, sees the price is set, and loses trust in the board.</p>
+</div>
+<h3>Solution</h3>
+<div class="solution">
+<ol class="tight">
+<li>Add a fifth state, <code>AWAITING_CHANNEL</code>, with the badge <span class="badge green">Published · waiting for channel</span>. An item gets it when:
+<ul class="tight">
+<li>it's open;</li>
+<li>it has no out-of-sync marker;</li>
+<li>its scope had a successful publish after the issue appeared (see "Which <code>created_at</code>" below).</li>
+</ul></li>
+<li>For the publish time, use the scope row's last-success timestamp, or the publish-start / result events the ticket already records.</li>
+<li><strong>Why time is right here:</strong> this state is about whether the fix was already sent, not whether the edit is relevant. Relevance was already settled by the baseline rules before the publish cleared them. Without the time bound, any publish from before the issue appeared would count as "fix sent".</li>
+<li><strong>Which <code>created_at</code>:</strong> because the evaluator re-creates items when their sub-type changes, compare with the ticket's <code>created_at</code> or the item identity's first event, not the item row's <code>created_at</code>.</li>
+<li>Rank it with publishing in the roll-up. Not set still wins, per <a href="#i1">#1</a>.</li>
+<li>Cheaper fallback: when the ticket status is Awaiting channel, show the waiting badge instead of the computed fix state.</li>
+</ol>
+</div>
+</div>
+
+<div class="section-title">Labels</div>
+
+<div class="card" id="i11">
+<h2>11. "Not set in Categra" is the wrong message for most types</h2>
+<div class="meta"><span class="pill med">Medium</span><span class="pill effort">Small</span></div>
+<h3>Problem</h3>
+<p>One label covers every type. It fits MISSING_PRICE and MAIN_IMAGE. It's wrong when a price exists but loses the buy box, when an attribute has a wrong value, or when stock exists but isn't mapped. "Set · not published" has the same problem for listing types, where an edit isn't proof of a fix.</p>
+<p class="where">Where: <code>ActionCenterV2_FixState_*</code> and <code>ActionCenterV2_ContextBar_FixHint_*</code> in <code>webapp/src/services/translationServices/*/action-center.ts</code>.</p>
+<h3>Example</h3>
+<div class="example">
+<p>BUY_BOX_LOST on "USB-C Hub". The price is €24.99 and visible on the pricing tab, yet the card says <span class="badge gray">Not set in Categra</span>.</p>
+</div>
+<h3>Solution</h3>
+<div class="solution">
+<p>Use per-type keys with a generic fallback: <code>ActionCenterV2_FixState_&lt;STATE&gt;_&lt;ISSUE_TYPE&gt;</code>, falling back to <code>ActionCenterV2_FixState_&lt;STATE&gt;</code>. Suggested copy:</p>
+<div class="table-wrap"><table>
+<tr><th>Issue types</th><th>Not fixed</th><th>Ready</th></tr>
+<tr><td>MISSING_PRICE</td><td>No price set</td><td>Price set · not published</td></tr>
+<tr><td>BUY_BOX_LOST / AT_RISK</td><td>Price above buy box</td><td>Price beats buy box · not published</td></tr>
+<tr><td>OUT_OF_STOCK / LOW_STOCK</td><td>No warehouse mapped / No stock</td><td>Stock set · not published</td></tr>
+<tr><td>MAIN_IMAGE</td><td>Main image needs replacing</td><td>New image · not published</td></tr>
+<tr><td>Listing / Shopify not active</td><td>Needs a fix</td><td>Edited · not published</td></tr>
+<tr><td><em>fallback</em></td><td>Needs a fix</td><td>Set · not published</td></tr>
+</table></div>
+<p>Add all five languages in the same change.</p>
+</div>
+</div>
+
+<div class="card" id="i12">
+<h2>12. An item with no computed state shows "Not set"</h2>
+<div class="meta"><span class="pill low">Low</span><span class="pill effort">Tiny</span></div>
+<h3>Problem</h3>
+<p>If the fix-state query returns no row for an item, the card falls back to <code>NOT_FIXED</code>. That happens when the ticket's channel row is gone, or a chunk query fails silently. A data gap reads as "you haven't done this".</p>
+<p class="where">Where: <code>issue-tickets.service.ts:554</code>.</p>
+<h3>Example</h3>
+<div class="example"><p>A Shopify channel is deleted while the evaluator hasn't cleared its tickets yet. Its open tickets show <span class="badge gray">Not set in Categra</span> on every card until the sweep runs.</p></div>
+<h3>Solution</h3>
+<div class="solution"><p>Fall back to <code>NOT_APPLICABLE</code> (no badge), and log the missing item ids once per read so the gap is visible.</p></div>
+</div>
+
+<div class="section-title">Performance &amp; workflow</div>
+
+<div class="card" id="i13">
+<h2>13. Fix state is recomputed per item on every read</h2>
+<div class="meta"><span class="pill med">Medium</span><span class="pill effort">Medium</span></div>
+<h3>Problem</h3>
+<p>Every board page, dialog, product drawer and CSV export runs <code>buildItemFixCte</code> for every item of every ticket loaded. Each item runs several correlated subqueries:</p>
+<ul class="tight">
+<li>scope flags twice, each with two EXISTS branches;</li>
+<li>both baselines;</li>
+<li>the live price, as two ordered subqueries;</li>
+<li>FBA and warehouse laterals.</li>
+</ul>
+<p>Nothing is cached. Cards only need the counts and the roll-up, not every item's state.</p>
+<p class="where">Where: <code>issue-ticket-fix-state.service.ts</code> (2000-item chunks) · <code>issue-tickets.service.ts:441</code>.</p>
+<h3>Example</h3>
+<div class="example"><p>A board lane with 50 apparel tickets, each with 60–200 variant items, is ~6,000 items. The fix-state SQL runs 3 chunks of ~10 subqueries per item on every lane load and every "load more". A CSV export of 40k items is about 20 chunks.</p></div>
+<h3>Solution</h3>
+<div class="solution">
+<ol class="tight">
+<li><strong>Cards:</strong> return only <code>fixStateCounts</code> and the roll-up, computed in SQL with a <code>GROUP BY ticket_id</code> over <code>item_fix</code>. Fetch per-item states only for the dialog / drawer of one ticket.</li>
+<li><strong>Join once instead of per item:</strong> pre-aggregate the scope rows once per (product, channel, marketplace) in a CTE, then join the items to it. That replaces repeating the EXISTS per item.</li></ol>
+</div>
+</div>
+
+<div class="card" id="i14">
+<h2>14. No filter or bulk path for ready tickets</h2>
+<div class="meta"><span class="pill low">Low</span><span class="pill effort">Medium</span></div>
+<h3>Problem</h3>
+<p>The board can't filter or sort by fix state. A user can't ask "show me everything that's set but not published" and send it together. They have to open each product and publish one at a time.</p>
+<p class="where">Where: <code>buildTicketBase</code> (<code>issue-tickets.sql.ts:66</code>) has no fix-state condition · the webapp filter bar has no fix-state facet.</p>
+<h3>Example</h3>
+<div class="example"><p>After a pricing review, 35 MISSING_PRICE tickets across 35 products are ready. The user opens 35 product pages and clicks publish 35 times.</p></div>
+<h3>Solution</h3>
+<div class="solution">
+<ol class="tight">
+<li><strong>Filter:</strong> add a "Fix state" facet using the ticket roll-up (after <a href="#i1">#1</a>): Needs a fix / Ready to publish / Publishing / Waiting for channel. Do it as an <code>EXISTS</code> over <code>item_fix</code> in <code>buildTicketBase</code>.</li>
+<li><strong>Bulk publish:</strong> with the filter on Ready, offer "Publish N ready". It calls the existing price / stock / forward-sync publish flows, grouped by channel and publish kind. The publish-start hook then moves the tickets as it does today.</li>
+</ol>
+</div>
+</div>
+
+<div class="section-title" id="order">Suggested order</div>
+<div class="card">
+<ol class="tight" style="margin:0">
+<li><strong>#1 + #2 + #3:</strong> pessimistic roll-up, counts on the card, hook moves only fully covered tickets. Small change, biggest trust gain.</li>
+<li><strong>#10 + #11 + #12:</strong> the waiting-for-channel state and per-type wording. Stops the board contradicting what the user just did.</li>
+<li><strong>#4:</strong> check only: confirm whether a parent-publishes incremental publish can send a subset of variants.</li>
+<li><strong>#5 – #9:</strong> per-type rule fixes (listing, buy box, STOCK_SYNC, stock, main image).</li>
+<li><strong>#13 + #14:</strong> counts-only card query, then the fix-state filter and bulk publish.</li>
+</ol>
+</div>
+</main>
+</div>
+</body>
+</html>
