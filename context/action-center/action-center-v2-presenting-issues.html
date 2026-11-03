@@ -1,0 +1,666 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ticket Presenting Issues</title>
+<style>
+:root {
+	--bg: #0b0d12; --surface: #12151c; --surface-2: #181c25; --surface-3: #1f2430;
+	--text: #e8eaf0; --muted: #a3a9b6; --faint: #6f7685;
+	--border: #242a36; --border-strong: #323949;
+	--accent: #8b8cff; --accent-2: #5eead4; --accent-soft: #23244a; --accent-text: #c9c8ff;
+	--code-bg: #1d212b; --code-text: #f5a8d4;
+	--red: #ff8a80; --red-bg: #3a1618;
+	--yellow: #f7c56b; --yellow-bg: #33270c;
+	--blue: #8db6ff; --blue-bg: #14264a;
+	--green: #77dba3; --green-bg: #0f2f1e;
+	--slate: #b3bccb; --slate-bg: #252a34;
+	--shadow: 0 1px 2px rgba(0,0,0,.35), 0 8px 28px rgba(0,0,0,.28);
+	color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.65 Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code { background: var(--code-bg); color: var(--code-text); padding: 1px 6px; border-radius: 5px; font: 13px/1.5 "JetBrains Mono", Consolas, monospace; overflow-wrap: anywhere; }
+pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; overflow-x: auto; font: 13px/1.6 "JetBrains Mono", Consolas, monospace; color: var(--text); }
+pre code { background: none; padding: 0; color: inherit; }
+
+.layout { display: grid; grid-template-columns: 280px minmax(0, 1fr); min-height: 100vh; }
+aside { position: sticky; top: 0; height: 100vh; overflow-y: auto; border-right: 1px solid var(--border); background: var(--surface); padding: 22px 14px 40px; }
+.brand { font-weight: 700; font-size: 14px; padding: 0 8px 4px; }
+.brand-sub { color: var(--faint); font-size: 12px; padding: 0 8px 16px; }
+nav ul { list-style: none; margin: 0; padding: 0; }
+nav a { display: flex; gap: 8px; padding: 5px 8px; border-radius: 7px; color: var(--muted); font-size: 13px; line-height: 1.4; }
+nav a:hover { background: var(--surface-2); color: var(--text); text-decoration: none; }
+nav .num { color: var(--faint); min-width: 30px; font-variant-numeric: tabular-nums; }
+nav .grp { color: var(--faint); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; padding: 14px 8px 4px; }
+
+main { padding: 40px clamp(16px, 4vw, 56px) 120px; max-width: 1100px; width: 100%; }
+h2 { font-size: 21px; margin: 0 0 4px; line-height: 1.3; }
+h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .07em; color: var(--faint); margin: 20px 0 6px; }
+.section-title { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--accent-text); margin: 42px 0 14px; }
+.section-title:first-child { margin-top: 0; }
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px 26px; margin: 0 0 22px; box-shadow: var(--shadow); }
+.pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 9px; border-radius: 999px; background: var(--slate-bg); color: var(--slate); vertical-align: middle; }
+.pill.high { background: var(--red-bg); color: var(--red); }
+.pill.med { background: var(--yellow-bg); color: var(--yellow); }
+.pill.low { background: var(--blue-bg); color: var(--blue); }
+.pill.effort { background: var(--green-bg); color: var(--green); }
+ul.tight, ol.tight { margin: 6px 0; padding-left: 20px; }
+ul.tight li, ol.tight li { margin: 3px 0; }
+.where { color: var(--muted); font-size: 13px; }
+.note { color: var(--muted); font-size: 13px; margin-top: 10px; }
+.rule { background: var(--surface-2); border-left: 3px solid var(--accent); border-radius: 8px; padding: 12px 16px; margin: 10px 0; }
+.rule p { margin: 0 0 6px; }
+.rule p:last-child { margin: 0; }
+
+.table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; margin: 10px 0 18px; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { background: var(--surface-2); color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }
+tr:last-child td { border-bottom: 0; }
+td.n { color: var(--faint); font-variant-numeric: tabular-nums; width: 36px; }
+
+.badge { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 6px; border: 1px solid var(--border-strong); white-space: nowrap; }
+.badge.gray { color: var(--slate); background: var(--slate-bg); }
+.badge.amber { color: var(--yellow); background: var(--yellow-bg); }
+.badge.blue { color: var(--blue); background: var(--blue-bg); }
+.badge.green { color: var(--green); background: var(--green-bg); }
+
+.verdict { font-weight: 700; white-space: nowrap; }
+.verdict.ok { color: var(--green); }
+.verdict.part { color: var(--yellow); }
+.verdict.none { color: var(--red); }
+
+.flow { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 8px 0; }
+.flow .st { border: 1px solid var(--border-strong); border-radius: 8px; padding: 3px 9px; font-size: 12px; background: var(--surface-2); }
+.flow .st.ext { border-style: dashed; color: var(--yellow); }
+.flow .st.cat { color: var(--green); }
+.flow .ar { color: var(--faint); font-size: 12px; }
+
+/* Mock ticket card: same fixed box as the board card (h-38 = 152px, single-line chip rows). */
+.mock-row { display: flex; flex-wrap: wrap; gap: 16px; margin: 12px 0 18px; align-items: flex-start; }
+.mock-col { flex: 0 1 340px; min-width: 0; }
+.mock-col.wide { flex: 1 1 360px; max-width: 400px; }
+.mock-label { font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--faint); margin-bottom: 6px; }
+.tk { position: relative; width: 100%; max-width: 340px; height: 152px; display: flex; flex-direction: column; justify-content: space-between; background: #fff; color: #3d505c; border: 1px solid #e3e7ea; border-radius: 12px; padding: 12px 12px 12px 16px; font-size: 12px; line-height: 1.35; overflow: hidden; }
+.tk::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 4px; background: #e5484d; }
+.tk.high::before { background: #f5a524; }
+.tk .top { display: flex; gap: 12px; align-items: flex-start; min-width: 0; }
+.tk .thumb { width: 64px; height: 64px; border: 1px solid #e3e7ea; border-radius: 8px; display: grid; place-items: center; font-weight: 800; font-size: 11px; color: #3d505c; flex-shrink: 0; }
+.tk .body { min-width: 0; flex: 1; }
+.tk .name { font-weight: 700; font-size: 13px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.tk .chips { display: flex; flex-wrap: nowrap; gap: 6px; margin-top: 6px; overflow: hidden; min-width: 0; }
+.tk .c { display: inline-flex; align-items: center; gap: 4px; border-radius: 999px; padding: 1px 8px; font-size: 11px; font-weight: 600; background: #eef1f3; color: #3d505c; white-space: nowrap; flex-shrink: 0; }
+.tk .c.scope { border-radius: 6px; border: 1px solid #dfe5e9; background: #f6f8f9; }
+.tk .c.red { background: #fdecec; color: #c4262c; }
+.tk .c.amber { background: #fff4e0; color: #a3600a; }
+.tk .c.blue { background: #e8f0ff; color: #2459c9; }
+.tk .c.merge { flex-shrink: 1; min-width: 0; }
+.tk .c.merge .txt { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.tk .c.merge .txt b { font-weight: 700; }
+.tk .c.merge .txt span { font-weight: 500; }
+.tk .c .i { display: inline-grid; place-items: center; width: 13px; height: 13px; border-radius: 50%; border: 1.3px solid currentColor; font-size: 8px; font-weight: 800; font-style: normal; flex-shrink: 0; }
+.tk .foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; color: #7b8a94; font-size: 11px; }
+.tk .foot > span:last-child { display: flex; align-items: center; flex-shrink: 0; }
+.tk .btn { background: #3d505c; color: #fff; border-radius: 7px; padding: 3px 9px; font-weight: 600; font-size: 11px; white-space: nowrap; }
+.tk .ibtn { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid #9aa7b0; color: #6c7b85; font-size: 10px; font-weight: 800; margin-right: 6px; flex-shrink: 0; }
+.tk .ibtn.hl { border-color: #8b8cff; color: #5b5cf0; box-shadow: 0 0 0 3px rgba(139,140,255,.25); }
+.tk .menu { color: #9aa7b0; font-weight: 800; flex-shrink: 0; }
+.tt { background: #fff; color: #3d505c; border: 1px solid #e3e7ea; border-radius: 12px; padding: 12px 14px; font-size: 11.5px; line-height: 1.45; box-shadow: 0 12px 34px rgba(61,80,92,.18); width: 100%; max-width: 360px; max-height: 420px; overflow-y: auto; }
+.tt .hd { font-weight: 700; font-size: 12px; margin-bottom: 2px; }
+.tt .k { font-size: 10px; text-transform: uppercase; letter-spacing: .07em; color: #8a98a2; font-weight: 700; margin: 10px 0 3px; }
+.tt table { font-size: 11px; width: auto; }
+.tt th, .tt td { padding: 2px 10px 2px 0; border: 0; background: none; color: #3d505c; text-transform: none; letter-spacing: 0; font-size: 11px; }
+.tt th { color: #8a98a2; font-weight: 600; }
+.tt ol { margin: 2px 0; padding-left: 16px; }
+.tt ol li { margin: 2px 0; }
+.tt .bad { color: #c4262c; font-weight: 700; }
+.tt .muted { color: #8a98a2; }
+.tt .lnk { color: #2459c9; font-weight: 600; }
+.tt .ft { margin-top: 10px; padding-top: 8px; border-top: 1px solid #eef1f3; color: #8a98a2; display: flex; justify-content: space-between; gap: 8px; }
+
+@media (max-width: 900px) {
+	.layout { grid-template-columns: 1fr; }
+	aside { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--border); }
+	.card { padding: 18px 16px; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside>
+	<div class="brand">Action Center V2</div>
+	<div class="brand-sub">Presenting issue &amp; life cycle per issue type · 2026-11-02</div>
+	<nav>
+		<ul>
+			<li><a href="#s1"><span class="num">1</span>Core objective</a></li>
+			<li><a href="#s2"><span class="num">2</span>How a ticket is drawn today</a></li>
+			<li><a href="#s3"><span class="num">3</span>Gap matrix (18 types)</a></li>
+			<li><a href="#s4"><span class="num">4</span>Root causes</a></li>
+			<li class="grp">Solution</li>
+			<li><a href="#s5"><span class="num">5</span>Shared model</a></li>
+			<li><a href="#s5-1"><span class="num">5.1</span>Fixed card layout</a></li>
+			<li><a href="#s5-2"><span class="num">5.2</span>Presenting issue</a></li>
+			<li><a href="#s5-3"><span class="num">5.3</span>Facts + steps (tooltip)</a></li>
+			<li><a href="#s5-4"><span class="num">5.4</span>External life cycle</a></li>
+			<li><a href="#s6"><span class="num">6</span>Per issue type</a></li>
+			<li><a href="#s6-1"><span class="num">6.1</span>Account health</a></li>
+			<li><a href="#s6-2"><span class="num">6.2</span>Marketplace health</a></li>
+			<li><a href="#s6-3"><span class="num">6.3</span>Connection</a></li>
+			<li><a href="#s6-4"><span class="num">6.4</span>Permission required</a></li>
+			<li><a href="#s6-5"><span class="num">6.5</span>Untrusted data</a></li>
+			<li><a href="#s6-6"><span class="num">6.6</span>Product type changed</a></li>
+			<li><a href="#s6-7"><span class="num">6.7</span>Buy Box ineligible</a></li>
+			<li><a href="#s6-8"><span class="num">6.8</span>Buy Box lost / at risk</a></li>
+			<li><a href="#s6-9"><span class="num">6.9</span>Listing blocked / warning</a></li>
+			<li><a href="#s6-10"><span class="num">6.10</span>Not searchable / not active</a></li>
+			<li><a href="#s6-11"><span class="num">6.11</span>Main image</a></li>
+			<li><a href="#s6-12"><span class="num">6.12</span>Stock sync</a></li>
+			<li><a href="#s6-13"><span class="num">6.13</span>Price / OOS / Low stock</a></li>
+			<li><a href="#s7"><span class="num">7</span>Surface sync rules</a></li>
+			<li><a href="#s8"><span class="num">8</span>Where the i button goes</a></li>
+			<li class="grp">Reference</li>
+			<li><a href="#s9"><span class="num">9</span>Change list</a></li>
+			<li><a href="#s10"><span class="num">10</span>Tables involved</a></li>
+			<li><a href="#s11"><span class="num">11</span>Open decisions</a></li>
+		</ul>
+	</nav>
+</aside>
+
+<main>
+
+<!-- ============================================================ 1 -->
+<div class="section-title" id="s1">1 · Core objective</div>
+<div class="card">
+<p style="margin-top:0">Every ticket should answer two questions at a glance:</p>
+<ol class="tight">
+	<li><b>Presenting issue</b>: what exactly is wrong, in the channel's own terms. For example "AHR 180", "3 metrics failing", "Compliance · 3 errors", "WEBP not supported".</li>
+	<li><b>Life cycle</b>: where the fix stands. Inside Categra that's <i>not set → set, not published → publishing → cleared</i>. For issues only the seller can fix outside Categra it's <i>fix on Amazon → waiting for Amazon's re-check → cleared</i>.</li>
+</ol>
+<p><b>Hard constraint: the board card keeps its exact size and slots.</b> It stays <code>h-38</code> (152 px) with single-line chip rows. A short presenting text goes into the existing issue-type chip. Everything else goes into one structured tooltip: what the channel reports, recommended steps (in Categra and on the external platform), what clears it, and last checked.</p>
+<p>Price and stock tickets already do both. Channel-level tickets (account health, marketplace health, connection, permission, untrusted data) do neither. Several product-level types do only one. This doc goes through all 18 types and proposes one shared model for the board card, sub items, ticket dialog, product issues drawer and context bar.</p>
+<p class="note">Static read of <code>api/</code> and <code>webapp/</code> as of 2026-11-02; nothing was run against a database. Mocks are drawn at the real card size; Amazon / Shopify menu paths in the steps are approximate.</p>
+</div>
+
+<!-- ============================================================ 2 -->
+<div class="section-title" id="s2">2 · How a ticket is drawn today</div>
+<div class="card">
+<h2>2.1 Data path</h2>
+<div class="flow">
+	<span class="st">Signals (pulse SQL, buy box, channel health)</span><span class="ar">→</span>
+	<span class="st"><code>detectIssueUnits</code> → <code>ticketSubTypes</code></span><span class="ar">→</span>
+	<span class="st"><code>buildIssueTicketDrafts</code>: one item per (variant, sub type)</span><span class="ar">→</span>
+	<span class="st">tbl_issue_tickets / _items</span><span class="ar">→</span>
+	<span class="st">card: issueType + fixState + items</span><span class="ar">→</span>
+	<span class="st">detail: + <code>item.evidence {onChannel, inCategra, detail}</code></span>
+</div>
+<p class="where"><code>api/apps/api-main/src/modules/app/system/operations/orchestration/command-center/issue-detection.ts</code> · <code>…/issue-tickets/issue-ticket-detectors.ts</code> · <code>…/issue-tickets/issue-ticket-evidence.service.ts</code></p>
+
+<h2 style="margin-top:22px">2.2 What each surface reads</h2>
+<div class="table-wrap"><table>
+<tr><th>Surface</th><th>File</th><th>Shows</th><th>Doesn't show</th></tr>
+<tr><td>Board card</td><td><code>action-center-v2-ticket-card.tsx</code> (fixed <code>h-38</code>, <code>ACTION_CENTER_V2_TICKET_CARD_CLASS</code>)</td><td>Row 1 title (2-line clamp) · row 2 scope chips · row 3 issue-type chip + <code>IssueTicketFixBadges</code> (hidden when <code>NOT_APPLICABLE</code>) · footer assignee, time, i (SKU/ASIN), primary button</td><td>Sub types, evidence. On channel tickets the i only says "applies to the whole channel/marketplace"</td></tr>
+<tr><td>Sub items (dialog)</td><td><code>action-center-v2-ticket-dialog.tsx</code> → <code>TicketItemRow</code></td><td>Sub-type chip, item fix badge, evidence tiles, detail note</td><td>Evidence is always empty when <code>productId === null</code></td></tr>
+<tr><td>Ticket dialog header</td><td>same file → <code>TicketDialogBody</code></td><td>Severity, group, fix badges, lane, time in stage</td><td>A one-line "what's wrong" and "what to do"</td></tr>
+<tr><td>Product issues drawer</td><td><code>products/[product]/_components/action-center-v2/ProductActionCenterV2Drawer.tsx</code></td><td>Title = issue type, chip row, variant list or sub-type line</td><td>Evidence numbers</td></tr>
+<tr><td>Context bar</td><td><code>components/issue-tickets/issue-ticket-context-bar.tsx</code></td><td>Issue chip, scope chips, shared on-channel / in-Categra value, fix hint (hidden when <code>NOT_APPLICABLE</code>)</td><td>On <code>/channelManagement</code> for channel tickets: just a label</td></tr>
+</table></div>
+</div>
+
+<!-- ============================================================ 3 -->
+<div class="section-title" id="s3">3 · Gap matrix: all 18 issue types</div>
+<div class="card">
+<p style="margin-top:0">"Presenting issue" means the exact problem is visible on the <b>card</b>; if it's only in the dialog, that counts as partial. "Life cycle" means a fix badge that moves as the user works.</p>
+<div class="table-wrap"><table>
+<tr><th>Issue type</th><th>Sub types stored</th><th>Presenting issue today</th><th>Life cycle today</th><th>Verdict</th></tr>
+<tr><td>ACCOUNT_HEALTH</td><td>ACCOUNT_AT_RISK, ACCOUNT_DEACTIVATED, STORE_*</td><td>Chip "Account health". Dialog: sub-type chip only, no previous status, no since</td><td>None (<code>NOT_APPLICABLE</code>)</td><td><span class="verdict none">Both missing</span></td></tr>
+<tr><td>MARKETPLACE_HEALTH</td><td>AHR_NOT_HEALTHY, METRIC_BAD, POLICY_BAD, MARKETPLACE_DEACTIVATED / AT_RISK</td><td>Chip "Marketplace health". No AHR score. All bad metrics collapse into one item "Performance metric failing", which doesn't say which metric</td><td>None</td><td><span class="verdict none">Both missing</span></td></tr>
+<tr><td>CONNECTION</td><td>NOT_CONNECTED, CONNECTION_LOST</td><td>Chip "Connection lost". Reason dropped</td><td>None, though it <i>is</i> fixed in Categra (reconnect)</td><td><span class="verdict none">Both missing</span></td></tr>
+<tr><td>PERMISSION_REQUIRED</td><td>PERMISSION_REQUIRED</td><td>Chip only. Role and what it blocks aren't named</td><td>None</td><td><span class="verdict none">Both missing</span></td></tr>
+<tr><td>DATA_TRUST</td><td>INVENTORY_SYNC_STALE, ORDER_SYNC_STALE</td><td>Chip "Untrusted data". Cause, duration, affected count dropped</td><td>None</td><td><span class="verdict none">Both missing</span></td></tr>
+<tr><td>PRODUCT_TYPE_CHANGED</td><td>REMAP_REQUIRED</td><td>Static dialog note. Neither type is named</td><td>None (<code>NOT_APPLICABLE</code>), though remap + publish happen in Categra</td><td><span class="verdict none">Both missing</span></td></tr>
+<tr><td>BUY_BOX_INELIGIBLE</td><td>status reason (OFFER_NOT_ELIGIBLE, ASIN_NOT_ELIGIBLE, NOT_FEATURED_MERCHANT, FETCH_*, DATA_STALE…)</td><td>Non-price reasons become <code>NOT_APPLICABLE</code>, so the card shows only "Buy Box ineligible"</td><td>None for non-price reasons</td><td><span class="verdict part">Partial</span></td></tr>
+<tr><td>BUY_BOX_LOST / AT_RISK</td><td>NOT_WINNING / AT_RISK</td><td>Card fix reason e.g. "Price above Buy Box". Target price only in dialog text</td><td>Yes</td><td><span class="verdict part">Numbers missing</span></td></tr>
+<tr><td>AMAZON_LISTING_BLOCKER / WARNING</td><td>bucket (COMPLIANCE, ATTRIBUTES_CONTENT, …)</td><td>Card: "Needs a fix". Bucket and error text only in dialog</td><td>Yes</td><td><span class="verdict part">Presenting missing on card</span></td></tr>
+<tr><td>AMAZON_NOT_SEARCHABLE</td><td>NOT_DISCOVERABLE</td><td>Card: "Needs a fix". Amazon status only in dialog. No pointer to the likely cause</td><td>Weak</td><td><span class="verdict part">Partial</span></td></tr>
+<tr><td>SHOPIFY_NOT_ACTIVE</td><td>DRAFT, ARCHIVED, UNPUBLISHED</td><td>Card: "Needs a fix". Status only in dialog</td><td>Yes</td><td><span class="verdict part">Presenting missing on card</span></td></tr>
+<tr><td>MAIN_IMAGE</td><td>MISSING, UNSUPPORTED_FORMAT</td><td>Card: "Main image needs replacing". Missing vs format only in dialog</td><td>Yes</td><td><span class="verdict part">Presenting missing on card</span></td></tr>
+<tr><td>STOCK_SYNC</td><td>QUANTITY_MISMATCH, PUSH_FAILING</td><td>Mismatch numbers only in dialog</td><td>Yes</td><td><span class="verdict part">Minor</span></td></tr>
+<tr><td>MISSING_PRICE</td><td>NO_PRICE</td><td>"No price set", x / n set</td><td>Yes</td><td><span class="verdict ok">Fine</span></td></tr>
+<tr><td>OUT_OF_STOCK</td><td>NO_STOCK</td><td>"No warehouse mapped" / "No stock in warehouses"</td><td>Yes</td><td><span class="verdict ok">Fine</span></td></tr>
+<tr><td>LOW_STOCK</td><td>BELOW_THRESHOLD</td><td>"Stock below threshold"</td><td>Yes</td><td><span class="verdict ok">Fine</span></td></tr>
+</table></div>
+<p class="note">Totals: 6 types missing both, 7 partial, 3 fine. BUY_BOX_LOST/AT_RISK and the two listing types are each one row above.</p>
+</div>
+
+<!-- ============================================================ 4 -->
+<div class="section-title" id="s4">4 · Root causes</div>
+<div class="card">
+<h2>4.1 Evidence returns nothing for channel tickets</h2>
+<p><code>IssueTicketEvidenceService.loadEvidence</code> starts with <code>if (ticket.productId === null) return result;</code>. All five channel-level types hit it. The data already exists:</p>
+<ul class="tight">
+	<li><code>tbl_amazon_channel_marketplaces</code>: <code>ahr_status</code>, <code>ahr_score</code>, <code>account_status</code>.</li>
+	<li><code>tbl_amazon_seller_performance.metrics</code>: every metric's <code>rate / target / cond / from / to</code>, every policy's <code>defects / status</code>, the warnings count, <code>checked_at</code>. <code>AmazonAccountHealthService.getDetail</code> already reads it, but no webapp screen calls it.</li>
+	<li><code>tbl_channel_sync_failures</code> and <code>DataTrustIssue</code>: cause, since, failure count, siblings.</li>
+	<li><code>tbl_channel_status_events</code>: every AHR / metric / policy / account-status change with previous and current value.</li>
+</ul>
+<h2 style="margin-top:20px">4.2 Item identity drops the detail</h2>
+<p><code>buildIssueTicketDrafts</code> keys items by <code>(variantId, subIssueType)</code>, so every <code>METRIC_BAD</code> / <code>POLICY_BAD</code> reason collapses into one item. <code>DetectedIssueUnit</code> only carries sub-type strings, so AHR score, connection reason and data-trust cause never reach the ticket.</p>
+<h2 style="margin-top:20px">4.3 <code>NOT_APPLICABLE</code> hides the badge on every surface</h2>
+<p><code>ISSUE_TICKET_NOT_APPLICABLE_TYPES</code> = the five channel-level types + PRODUCT_TYPE_CHANGED, plus buy-box items with non-price reasons (<code>applyBuyBoxTargets</code>). <code>IssueTicketFixBadges</code> returns <code>null</code> and the context bar hides its hint, so "fixed outside Categra" is rendered as "nothing to say".</p>
+<h2 style="margin-top:20px">4.4 The card never shows the sub type</h2>
+<p>Row 3 is issue-type chip + fix label. When the fix label is generic ("Needs a fix") or missing, the presenting issue only appears in the dialog.</p>
+</div>
+
+<!-- ============================================================ 5 -->
+<div class="section-title" id="s5">5 · Shared solution model</div>
+
+<div class="card" id="s5-1">
+<h2>5.1 Fixed card layout: no new rows, no new chips</h2>
+<div class="rule">
+<p><b>Card slots stay exactly as today</b> (<code>h-38</code>, <code>justify-between</code>, single-line rows with <code>overflow-hidden</code>):</p>
+<ol class="tight">
+	<li>Title, 2-line clamp (unchanged)</li>
+	<li>Scope chips: channel · marketplace · variants (unchanged)</li>
+	<li><b>Issue chip + one life-cycle chip</b>, still exactly two chips. The issue chip becomes <b>"Issue type · presenting"</b> with an ⓘ pinned at its end. It's the only thing that shrinks: <code>min-w-0</code>, ellipsis. The life-cycle chip is <code>shrink-0</code>.</li>
+	<li>Footer: assignee · time in stage | i (SKU / ASIN, product tickets only) · primary button (unchanged). No secondary button and no "checked" text here.</li>
+</ol>
+<p><b>Everything else goes into the ⓘ tooltip:</b> full presenting text, facts table, recommended steps, external link, what clears it, last checked.</p>
+</div>
+<p>Width budget: the lane is <code>min-w-76</code> (304 px) and grows with <code>flex-1</code>. The text column is roughly the card width minus 64 px thumb, padding and ⋯, so about 190–290 px for row 3. The life-cycle chip takes about 80–110 px, leaving the issue chip about 100–180 px. So:</p>
+<ul class="tight">
+	<li>The presenting suffix is kept to <b>≤ 16 characters</b> ("AHR 180", "3 metrics", "Compliance · 3", "WEBP", "€24.90 › €22.50").</li>
+	<li>If it still doesn't fit, the <i>issue-type</i> part truncates first. The tooltip header always repeats both in full, and the severity stripe and colour still show the category.</li>
+	<li>No presenting (price, OOS, low stock): the chip is exactly today's.</li>
+</ul>
+</div>
+
+<div class="card" id="s5-2">
+<h2>5.2 Presenting issue = <code>presenting</code> on the card</h2>
+<pre><code>presenting: {
+	code: string;                                // 'AHR', 'METRICS_FAILING', 'LISTING_ERRORS', …
+	params: Record&lt;string, string | number&gt;;   // { score: 180 }, { count: 3 }, { bucket: 'COMPLIANCE', count: 3 }
+	tone: 'red' | 'amber' | 'blue' | 'gray';
+} | null</code></pre>
+<p>Two translations per code: <code>ActionCenterV2_Presenting_&lt;code&gt;_Short</code> (the ≤ 16-char chip suffix) and <code>ActionCenterV2_Presenting_&lt;code&gt;</code> (the full sentence for the tooltip header, dialog headline and context bar). Both go through <code>getPresentingLabel(ticket, 'short' | 'full')</code> in <code>@/lib/issues</code>, with a humanised fallback.</p>
+<p><b>Computed at read time, not stored</b> (decision D1). Every value already sits in a source table, and most joins already run on each board read inside the fix-state SQL. When the channel has recovered but the ticket hasn't cleared yet, the card can say "Recovered · clears on next check" instead of showing a stale number.</p>
+
+<h3>5.2.1 Where each value comes from</h3>
+<div class="table-wrap"><table>
+<tr><th>Issue type</th><th>Value</th><th>Source</th><th>Read cost</th></tr>
+<tr><td>Shopify not active, Main image (missing vs format), Buy Box ineligible reason, Listing bucket, Connection kind</td><td>Label from the sub type</td><td><code>tbl_issue_ticket_items.sub_issue_type</code>, already on the card</td><td>None (webapp only)</td></tr>
+<tr><td>Listing blocked / warning</td><td>Error count</td><td><code>tbl_channel_product_errors</code>, the same rows the fix-state <code>le</code> lateral already aggregates</td><td>Add <code>COUNT(*)</code> to an existing lateral</td></tr>
+<tr><td>Buy Box lost / at risk</td><td>Your landed price vs target</td><td><code>evaluateBuyBoxPrice</code> already computes both on every read</td><td>Return them in <code>IssueTicketItemFix</code></td></tr>
+<tr><td>Main image</td><td>File extension</td><td>Media row behind the fix-state <code>fm</code> lateral</td><td>One more column</td></tr>
+<tr><td>Stock sync</td><td>Channel qty vs Categra qty</td><td>Fix-state <code>fs</code> lateral has the warehouse stock; add the listing's remote stock</td><td>One more column</td></tr>
+<tr><td>Not searchable</td><td>Amazon listing status</td><td><code>marketplace_external_status</code> (key-signal source)</td><td>One join, only for these tickets</td></tr>
+<tr><td>Product type changed</td><td>Current → suggested type</td><td><code>tbl_product_channels.amazon_product_type_id</code> / <code>suggested_product_attribute_group_id</code> + name tables</td><td>One join, only for these tickets</td></tr>
+<tr><td>Marketplace health</td><td>AHR score/status, number of failing metrics / policies</td><td><code>tbl_amazon_channel_marketplaces.ahr_*</code> + count of <code>status = 'BAD'</code> in <code>tbl_amazon_seller_performance.metrics</code></td><td>One small query for the page's channel tickets (a handful of rows)</td></tr>
+<tr><td>Account health</td><td>Status + "was …"</td><td><code>tbl_amazon_channels.account_status / previous_account_status / account_status_event_time</code>, <code>tbl_shopify_channels.store_status</code></td><td>Same small query</td></tr>
+<tr><td>Connection</td><td>Lost reason</td><td>Channel connection status / reason columns</td><td>Same small query</td></tr>
+<tr><td>Permission required, Untrusted data</td><td>Role / cause, since</td><td><code>tbl_channel_sync_failures</code> (<code>error_code</code>, <code>createdAt</code>, <code>failure_count</code>)</td><td>Same small query. The affected count needs the heavier stock-failure query, so it's in the dialog only</td></tr>
+<tr><td>Marketplace / account health</td><td>"Recovering", "AHR 220 → 180"</td><td><code>tbl_channel_status_events</code> (<code>previous_value</code>, <code>current_value</code>, <code>metadata</code>)</td><td>Tooltip / dialog load only</td></tr>
+</table></div>
+<p class="note">Don't call <code>ChannelHealthService.getHealthForAccount</code> on board reads: it loads and derives everything for the account. Read only the raw columns above for the ticket's channels.</p>
+</div>
+
+<div class="card" id="s5-3">
+<h2>5.3 Facts + recommended steps = the tooltip content</h2>
+<p><b>Implemented (rev 2):</b> nothing is fetched when the tooltip opens. Channel tickets carry <code>details</code> (facts, <code>checkedAt</code>, <code>since</code>) on the list card. Product tickets carry cheap per-item <code>extras</code> (price vs target, error count, image format, stock). Steps and "clears when" are built in the webapp from the issue type, sub types, metric keys and those extras. Heavy, low-value data (listing error texts, the data-trust affected count) is left out. The explain shape below is kept for reference only:</p>
+<pre><code>explain: {
+	headline: Presenting;                    // full sentence
+	facts: Array&lt;{
+		group: 'AHR' | 'METRIC' | 'POLICY' | 'ACCOUNT' | 'CONNECTION' | 'SYNC' | 'PRICE' | 'LISTING' | 'MEDIA' | 'PRODUCT_TYPE';
+		key: string;                         // metric / policy / attribute key → translated, humanised fallback
+		value: string | number | null;
+		target?: string | null;              // "&lt; 1%"
+		status?: 'bad' | 'warn' | 'ok';
+		window?: { from: string | null; to: string | null };
+	}&gt;;
+	steps: Array&lt;{
+		where: 'CATEGRA' | 'AMAZON' | 'SHOPIFY';
+		key: string;                         // ActionCenterV2_Step_&lt;key&gt;, ≤ ~12 words each
+		params?: Record&lt;string, string | number&gt;;
+		link?: { kind: 'CATEGRA' | 'EXTERNAL'; url: string; labelKey: string };
+	}&gt;;                                       // 2–4 steps; fact-specific steps first (e.g. per failing metric)
+	clearsWhenKey: string;                   // ActionCenterV2_ClearsWhen_&lt;issueType&gt;
+	since: string | null;
+	checkedAt: string | null;
+}</code></pre>
+<p>Steps are static per issue type / sub type / metric key (a constant map in the API), filled with params from facts. Each step is a few words. External steps name the approximate menu path ("Seller Central › Performance › Account Health"), and only one external link per tooltip is shown as a link. The same <code>explain</code> payload also feeds the dialog (inline, §7) and the context bar tooltip.</p>
+<h3>Tooltip layout (same on every surface)</h3>
+<ol class="tight">
+	<li><b>Header</b>: full "Issue type · presenting" sentence</li>
+	<li><b>What the channel reports</b>: facts table, bad values in red, max ~6 rows then "+n more · open ticket"</li>
+	<li><b>Recommended steps</b>: numbered, a platform tag per step, one link</li>
+	<li><b>Footer</b>: "Clears when …" · "Checked 3h ago"</li>
+</ol>
+<p class="note">Reuse <code>CommandCenterInfoTooltip</code> (portaled, <code>max-h-72</code>-style cap, scrolls) so it matches the identifiers tooltip. It doesn't affect card height because it's portaled.</p>
+</div>
+
+<div class="card" id="s5-4">
+<h2>5.4 External life cycle = new fix state <code>EXTERNAL</code></h2>
+<p>A fix state for "only the seller can fix this outside Categra". Every surface already renders fix states through <code>IssueTicketFixBadges</code>, <code>IssueTicketItemFixBadge</code> and <code>getTicketFixHint</code>. On the card it uses the <b>same single life-cycle chip slot</b>, so no extra width.</p>
+<div class="table-wrap"><table>
+<tr><th>fixState</th><th>fixReason</th><th>Card chip (short)</th><th>Context-bar hint</th></tr>
+<tr><td><code>EXTERNAL</code></td><td><code>FIX_ON_AMAZON</code></td><td><span class="badge amber">Fix on Amazon</span></td><td>Resolve it in Seller Central; clears after Amazon's next report</td></tr>
+<tr><td><code>EXTERNAL</code></td><td><code>FIX_ON_SHOPIFY</code></td><td><span class="badge amber">Fix on Shopify</span></td><td>Resolve it in Shopify admin</td></tr>
+<tr><td><code>EXTERNAL</code></td><td><code>AWAITING_RECHECK</code></td><td><span class="badge blue">Awaiting Amazon</span></td><td>Waiting for Amazon's re-check · checked 3h ago</td></tr>
+<tr><td><code>EXTERNAL</code></td><td><code>RECOVERING</code></td><td><span class="badge blue">Recovering</span></td><td>Improving since last report; clears once all are within target</td></tr>
+<tr><td><code>NOT_FIXED</code></td><td><code>RECONNECT</code> / <code>GRANT_PERMISSION</code></td><td><span class="badge gray">Reconnect</span></td><td>Reconnect the channel on this page</td></tr>
+<tr><td><code>EXTERNAL</code></td><td><code>VERIFYING</code></td><td><span class="badge blue">Verifying…</span></td><td>Waiting for the next check after reconnecting</td></tr>
+</table></div>
+<p class="note">"Checked X ago" lives in the tooltip footer, the dialog and the context-bar hint, never on the card. Rank becomes <code>NOT_FIXED 0 · EXTERNAL 1 · READY_TO_PUBLISH 2 · PUBLISHING 3 · NOT_APPLICABLE 4</code>. This touches <code>ISSUE_TICKET_FIX_STATE_RANK</code>, <code>summariseFixStates</code>, the SQL fix-state <code>CASE</code>, the fix-state filter, <code>ACTION_CENTER_V2_FIX_STATE_TONE</code>, <code>ITEM_ORDER</code> and the CSV export. <code>NOT_APPLICABLE</code> remains only for FBA stock items.</p>
+<div class="flow">
+	<span class="st">Detected</span><span class="ar">→</span>
+	<span class="st ext">Fix on Amazon</span><span class="ar">→ user moves it to Awaiting channel →</span>
+	<span class="st ext">Awaiting Amazon</span><span class="ar">→ partial improvement →</span>
+	<span class="st ext">Recovering</span><span class="ar">→ next report OK →</span>
+	<span class="st cat">Cleared</span>
+</div>
+<p><b>External link:</b> "Open in Seller Central" / "Open Shopify admin" sits in the tooltip steps and the ⋯ menu, and as a button only in the dialog and context bar. Those already have button rows, so their height doesn't change. The card's primary button stays as it is.</p>
+</div>
+
+<!-- ============================================================ 6 -->
+<div class="section-title" id="s6">6 · Per issue type</div>
+<p class="note" style="margin-top:-6px">Each type lists: chip suffix (≤ 16 chars), tooltip facts, recommended steps, life cycle. Card mocks are drawn at the real fixed size (340 × 152).</p>
+
+<div class="card" id="s6-1">
+<h2>6.1 Account health <span class="pill high">Both missing</span></h2>
+<ul class="tight">
+	<li><b>Chip suffix:</b> "At risk" · "Deactivated" · "Store frozen" / "Store locked" / "Uninstalled".</li>
+	<li><b>Facts:</b> status, previous status ("was Normal"), since; worst marketplace AHR as a pointer to that ticket.</li>
+	<li><b>Steps (at risk / deactivated):</b>
+		<ol class="tight">
+			<li><i>Amazon</i>: Seller Central › Performance › Account Health; open the flagged item.</li>
+			<li><i>Amazon</i>: Check Performance Notifications for what Amazon asks for.</li>
+			<li><i>Amazon</i>: Submit the plan of action / appeal if requested.</li>
+			<li><i>Categra</i>: Move the ticket to Awaiting channel.</li>
+		</ol></li>
+	<li><b>Steps (Shopify store):</b> frozen/locked → <i>Shopify</i>: Settings › Billing, settle the outstanding bill; uninstalled → <i>Categra</i>: Channel settings › Reconnect.</li>
+	<li><b>Life cycle:</b> <code>EXTERNAL / FIX_ON_AMAZON</code> (or <code>FIX_ON_SHOPIFY</code>) → <code>AWAITING_RECHECK</code> → cleared by the account-status notification / sweep.</li>
+</ul>
+<div class="mock-row">
+	<div class="mock-col">
+		<div class="mock-label">Today</div>
+		<div class="tk"><div class="top"><div class="thumb">AMZ</div><div class="body"><div class="name">My Amazon EU</div><div class="chips"><span class="c scope">Amazon EU</span></div><div class="chips"><span class="c red">Account health</span></div></div><span class="menu">⋯</span></div><div class="foot"><span>Unassigned · 2d</span><span><span class="ibtn">i</span><span class="btn">Open Channel settings</span></span></div></div>
+	</div>
+	<div class="mock-col">
+		<div class="mock-label">Proposed: same height, same 2 chips</div>
+		<div class="tk"><div class="top"><div class="thumb">AMZ</div><div class="body"><div class="name">My Amazon EU</div><div class="chips"><span class="c scope">Amazon EU</span></div><div class="chips"><span class="c red merge"><span class="txt"><b>Account health</b><span> · At risk</span></span><i class="i">i</i></span><span class="c amber">Fix on Amazon</span></div></div><span class="menu">⋯</span></div><div class="foot"><span>Unassigned · 2d</span><span><span class="btn">Open Channel settings</span></span></div></div>
+	</div>
+</div>
+</div>
+
+<div class="card" id="s6-2">
+<h2>6.2 Marketplace health <span class="pill high">Both missing</span></h2>
+<ul class="tight">
+	<li><b>Chip suffix</b> (worst reason first): "Deactivated" · "AHR 180" · "3 metrics" · "1 policy" · "At risk". Only one number goes on the card; the rest is in the tooltip.</li>
+	<li><b>Facts:</b> AHR score + status; failing metrics (yours · target · window); failing policies (defects); policy warnings count.</li>
+	<li><b>Steps:</b> one line per failing fact, then the wait step (max 4; more goes behind "+n more"):
+		<ul class="tight">
+			<li>Order defect rate → <i>Amazon</i>: resolve open A-to-z claims, negative feedback, chargebacks.</li>
+			<li>Late shipment rate → <i>Amazon</i>: confirm shipments on time; raise handling time if needed.</li>
+			<li>Valid tracking rate → <i>Amazon</i>: upload tracking IDs with a supported carrier.</li>
+			<li>Pre-fulfilment cancel rate → <i>Categra</i>: fix stock accuracy (open stock tickets).</li>
+			<li>Policy violation → <i>Amazon</i>: Account Health › policy › fix the listing or appeal.</li>
+			<li>Last → <i>Amazon</i>: metrics use rolling windows (30–60 d); improvement shows gradually.</li>
+		</ul></li>
+	<li><b>Item identity (D2):</b> keep one item per sub type; the individual metrics are tooltip facts.</li>
+	<li><b>Life cycle:</b> as §6.1, plus <code>RECOVERING</code> when <code>tbl_channel_status_events</code> shows AHR up or a metric BAD → GOOD since the ticket was created.</li>
+</ul>
+<div class="mock-row">
+	<div class="mock-col">
+		<div class="mock-label">Card: same height, suffix truncates first</div>
+		<div class="tk"><div class="top"><div class="thumb">AMZ</div><div class="body"><div class="name">My Amazon EU</div><div class="chips"><span class="c scope">Amazon EU</span><span class="c scope">DE</span></div><div class="chips"><span class="c red merge"><span class="txt"><b>Marketplace health</b><span> · AHR 180</span></span><i class="i">i</i></span><span class="c amber">Fix on Amazon</span></div></div><span class="menu">⋯</span></div><div class="foot"><span>Unassigned · 5d</span><span><span class="btn">Open Channel settings</span></span></div></div>
+	</div>
+	<div class="mock-col wide">
+		<div class="mock-label">Tooltip on the chip's ⓘ</div>
+		<div class="tt">
+			<div class="hd">Marketplace health · AHR 180 (At risk), 3 metrics outside target</div>
+			<div class="k">What Amazon reports</div>
+			<table>
+				<tr><th>Metric</th><th>Yours</th><th>Target</th><th>Window</th></tr>
+				<tr><td>AHR</td><td class="bad">180</td><td>≥ 200</td><td class="muted">—</td></tr>
+				<tr><td>Order defect rate</td><td class="bad">1.8%</td><td>&lt; 1%</td><td class="muted">60 d</td></tr>
+				<tr><td>Late shipment rate</td><td class="bad">5.2%</td><td>&lt; 4%</td><td class="muted">30 d</td></tr>
+				<tr><td>Valid tracking rate</td><td class="bad">91%</td><td>&gt; 95%</td><td class="muted">30 d</td></tr>
+			</table>
+			<div class="k">Recommended steps</div>
+			<ol>
+				<li><span class="muted">Amazon ·</span> Resolve open A-to-z claims and negative feedback</li>
+				<li><span class="muted">Amazon ·</span> Confirm shipments on time; raise handling time if needed</li>
+				<li><span class="muted">Amazon ·</span> Upload tracking IDs with a supported carrier</li>
+				<li><span class="muted">Categra ·</span> Move ticket to Awaiting channel when done</li>
+			</ol>
+			<div style="margin-top:6px"><span class="lnk">Open Account Health in Seller Central ↗</span></div>
+			<div class="ft"><span>Clears when all are within target</span><span>Checked 3h ago</span></div>
+		</div>
+	</div>
+</div>
+<p class="where">Data: <code>tbl_amazon_channel_marketplaces.ahr_status / ahr_score</code>; <code>tbl_amazon_seller_performance.metrics</code> (<code>metrics.*</code>, <code>policies.*</code>, <code>warnings</code>), <code>checked_at</code>; reuse the query in <code>AmazonAccountHealthService.getDetail</code>.</p>
+</div>
+
+<div class="card" id="s6-3">
+<h2>6.3 Connection <span class="pill high">Both missing</span></h2>
+<ul class="tight">
+	<li><b>Chip suffix:</b> "Not connected" · "Token revoked" (humanised connection reason).</li>
+	<li><b>Facts:</b> status, reason, last successful check.</li>
+	<li><b>Steps:</b> <i>Categra</i>: Channel settings › Reconnect → <i>Amazon / Shopify</i>: approve access with the account owner's login → <i>Categra</i>: wait for "Verifying" to clear.</li>
+	<li><b>Life cycle:</b> <code>NOT_FIXED / RECONNECT</code> → <code>VERIFYING</code> after the OAuth callback → cleared when the probe passes. The reconnect path must fire an issue-ticket trigger (source <code>CHANNEL_HEALTH</code>).</li>
+</ul>
+</div>
+
+<div class="card" id="s6-4">
+<h2>6.4 Permission required <span class="pill high">Both missing</span></h2>
+<ul class="tight">
+	<li><b>Chip suffix:</b> "Insights role".</li>
+	<li><b>Facts:</b> missing role (Selling Partner Insights), blocked feature (account health report), since, failure count.</li>
+	<li><b>Steps:</b> <i>Amazon</i>: Seller Central › Settings › User Permissions, grant the role to the app user → <i>Categra</i>: Channel settings › Reconnect to re-authorise → wait for the next health report.</li>
+	<li><b>Life cycle:</b> <code>NOT_FIXED / GRANT_PERMISSION</code> → <code>VERIFYING</code> until the next performance report succeeds → cleared.</li>
+</ul>
+</div>
+
+<div class="card" id="s6-5">
+<h2>6.5 Untrusted data <span class="pill high">Both missing</span></h2>
+<ul class="tight">
+	<li><b>Chip suffix:</b> "Inventory · 6h" · "Orders · 2h".</li>
+	<li><b>Facts:</b> domain, cause (humanised error code), since / duration, sibling marketplaces healthy/stale (affected count in the dialog only).</li>
+	<li><b>Steps:</b> <i>Categra</i>: retrying automatically, no action needed yet → if over a few hours, check the channel connection → contact support with the shown cause.</li>
+	<li><b>Life cycle:</b> <code>EXTERNAL / AWAITING_RECHECK</code>, hint "Retrying automatically · last attempt 10m ago". If a manual retry exists, it's a step link, and <code>VERIFYING</code> shows while it runs.</li>
+</ul>
+</div>
+
+<div class="card" id="s6-6">
+<h2>6.6 Product type changed <span class="pill high">Both missing</span></h2>
+<ul class="tight">
+	<li><b>Chip suffix:</b> "→ T_SHIRT" (the suggested type; current → suggested in the tooltip).</li>
+	<li><b>Facts:</b> current type (<code>amazon_product_type_id</code>), suggested type (<code>suggested_product_attribute_group_id</code>), attributes that would need remapping (count).</li>
+	<li><b>Steps:</b> <i>Categra</i>: open the product's channel tab → review the suggested type → accept and remap attributes, or dismiss → publish.</li>
+	<li><b>Life cycle (implemented):</b> <code>NOT_FIXED / REVIEW_PRODUCT_TYPE</code> "Review product type". Accepting or dismissing clears the suggestion and the ticket immediately.</li>
+</ul>
+</div>
+
+<div class="card" id="s6-7">
+<h2>6.7 Buy Box ineligible <span class="pill med">Partial</span></h2>
+<ul class="tight">
+	<li><b>Chip suffix</b> (from the sub type): "Offer" · "ASIN" · "Not featured" · "Fetch failed".</li>
+	<li><b>Facts:</b> eligibility inputs from the offer snapshot (prime, condition, fulfilment) where present.</li>
+	<li><b>Steps:</b>
+		<ul class="tight">
+			<li>Offer not eligible → <i>Amazon</i>: check condition, shipping template and fulfilment of the offer.</li>
+			<li>Not a featured merchant → <i>Amazon</i>: improve account metrics and sales history; it isn't fixable per listing.</li>
+			<li>ASIN not eligible → <i>Amazon</i>: Buy Box isn't offered for this ASIN; nothing to fix.</li>
+			<li>Fetch pending / failed / stale → <i>Categra</i>: no action; refreshes automatically.</li>
+		</ul></li>
+	<li><b>Life cycle:</b> non-price reasons → <code>EXTERNAL / FIX_ON_AMAZON</code>; fetch states → <code>AWAITING_RECHECK</code> "Awaiting refresh".</li>
+</ul>
+</div>
+
+<div class="card" id="s6-8">
+<h2>6.8 Buy Box lost / at risk <span class="pill low">Numbers missing</span></h2>
+<ul class="tight">
+	<li><b>Chip suffix:</b> "€24.90 › €22.50" (yours › target). The life-cycle chip stays (e.g. "Price above Buy Box").</li>
+	<li><b>Facts:</b> your landed price, target and which kind (featured / expected / threshold), top 3 competing offers, last refresh.</li>
+	<li><b>Steps:</b> <i>Categra</i>: Price tab › set ≤ {{target}} → publish → wait for the next buy-box refresh.</li>
+	<li><b>Life cycle:</b> unchanged.</li>
+</ul>
+</div>
+
+<div class="card" id="s6-9">
+<h2>6.9 Listing blocked / warning <span class="pill med">Presenting missing on card</span></h2>
+<ul class="tight">
+	<li><b>Chip suffix:</b> "Compliance · 3", or "3 errors" when spread over several buckets.</li>
+	<li><b>Facts:</b> per variant, attribute name + error text (capped by <code>ISSUE_TICKET_EVIDENCE_MAX_ERROR_TEXTS</code>, then "+n more").</li>
+	<li><b>Steps:</b> <i>Categra</i>: Sync errors tab › fix the named attributes → publish → result arrives with the feed.</li>
+	<li><b>Life cycle:</b> unchanged.</li>
+</ul>
+</div>
+
+<div class="card" id="s6-10">
+<h2>6.10 Not searchable (Amazon) / Not active (Shopify) <span class="pill med">Partial</span></h2>
+<ul class="tight">
+	<li><b>Not searchable, chip suffix:</b> "Buyable only" (Amazon status without DISCOVERABLE). Facts: status per variant; likely cause when the same product × marketplace has a LISTING_BLOCKER ticket. Steps: <i>Categra</i>: fix the blocking errors (link to that ticket) → publish; <i>Amazon</i>: if none, check Inventory › Fix your products.</li>
+	<li><b>Not active, chip suffix:</b> "Draft" · "Archived" · "Unpublished". Steps: <i>Categra</i>: set the status to active on the channel tab → publish; or <i>Shopify</i>: Products › Status › Active and add to the Online Store sales channel.</li>
+</ul>
+</div>
+
+<div class="card" id="s6-11">
+<h2>6.11 Main image <span class="pill low">Presenting missing on card</span></h2>
+<ul class="tight">
+	<li><b>Chip suffix:</b> "Missing" · "WEBP".</li>
+	<li><b>Facts:</b> current file type, allowed formats (<code>ISSUE_TICKET_AMAZON_IMAGE_EXTENSIONS</code>).</li>
+	<li><b>Steps:</b> <i>Categra</i>: Media › upload a JPEG/PNG main image (Amazon: white background, ~1000 px+) → publish.</li>
+</ul>
+</div>
+
+<div class="card" id="s6-12">
+<h2>6.12 Stock sync <span class="pill low">Minor</span></h2>
+<ul class="tight">
+	<li><b>Chip suffix:</b> "12 vs 15" (mismatch) · "Push failing".</li>
+	<li><b>Facts:</b> channel qty, Categra qty, failure error code + since.</li>
+	<li><b>Steps:</b> mismatch → <i>Categra</i>: Stock tab › sync stock; push failing → check the error, then retry the sync.</li>
+</ul>
+</div>
+
+<div class="card" id="s6-13">
+<h2>6.13 Missing price / Out of stock / Low stock <span class="pill effort">Fine</span></h2>
+<p>No change on the card: <code>presenting</code> stays null and the fix badge already explains. The ⓘ tooltip can still carry steps for consistency: "Price tab › set a price → publish", "Map a warehouse / add stock", "Raise stock above {{threshold}}".</p>
+</div>
+
+<!-- ============================================================ 7 -->
+<div class="section-title" id="s7">7 · Surface sync rules</div>
+<div class="card">
+<p style="margin-top:0">One helper set in <code>webapp/src/lib/issues</code> feeds every surface: <code>getPresentingLabel(ticket, 'short' | 'full')</code>, <code>IssueTicketIssueChip</code> (merged chip + ⓘ), <code>IssueTicketExplainTooltip</code> (lazy <code>explain</code> → facts + steps + footer) and <code>IssueTicketExplainPanel</code> (the same content inline). No surface builds its own text, and none adds a row.</p>
+<div class="table-wrap"><table>
+<tr><th>Surface</th><th>Presenting issue</th><th>Life cycle</th><th>Facts + steps</th><th>Height impact</th></tr>
+<tr><td>Board card</td><td>Merged issue chip, short suffix, ellipsis</td><td>Same single fix chip (incl. <code>EXTERNAL</code>)</td><td>ⓘ tooltip</td><td>None (same slots)</td></tr>
+<tr><td>Product issues drawer</td><td>Title line becomes "Issue type · short suffix" (one line, truncate) with ⓘ</td><td>Existing chip row</td><td>ⓘ tooltip</td><td>None</td></tr>
+<tr><td>Context bar</td><td>The existing issue <code>ToneBadge</code> becomes the merged chip with ⓘ</td><td>Existing hint slot, no longer hidden ("Fix on Amazon · checked 3h ago")</td><td>ⓘ tooltip; external link as one button in the existing right-hand button group</td><td>None (same row)</td></tr>
+<tr><td>Ticket dialog header</td><td>Full sentence under the title</td><td>Existing badges</td><td><code>IssueTicketExplainPanel</code> section "What to do" above Items: steps + external button</td><td>Dialog scrolls; that's fine</td></tr>
+<tr><td>Sub items (dialog)</td><td>Sub-type chip stays</td><td>Item fix badge</td><td>The item's facts inline (metric rows under METRIC_BAD)</td><td>Dialog only</td></tr>
+<tr><td>Ticket history (dialog)</td><td colspan="4">Channel tickets: <code>tbl_channel_status_events</code> rows since the ticket was created are merged into the timeline ("AHR 220 → 180", "Late shipment rate: BAD → GOOD"). No new ticket event type.</td></tr>
+</table></div>
+<p class="note">The Command Center attention / next-action cards read tickets too, so they can reuse <code>IssueTicketIssueChip</code> later. That's out of scope here.</p>
+</div>
+
+<!-- ============================================================ 8 -->
+<div class="section-title" id="s8">8 · Where the i button goes</div>
+<div class="card">
+<p style="margin-top:0">Today the only i is in the card footer, left of the primary button (SKU / ASIN; on channel tickets just a scope sentence). Options, all within the fixed card:</p>
+<div class="table-wrap"><table>
+<tr><th>#</th><th>Placement</th><th>Pros</th><th>Cons</th></tr>
+<tr><td class="n">A</td><td><b>ⓘ pinned at the end of the merged issue chip</b> (row 3)</td><td>The info sits on the thing it explains; no new element; same on card, drawer and context bar</td><td>Small target (hover delay, tap on touch). Takes ~16 px of the chip's width</td></tr>
+<tr><td class="n">B</td><td>Top-right, left of the ⋯ menu</td><td>Fixed spot, no chip width used</td><td>Two icons in the corner, far from the chip</td></tr>
+<tr><td class="n">C</td><td>Next to the title</td><td>"About this" spot</td><td>Conflicts with the title's own truncation tooltip</td></tr>
+<tr><td class="n">D</td><td>Merge into the footer i: sections "Issue" then "Identifiers"</td><td>One icon, zero layout change</td><td>Mixes concerns; long tooltips on product tickets</td></tr>
+<tr><td class="n">E</td><td>Repurpose the footer i on channel tickets only</td><td>No new UI for channel tickets</td><td>Different places for product vs channel tickets</td></tr>
+</table></div>
+<p><b>Implemented (rev 2): exactly one i, before the ⋯ menu</b>, on the board card, the product drawer card and next to the context-bar chip. On product tickets it shows the former identifiers content (product and variant name, SKU, ASIN), with each variant's cheap number, then the steps and "clears when". On channel tickets it shows what the channel reports, the steps and the external link. The footer SKU / ASIN i is removed.</p>
+<div class="mock-row">
+	<div class="mock-col">
+		<div class="mock-label">A: ⓘ on the chip (not chosen)</div>
+		<div class="tk high"><div class="top"><div class="thumb">IMG</div><div class="body"><div class="name">Cotton Tee Classic, Organic Crew Neck</div><div class="chips"><span class="c scope">Amazon EU</span><span class="c scope">DE</span><span class="c scope">2 variants</span></div><div class="chips"><span class="c amber merge"><span class="txt"><b>Listing warning</b><span> · Compliance · 3</span></span><i class="i">i</i></span><span class="c">1 / 2 set</span></div></div><span class="menu">⋯</span></div><div class="foot"><span>Unassigned · 1d</span><span><span class="ibtn">i</span><span class="btn">Open Sync errors</span></span></div></div>
+	</div>
+	<div class="mock-col">
+		<div class="mock-label">B: corner button before ⋯ (implemented)</div>
+		<div class="tk high"><div class="top"><div class="thumb">IMG</div><div class="body"><div class="name">Cotton Tee Classic, Organic Crew Neck</div><div class="chips"><span class="c scope">Amazon EU</span><span class="c scope">DE</span><span class="c scope">2 variants</span></div><div class="chips"><span class="c amber merge"><span class="txt"><b>Listing warning</b><span> · Compliance · 3</span></span></span><span class="c">1 / 2 set</span></div></div><span class="ibtn hl">i</span><span class="menu">⋯</span></div><div class="foot"><span>Unassigned · 1d</span><span><span class="ibtn">i</span><span class="btn">Open Sync errors</span></span></div></div>
+	</div>
+</div>
+</div>
+
+<!-- ============================================================ 9 -->
+<div class="section-title" id="s9">9 · Change list</div>
+<div class="card">
+<h3 style="margin-top:0">API</h3>
+<ul class="tight">
+	<li><code>core/types/issue-ticket.type.ts</code>: <code>IssueTicketPresenting</code> on <code>IssueTicketCard</code>; <code>IssueTicketExplain</code> (facts, steps, clearsWhen, since, checkedAt); <code>EXTERNAL</code> in <code>IssueTicketFixState</code>; new <code>IssueTicketFixReason</code> values.</li>
+	<li><code>issue-tickets/issue-tickets.service.ts</code> (card build): one small channel-signal query for channel-level tickets in the page, plus the extra fix-state columns, folded into <code>presenting</code> (worst reason wins).</li>
+	<li><code>issue-tickets/issue-tickets.sql.ts</code>: fix-state laterals return error count, image extension, remote stock; <code>EXTERNAL</code> branch in the fix-state <code>CASE</code> (channel types + non-price buy box), <code>AWAITING_RECHECK</code> from lane, <code>RECOVERING</code> from status events, fix-state filter.</li>
+	<li><code>issue-tickets/issue-ticket-fix-state.service.ts</code>: return the buy-box price + target; <code>applyBuyBoxTargets</code> sets <code>EXTERNAL</code>.</li>
+	<li><code>issue-tickets/issue-ticket-evidence.service.ts</code>: drop the <code>productId === null</code> early return; build <code>explain</code> (channel branch from health + seller performance; facts for listing, buy box, stock, image, product type).</li>
+	<li><code>issue-tickets/issue-tickets.controller.ts</code>: <code>GET :ticketKey/explain</code>; ticket detail merges <code>tbl_channel_status_events</code> into history for channel tickets.</li>
+	<li><code>core/constants/constants.ts</code>: <code>ISSUE_TICKET_EXTERNAL_TYPES</code>; <code>ISSUE_TICKET_STEPS</code> map (issue type / sub type / metric key → step keys, platform, link kind); external URL builders per marketplace region; PRODUCT_TYPE_CHANGED out of the not-applicable list; rank.</li>
+	<li><code>orchestration/command-center/issue-signals.sql.ts</code>: current + suggested product type.</li>
+</ul>
+<h3>Migration (db-migrations)</h3>
+<ul class="tight"><li>None. Everything is computed from existing tables (§5.2.1).</li></ul>
+<h3>Webapp</h3>
+<ul class="tight">
+	<li><code>lib/issues</code>: <code>getPresentingLabel</code>, <code>IssueTicketIssueChip</code>, <code>IssueTicketExplainTooltip</code>, <code>IssueTicketExplainPanel</code>, metric / policy label map; <code>lib/api.ts</code>: <code>EXPLAIN</code> URL.</li>
+	<li><code>action-center-v2/_lib/action-center-v2-types.ts</code>: mirror the new types.</li>
+	<li><code>action-center-v2-ticket-card.tsx</code>: swap the issue <code>ToneBadge</code> for <code>IssueTicketIssueChip</code>; hide the identifiers i on channel tickets; nothing else changes.</li>
+	<li><code>action-center-v2-ticket-menu.tsx</code>: "Open in Seller Central / Shopify admin" item for external types.</li>
+	<li><code>action-center-v2-ticket-dialog.tsx</code>: full headline, "What to do" panel, item facts, merged status-event history.</li>
+	<li><code>ProductActionCenterV2Drawer.tsx</code>: title line → merged label + ⓘ.</li>
+	<li><code>issue-ticket-context-bar.tsx</code>: merged chip + ⓘ, <code>EXTERNAL</code> hint, external-link button in the existing group.</li>
+	<li><code>issue-ticket-fix-state.tsx</code> + <code>action-center-v2-styles.ts</code>: <code>EXTERNAL</code> labels, hints, tone, item order.</li>
+	<li><code>action-center-v2-format.ts</code>: <code>describeTicketEvent</code> for merged channel status events.</li>
+	<li>Translations (EN/DE/FR/ES/RO <code>action-center.ts</code>): <code>ActionCenterV2_Presenting_*</code> (+ <code>_Short</code>), <code>ActionCenterV2_Step_*</code>, <code>ActionCenterV2_ClearsWhen_*</code>, <code>ActionCenterV2_Metric_*</code>, <code>ActionCenterV2_Policy_*</code>, <code>ActionCenterV2_FixState_EXTERNAL</code>, <code>ActionCenterV2_FixReason_*</code>, <code>ActionCenterV2_ContextBar_FixHint_*</code>.</li>
+</ul>
+</div>
+
+<!-- ============================================================ 10 -->
+<div class="section-title" id="s10">10 · Tables involved</div>
+<div class="card">
+<div class="table-wrap"><table>
+<tr><th>Table</th><th>Why</th></tr>
+<tr><td><code>tbl_issue_tickets</code> / <code>tbl_issue_ticket_items</code> / <code>tbl_issue_ticket_events</code></td><td>Ticket, items, history (unchanged schema)</td></tr>
+<tr><td><code>tbl_channel_status_events</code></td><td>Past AHR / metric / policy / account-status changes: merged into channel ticket history, used for <code>RECOVERING</code></td></tr>
+<tr><td><code>tbl_amazon_channel_marketplaces</code></td><td><code>account_status</code>, <code>ahr_status</code>, <code>ahr_score</code> per marketplace</td></tr>
+<tr><td><code>tbl_amazon_seller_performance</code></td><td><code>metrics.metrics</code> (rate / target / window), <code>metrics.policies</code> (defects), <code>metrics.warnings</code>, <code>checked_at</code></td></tr>
+<tr><td><code>tbl_amazon_channels</code></td><td>Account status, previous status, event time</td></tr>
+<tr><td><code>tbl_channel_sync_failures</code></td><td>Permission (MISSING_ROLE), health data unavailable, push / fetch failures</td></tr>
+<tr><td><code>tbl_shopify_channels</code></td><td><code>store_status</code> (STORE_*)</td></tr>
+<tr><td><code>tbl_product_channels</code></td><td><code>amazon_product_type_id</code> vs <code>suggested_product_attribute_group_id</code></td></tr>
+<tr><td><code>tbl_channel_product_errors</code> + <code>tbl_amazon_attribute_hierarchies</code></td><td>Listing error count, texts, attribute names</td></tr>
+<tr><td>Buy box status / offer snapshot tables</td><td>Your landed price, targets, top offers</td></tr>
+</table></div>
+</div>
+
+<!-- ============================================================ 11 -->
+<div class="section-title" id="s11">11 · Open decisions</div>
+<div class="card">
+<div class="table-wrap"><table>
+<tr><th>#</th><th>Decision</th><th>Recommendation</th></tr>
+<tr><td class="n">D1</td><td>Is <code>presenting</code> stored on the ticket or computed on read?</td><td>Computed on read (§5.2.1); no migration</td></tr>
+<tr><td class="n">D2</td><td>Marketplace metric / policy granularity: one item per sub type, or one item per metric?</td><td>One per sub type; metrics are tooltip facts</td></tr>
+<tr><td class="n">D3</td><td>New <code>EXTERNAL</code> fix state, or keep <code>NOT_APPLICABLE</code> + a separate field?</td><td>New fix state; it uses the existing single chip slot</td></tr>
+<tr><td class="n">D4</td><td>Does the Awaiting channel lane switch an external ticket to "Awaiting Amazon"?</td><td>Yes</td></tr>
+<tr><td class="n">D5</td><td>PRODUCT_TYPE_CHANGED gets a Categra life cycle</td><td>Decided: a single "Review product type" state. Accept / dismiss clears <code>suggested_product_attribute_group_id</code> and the ticket at once, so a "remapped · not published" state can't be detected</td></tr>
+<tr><td class="n">D6</td><td>External link placement</td><td>Tooltip steps + ⋯ menu on the card; button only in the dialog and context bar</td></tr>
+<tr><td class="n">D7</td><td>i button placement</td><td>Decided: B + E (§8), the corner i before ⋯</td></tr>
+<tr><td class="n">D8</td><td>Tooltip data: loaded lazily (<code>/explain</code>) or included in every board read?</td><td>Decided: in the list card (<code>details</code> for channel tickets, item <code>extras</code> for product tickets); no <code>/explain</code> endpoint</td></tr>
+<tr><td class="n">D9</td><td>Steps: a static API map per type / sub type / metric, or free text?</td><td>Decided: a static map in the webapp (<code>issue-ticket-presenting.tsx</code>); fact-specific steps first, max 4 shown</td></tr>
+</table></div>
+</div>
+
+</main>
+</div>
+</body>
+</html>
