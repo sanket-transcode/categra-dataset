@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Action Center Live Updates</title>
+<style>
+:root {
+	--bg: #0b0d12; --surface: #12151c; --surface-2: #181c25;
+	--text: #e8eaf0; --muted: #a3a9b6; --faint: #6f7685;
+	--border: #242a36; --accent: #8b8cff; --accent-text: #c9c8ff;
+	--code-bg: #1d212b; --code-text: #f5a8d4;
+	--red: #ff8a80; --red-bg: #3a1618;
+	--yellow: #f7c56b; --yellow-bg: #33270c;
+	--green: #77dba3; --green-bg: #0f2f1e;
+	--slate: #b3bccb; --slate-bg: #252a34;
+	color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.65 Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+main { padding: 40px clamp(16px, 4vw, 56px) 120px; max-width: 1180px; margin: 0 auto; }
+a { color: var(--accent); text-decoration: none; }
+code { background: var(--code-bg); color: var(--code-text); padding: 1px 6px; border-radius: 5px; font: 13px/1.5 "JetBrains Mono", Consolas, monospace; overflow-wrap: anywhere; }
+h2 { font-size: 22px; margin: 44px 0 10px; padding-top: 8px; border-top: 1px solid var(--border); }
+h3 { font-size: 16px; margin: 26px 0 6px; color: var(--accent-text); }
+p, li { color: var(--text); }
+.muted { color: var(--muted); }
+.table-wrap { overflow-x: auto; margin: 12px 0 18px; border: 1px solid var(--border); border-radius: 10px; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid var(--border); }
+th { background: var(--surface-2); color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }
+tr:last-child td { border-bottom: none; }
+.pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
+.full { background: var(--green-bg); color: var(--green); }
+.part { background: var(--yellow-bg); color: var(--yellow); }
+.none { background: var(--red-bg); color: var(--red); }
+.na { background: var(--slate-bg); color: var(--slate); }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; margin: 14px 0; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; margin: 8px 0 4px; font-size: 13px; color: var(--muted); }
+pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; overflow-x: auto; font: 13px/1.6 "JetBrains Mono", Consolas, monospace; }
+</style>
+</head>
+<body>
+<main>
+
+<h2 style="border-top:none;margin-top:0">1. Core objective</h2>
+<p>Each account can have several members. Every member who has Action Center access should see ticket changes on their screen right away, whoever or whatever caused the change. That covers changes made by another member in Action Center and changes from system events (publishes, syncs, notifications). It applies on the Action Center page and on every other surface that shows the same tickets.</p>
+<p>This document lists what can change a ticket and every surface that shows tickets. Each one is classified as <span class="pill full">Fully</span>, <span class="pill part">Partially</span> or <span class="pill none">Not implemented</span> for live updates, with the evidence and a short note on the fix direction.</p>
+<p class="muted">Scope (agreed 2026-11-23): Action Center board, dialog and insights drawer; product pages; Command Center; product list page; notification/sidebar badges. For permissions, this only checks that every permitted user <em>receives</em> the update. Over-broadcast and live role changes are not covered. Code analysis only, nothing run.</p>
+
+<h2>2. How live updates work today</h2>
+
+<h3>2.1 End-to-end flow</h3>
+<pre>Something changes a ticket
+   ├─ system trigger (publish result, BS, webhook, notification, scope toggle, sweep …)
+   │     └─ IssueTicketTriggerService.enqueue  → Redis pending set + debounced BullMQ job
+   │           └─ IssueTicketEvaluationProcessor → evaluateScope()
+   │                 └─ if created+reappeared+updated+cleared+moved &gt; 0
+   │                       └─ emit ISSUE_TICKETS_UPDATED { channelId, productIds | null } → account room
+   ├─ publish started → IssueTicketPublishHookService moves tickets to Awaiting
+   │     └─ emit ISSUE_TICKETS_UPDATED { channelId, productIds } → account room
+   └─ user mutation (status / assignee / snooze / primary action) → DB write + audit event
+         └─ (no socket emit) — only the caller's tab is updated from the HTTP response
+
+Webapp: useIssueTicketRefresh (components/issue-tickets/use-issue-ticket-refresh.ts)
+   listens to ISSUE_TICKETS_UPDATED (+ baseline / sync-status / FS sockets when a productId is given)
+   → 1.5 s debounce → surface refetches its own data through the permission-scoped API</pre>
+
+<h3>2.2 Socket rooms and delivery</h3>
+<ul>
+	<li>When a client connects, it joins <code>user:&lt;id&gt;</code> and <code>account:&lt;id&gt;</code> (<code>api/.../system/socket/socket.gateway.ts</code>, <code>socket.rooms.ts</code>).</li>
+	<li>The webapp connects with <code>query: { userId, accountId: currentAccountId }</code>. Because <code>currentAccountId</code> is in the effect's dependencies, switching accounts reconnects and joins the new account room (<code>webapp/.../_components/socket/socket-client.tsx:158</code>).</li>
+	<li>Worker processes have no gateway. Their emits are relayed through <code>JOB_STATUS_UPDATE</code> → <code>JobStatusRelayService</code>, which handles <code>target: 'account'</code> (<code>job-relay/job-status-relay.service.ts:42</code>). So the evaluation processor's emit still reaches the browsers.</li>
+	<li>There is one ticket event: <code>SOCKET_EVENTS.ISSUE_TICKETS_UPDATED</code> (<code>socket.config.ts:77</code>). It is sent from exactly two places:
+		<ul>
+			<li><code>sync/queue/processors/issue-ticket-evaluation.processor.ts:49</code></li>
+			<li><code>system/operations/issue-tickets/issue-ticket-publish-hook.service.ts:125</code></li>
+		</ul>
+	</li>
+</ul>
+
+<h3>2.3 Who receives it (permission check, receive side only)</h3>
+<div class="card">
+<p><span class="pill full">Fully</span> Every event goes to the whole account room. Every connected member of the account gets it, whatever their role or channel access. The payload holds only <code>channelId</code> and <code>productIds</code>, and each surface refetches through APIs that apply <code>IssueTicketAccessService.resolveAccess</code> (Action Center permission and allowed channels). So <strong>no permitted user is left out</strong>, and each user only sees ticket data they are allowed to see.</p>
+<p class="muted">Side note: the board ignores the payload (<code>productId: null</code> matches everything). It refetches every lane on any ticket event in the account, even when it's filtered to another channel. That costs extra requests but is still correct.</p>
+</div>
+
+<h3>2.4 Webapp consumers of the hook</h3>
+<div class="table-wrap"><table>
+<tr><th>Consumer</th><th>File</th><th>Listens to</th></tr>
+<tr><td>Action Center board (lanes + counts)</td><td><code>action-center/_components/action-center-board.tsx:21</code></td><td>Ticket event only (productId null → product sockets skipped)</td></tr>
+<tr><td>Ticket dialog</td><td><code>action-center/_components/action-center-ticket-dialog.tsx:784</code></td><td>Ticket event + product sockets for the ticket's product + local <code>ticketVersion</code></td></tr>
+<tr><td>Product Action Center drawer</td><td><code>products/[product]/_components/action-center/ProductActionCenterDrawer.tsx:347</code></td><td>Ticket event + product sockets for this product</td></tr>
+<tr><td>Ticket context bar (product tabs)</td><td><code>components/issue-tickets/issue-ticket-context-bar.tsx:135</code></td><td>Ticket event + product sockets for the ticket's product. Tab highlights (<code>useIssueTicketScope</code>, <code>useIssueTicketContextStore</code>) read this bar's data, so they follow it.</td></tr>
+</table></div>
+<p>Product sockets the hook watches: <code>PRICE / MEDIA / ATTRIBUTE / VARIANT_ATTRIBUTE / MISC _SYNC_BASELINES_UPDATED</code>, <code>SYNC_STATUS_SCOPES_UPDATED</code>, <code>PRODUCT_FORWARD_SYNC_UPDATE</code>, <code>PRODUCT_FORWARD_SYNC_SUCCESS</code>. All of them go to the account room.</p>
+
+<h2>3. Action matrix</h2>
+<div class="legend"><span><span class="pill full">Fully</span> every member's open views update</span><span><span class="pill part">Partially</span> some views or members update</span><span><span class="pill none">Not implemented</span> only the actor's own tab updates</span><span><span class="pill na">N/A</span> nothing to sync</span></div>
+
+<h3>3.1 User actions (Action Center board, dialog, product drawer)</h3>
+<div class="table-wrap"><table>
+<tr><th>#</th><th>Action</th><th>Status</th><th>What happens today</th><th>Evidence</th><th>Fix direction</th></tr>
+<tr><td>3.1.1</td><td>Move ticket between lanes (drag and drop, menu status change)</td><td><span class="pill none">Not implemented</span></td><td>The actor's board updates optimistically and fixes itself from the response. <strong>Other members' boards, dialogs, product drawers and context bars stay on the old lane</strong> until something else triggers a refresh. The brief assumed lane moves already had a socket. They don't: only <em>system</em> moves (publish start → Awaiting, evaluator release from Awaiting) emit.</td><td><code>issue-ticket-mutations.service.ts:33</code> <code>setStatus</code> → <code>applyStatus</code>, no emit. Webapp <code>action-center-store.ts</code> <code>setStatus</code></td><td>Emit <code>ISSUE_TICKETS_UPDATED</code> after the transaction commits, with <code>{ channelId, productIds:[productId] }</code>. The board's existing refresh already waits for the actor's in-flight mutations.</td></tr>
+<tr><td>3.1.2</td><td>Assign / reassign / unassign</td><td><span class="pill none">Not implemented</span></td><td>Same as 3.1.1. Other members don't see the new avatar, and the assignee filter results are stale for them.</td><td><code>issue-ticket-mutations.service.ts:51</code> <code>setAssignee</code>, no emit</td><td>Same emit as 3.1.1.</td></tr>
+<tr><td>3.1.3</td><td>Primary action (To do → In progress, plus self-assign in team accounts)</td><td><span class="pill none">Not implemented</span></td><td>Changes both lane and assignee, and other members see neither.</td><td><code>issue-ticket-mutations.service.ts:127</code> <code>runPrimaryAction</code>, no emit</td><td>Same emit as 3.1.1.</td></tr>
+<tr><td>3.1.4</td><td>Snooze / un-snooze</td><td><span class="pill part">Partially</span></td><td>A snooze is per user (<code>tbl_issue_ticket_snoozes</code> keyed by ticket + user). <strong>Other members are correctly unaffected.</strong> The gap is only the actor's <em>other</em> tabs or devices, which keep showing the old state.</td><td><code>issue-ticket-mutations.service.ts:83 / 111</code>, no emit</td><td>Optional: send the same event to <code>user:&lt;id&gt;</code> only (<code>emitToUser</code>).</td></tr>
+<tr><td>3.1.5</td><td>Snooze expiry (00:00 of the picked date)</td><td><span class="pill part">Partially</span></td><td>Expiry is checked at read time, and the cleanup cron only deletes old rows. Nothing pushes the "un-hide". The ticket comes back on the next refetch for any reason. This only affects the snoozing user.</td><td><code>issue-ticket-sweep.service.ts:40</code> <code>cleanup</code>, no emit</td><td>Low priority. Either a client timer to the next local midnight, or emit to the user room from cleanup.</td></tr>
+<tr><td>3.1.6</td><td>CSV export, opening the dialog, filtering</td><td><span class="pill na">N/A</span></td><td>Read-only.</td><td>—</td><td>—</td></tr>
+</table></div>
+
+<h3>3.2 System-driven ticket changes</h3>
+<div class="table-wrap"><table>
+<tr><th>#</th><th>Change</th><th>Status</th><th>What happens today</th><th>Evidence</th><th>Fix direction</th></tr>
+<tr><td>3.2.1</td><td>Publish started → tickets moved to Awaiting channel</td><td><span class="pill part">Partially</span></td><td>Emits to the account. Board, dialog, product drawer and context bar refresh for every member. The insights drawer and Command Center don't (see §4).</td><td><code>issue-ticket-publish-hook.service.ts:125</code></td><td>Server side done. The remaining gaps are on the surfaces (§4).</td></tr>
+<tr><td>3.2.2</td><td>Evaluation outcomes: ticket created, reappeared, updated (variant count / sub types), cleared, moved (Awaiting release)</td><td><span class="pill part">Partially</span></td><td>Emits when anything changed. This covers every trigger source in §6.1 (FS / BS results, price and stock publish, Amazon notifications, Shopify webhooks, buy box refresh, channel health, order sync, product type change, scope add/remove from toggles and close/re-open listing, restore, sweep, seed). Same surface coverage as 3.2.1.</td><td><code>issue-ticket-evaluation.processor.ts:48</code></td><td>Server side done. The remaining gaps are on the surfaces (§4).</td></tr>
+<tr><td>3.2.3</td><td>Product deletion / channel deletion (<code>clearScope</code>)</td><td><span class="pill none">Not implemented</span></td><td><code>clearScope</code> deletes tickets directly, outside the processor, and emits nothing. Other members keep seeing deleted tickets. Opening or moving one returns <code>TICKET_CLEARED</code>, and only then is the card removed.</td><td><code>issue-ticket-evaluator.service.ts:147</code>. Callers: <code>product-deletion.service.ts:872–1065</code>, <code>channel.service.ts:1316</code></td><td>Emit from <code>clearScope</code> (or from its callers) when it deletes at least one ticket.</td></tr>
+<tr><td>3.2.4</td><td>Fix-state progress from edits (value saved → "Ready to publish", partial-fix chips, fix-state filter)</td><td><span class="pill part">Partially</span></td><td>Fix state is worked out at read time from baselines and sync status. It is not stored, so it never triggers an evaluation. The baseline and sync-status sockets reach every member. The product drawer, dialog and context bar react to them for <em>their</em> product. <strong>The board doesn't</strong>: with <code>productId: null</code> it skips product sockets. So board cards (chips, fix-state filter results) stay stale for everyone, including the actor's own Action Center tab.</td><td><code>use-issue-ticket-refresh.ts:93</code> (<code>if (product &amp;&amp; …)</code>). <code>issue-tickets.sql.ts:192</code> (item_fix CTE)</td><td>Let the board react to the product sockets too (debounced, ideally only when a payload product is on the board), or have the server send a ticket event when a baseline changes for a product with open tickets.</td></tr>
+<tr><td>3.2.5</td><td>Stock saves (Amazon / Shopify stock tables, warehouse priority)</td><td><span class="pill part">Partially</span></td><td>The webapp only fires a local window event (<code>dispatchIssueTicketDataRefresh</code>), which refreshes ticket views in the <em>actor's</em> tab. No ticket-specific socket goes to other members. They only update if the save happens to send one of the product sockets in §2.4, or when a later stock publish evaluation emits. <em>Runtime check needed</em> to confirm which socket a stock save sends.</td><td><code>amazonStockTableRender.tsx:116</code>, <code>standAloneProductStockTableRender.tsx:131</code>, <code>shopifyStockTableRender.tsx:82</code>, <code>amazonWarehousePriorityDialog.tsx:215</code></td><td>Send an account-room event from the stock save API (the ticket event, or a stock baseline/sync-status event the hook already watches).</td></tr>
+</table></div>
+
+<h2>4. Surface matrix</h2>
+<p class="muted">Status = whether the surface updates for every member after the changes in §3 that do emit (3.2.1 / 3.2.2). The user-action gaps in §3.1 affect every surface the same way, because nothing is emitted.</p>
+<div class="table-wrap"><table>
+<tr><th>Surface</th><th>Reads tickets?</th><th>Status</th><th>Notes</th><th>Fix direction</th></tr>
+<tr><td>Action Center board: lanes, counts, top-bar issue-type counts</td><td>Yes</td><td><span class="pill part">Partially</span></td><td>Refreshes all lanes and counts on every ticket event (<code>refreshBoard</code> runs <code>fetchCounts</code> plus every lane, and is deferred while loads or mutations are in flight). It misses fix-state sockets (3.2.4) and user actions (3.1).</td><td>Covered by the 3.1 and 3.2.4 fixes.</td></tr>
+<tr><td>Ticket dialog (incl. activity / evidence)</td><td>Yes</td><td><span class="pill part">Partially</span></td><td>Reloads on ticket events and its product's sockets. <code>ticketVersion</code> only increases on the actor's own mutations (<code>action-center-store.ts:344</code>). Another member's status or assignee change doesn't reload it.</td><td>Covered by the 3.1 fix.</td></tr>
+<tr><td>Insights drawer: severity ring, issue-type rows, activity rail</td><td>Yes</td><td><span class="pill none">Not implemented</span></td><td>Breakdown and activity reload only on open, scope change or <code>ticketVersion</code> (<code>action-center-insights-drawer.tsx:273–283</code>). That means only the actor's own mutations. It doesn't use <code>useIssueTicketRefresh</code>, and <code>refreshBoard</code> doesn't increase <code>ticketVersion</code>. Socket-driven changes never reach it, even for the actor.</td><td>Add <code>useIssueTicketRefresh({ productId: null, enabled: open })</code> to the drawer, or increase a version from <code>refreshBoard</code>.</td></tr>
+<tr><td>Product page: Action Center drawer</td><td>Yes (<code>GET_PRODUCT_TICKETS</code>)</td><td><span class="pill part">Partially</span></td><td>Reloads on ticket events naming this product (or all products) and on its product sockets. Misses 3.1, 3.2.3 and 3.2.5.</td><td>Covered by the 3.1, 3.2.3 and 3.2.5 fixes.</td></tr>
+<tr><td>Product page: ticket context bar and tab highlights (details, variants, pricing, stock, media, sync error tabs)</td><td>Yes (<code>GET_TICKET</code> for the URL ticket)</td><td><span class="pill part">Partially</span></td><td>Same listeners as the drawer. Tab highlights follow the bar's data through the context store. Misses 3.1 (e.g. another member moves the ticket to Done or reassigns it), 3.2.3 and 3.2.5.</td><td>Covered by the 3.1, 3.2.3 and 3.2.5 fixes.</td></tr>
+<tr><td>Command Center: attention cards, next actions, business pulse, account health</td><td>Yes (from tickets, decision 2026-10-30)</td><td><span class="pill none">Not implemented</span></td><td>There are no socket listeners anywhere under <code>command-center/</code>. Data loads once per filter change. A ticket that is created, cleared or moved doesn't show until the page is reloaded.</td><td>Use <code>useIssueTicketRefresh({ productId: null })</code> in the ticket-backed sections (attention, next actions, pulse) and refetch them in the background without skeletons.</td></tr>
+<tr><td>Product list page</td><td>No</td><td><span class="pill na">N/A</span></td><td>The channel health popover's <code>listingIssues / errors / warnings</code> come from <code>tbl_channel_product_errors</code>, not tickets (<code>channel-health.service.ts:358</code>). The list has no other ticket data or Action Center links.</td><td>None unless the list starts showing ticket data.</td></tr>
+<tr><td>Notifications / sidebar badges</td><td>No</td><td><span class="pill na">N/A</span></td><td>The Action Center nav entry has no count (<code>nav-container.tsx:194</code>). No notification type is created for tickets (e.g. assignment). Nothing ticket-driven to keep live.</td><td>None today. If an assignment notification or a nav count is added later, it would need its own emit.</td></tr>
+</table></div>
+
+<h2>5. Gaps summary</h2>
+<div class="table-wrap"><table>
+<tr><th>Gap</th><th>Impact</th><th>Where to change</th></tr>
+<tr><td>G1. No emit after user mutations (status, assignee, primary action)</td><td>High: the core multi-user case. Other members see stale lanes and assignees everywhere.</td><td><code>issue-ticket-mutations.service.ts</code> (after commit)</td></tr>
+<tr><td>G2. Command Center never refreshes on ticket changes</td><td>High: CC reads tickets for attention, next actions and pulse.</td><td>webapp <code>command-center/_components/*-section.tsx</code></td></tr>
+<tr><td>G3. Insights drawer ignores socket refreshes</td><td>Medium: counts in the drawer drift from the board, even for the actor.</td><td>webapp <code>action-center-insights-drawer.tsx</code></td></tr>
+<tr><td>G4. Board ignores fix-state sockets</td><td>Medium: chips and fix-state filter results are stale after edits.</td><td>webapp <code>use-issue-ticket-refresh.ts</code> / <code>action-center-board.tsx</code></td></tr>
+<tr><td>G5. <code>clearScope</code> doesn't emit (product / channel deletion)</td><td>Medium: ghost tickets until the next interaction.</td><td><code>issue-ticket-evaluator.service.ts</code> <code>clearScope</code></td></tr>
+<tr><td>G6. Stock saves only refresh the actor's tab</td><td>Low/medium: needs a runtime check of which socket a stock save sends.</td><td>Stock save API, or reuse a watched socket</td></tr>
+<tr><td>G7. Snooze and un-snooze not pushed to the actor's other tabs; expiry not pushed</td><td>Low: per-user only.</td><td><code>emitToUser</code> in snooze/unsnooze; client midnight timer</td></tr>
+</table></div>
+
+<h2>6. Appendix</h2>
+
+<h3>6.1 Evaluation trigger sources (all end at the processor emit)</h3>
+<div class="table-wrap"><table>
+<tr><th>Source</th><th>Call sites (under <code>api/apps/api-main/src/modules/app/</code>)</th></tr>
+<tr><td>FS_RESULT</td><td><code>sync/productSyncing/amazon/forwardSync/amazon-product-fs.service.ts</code>, <code>amazon-product-fsq3.service.ts</code>, <code>shopify-product-fs.service.ts</code>, <code>shopify-product-fs-queue.service.ts</code>, <code>sync/queue/queue.service.ts</code></td></tr>
+<tr><td>BS_IMPORT</td><td><code>sync/queue/queue.service.ts</code></td></tr>
+<tr><td>PRICE_PUBLISH</td><td><code>catalog/products/pricing/product-pricing.service.ts</code>, <code>shopify-product-fs.service.ts</code></td></tr>
+<tr><td>STOCK_PUBLISH</td><td><code>amazon-product-fs.service.ts</code>, <code>shopify-product-fs.service.ts</code></td></tr>
+<tr><td>AMAZON_NOTIFICATION</td><td><code>platforms/amazon/events/handlers/listing/listing-notification.base.ts</code></td></tr>
+<tr><td>SHOPIFY_WEBHOOK</td><td><code>system/http/webhook/shopify/shopify-webhook.service.ts</code></td></tr>
+<tr><td>BUY_BOX_REFRESH</td><td><code>catalog/products/listings/buy-box/buy-box-refresh.service.ts</code></td></tr>
+<tr><td>CHANNEL_HEALTH</td><td><code>system/operations/monitoring/channel-health/channel-status-event.service.ts</code></td></tr>
+<tr><td>DATA_SYNC</td><td><code>commerce/orders/order/amazon/processors/amazon-order-q1.processor.ts</code>, <code>shopify-order-bsq5.service.ts</code>, <code>product-deletion.service.ts</code> (restore)</td></tr>
+<tr><td>PRODUCT_TYPE_CHANGE</td><td><code>catalog/products/product.service.ts</code>, <code>amazon-channel-product-type-schema.service.ts</code></td></tr>
+<tr><td>SCOPE_ADDED / SCOPE_REMOVED</td><td><code>amazon-channel-marketplace.service.ts</code>; <code>enqueueScopeChange</code> from <code>product.service.ts</code>, <code>product-channel.service.ts</code>, <code>close-listing.service.ts</code></td></tr>
+<tr><td>SWEEP / SEED</td><td><code>system/operations/issue-tickets/issue-ticket-sweep.service.ts</code> (cron + crons controller)</td></tr>
+</table></div>
+<p class="muted">The processor emits only when <code>created + reappeared + updated + cleared + moved &gt; 0</code>. An evaluation that changes nothing correctly sends no event. Evaluations are debounced per account, channel, marketplaces and issue types (<code>ISSUE_TICKET_EVALUATION_DEBOUNCE_MS</code>), so system-driven updates arrive one bucket plus one debounce after the trigger, then 1.5 s more on the client.</p>
+
+<h3>6.2 Key files</h3>
+<ul>
+	<li>API socket: <code>system/socket/socket.config.ts</code>, <code>socket.gateway.ts</code>, <code>socket.service.ts</code>, <code>socket.rooms.ts</code>, <code>job-relay/job-status-relay.service.ts</code></li>
+	<li>API tickets: <code>system/operations/issue-tickets/issue-ticket-mutations.service.ts</code>, <code>issue-ticket-evaluator.service.ts</code>, <code>issue-ticket-publish-hook.service.ts</code>, <code>issue-ticket-trigger.service.ts</code>, <code>issue-ticket-sweep.service.ts</code>, <code>issue-ticket-access.service.ts</code>; <code>sync/queue/processors/issue-ticket-evaluation.processor.ts</code></li>
+	<li>Webapp: <code>components/issue-tickets/use-issue-ticket-refresh.ts</code>, <code>issue-ticket-context-bar.tsx</code>; <code>action-center/_lib/action-center-store.ts</code>, <code>_components/action-center-board.tsx</code>, <code>action-center-ticket-dialog.tsx</code>, <code>action-center-insights-drawer.tsx</code>; <code>products/[product]/_components/action-center/ProductActionCenterDrawer.tsx</code>; <code>_components/socket/socket-client.tsx</code>, <code>socket.ts</code>; <code>command-center/_components/*</code></li>
+</ul>
+
+</main>
+</body>
+</html>
