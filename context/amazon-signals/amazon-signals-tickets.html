@@ -1,0 +1,631 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Buy Box and Pricing Tickets</title>
+<style>
+:root {
+	--bg: #0b0d12; --surface: #12151c; --surface-2: #181c25;
+	--text: #e8eaf0; --muted: #a3a9b6; --faint: #6f7685;
+	--border: #242a36; --accent: #8b8cff; --accent-text: #c9c8ff;
+	--code-bg: #1d212b; --code-text: #f5a8d4;
+	--red: #ff8a80; --red-bg: #3a1618;
+	--yellow: #f7c56b; --yellow-bg: #33270c;
+	--green: #77dba3; --green-bg: #0f2f1e;
+	--slate: #b3bccb; --slate-bg: #252a34;
+	color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.65 Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+main { padding: 40px clamp(16px, 4vw, 56px) 120px; max-width: 1180px; margin: 0 auto; }
+a { color: var(--accent); text-decoration: none; }
+code { background: var(--code-bg); color: var(--code-text); padding: 1px 6px; border-radius: 5px; font: 13px/1.5 "JetBrains Mono", Consolas, monospace; overflow-wrap: anywhere; }
+h2 { font-size: 22px; margin: 44px 0 10px; padding-top: 8px; border-top: 1px solid var(--border); }
+h3 { font-size: 16px; margin: 26px 0 6px; color: var(--accent-text); }
+p, li { color: var(--text); }
+.muted { color: var(--muted); }
+.table-wrap { overflow-x: auto; margin: 12px 0 18px; border: 1px solid var(--border); border-radius: 10px; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid var(--border); }
+th { background: var(--surface-2); color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }
+tr:last-child td { border-bottom: none; }
+.pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
+.full { background: var(--green-bg); color: var(--green); }
+.part { background: var(--yellow-bg); color: var(--yellow); }
+.none { background: var(--red-bg); color: var(--red); }
+.na { background: var(--slate-bg); color: var(--slate); }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; margin: 14px 0; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; margin: 8px 0 4px; font-size: 13px; color: var(--muted); }
+pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; overflow-x: auto; font: 13px/1.6 "JetBrains Mono", Consolas, monospace; }
+
+html { scroll-behavior: smooth; scroll-padding-top: 20px; }
+h4 { font-size: 17px; margin: 0 0 8px; text-wrap: balance; }
+h5 { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 0 0 6px; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; font-size: 13px; margin: 0 0 16px; }
+.meta span:not(.pill) { color: var(--muted); }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 32px; overflow-wrap: anywhere; }
+.wide { grid-column: 1 / -1; }
+.grid p { margin: 6px 0; }
+.grid ul, .grid ol { margin: 4px 0 8px; padding-left: 20px; }
+footer { border-top: 1px solid var(--border); margin-top: 16px; padding-top: 10px; font-size: 13px; }
+footer p { color: var(--muted); margin: 2px 0; }
+.dot { color: var(--green); }
+td a { white-space: nowrap; }
+td p { margin: 0; }
+td ul { margin: 0; padding-left: 18px; }
+@media (max-width: 760px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</head>
+<body>
+<main>
+<h2 style="border-top:none;margin-top:0">1. Core objective</h2>
+<p>Eight tickets cover two Amazon Signals pillars: <b>Buy Box</b> (4 tickets, 4d 4h) and <b>Pricing</b> (4 tickets, 11d). Total estimate: <b>15d 4h</b> (124h, at 8h per day).</p>
+<p class="muted">Selection: CAT board, active sprint (CAT Sprint 32), assignee Sanket Talaviya, status To Do or In Progress, first 8 by board rank. Read from Jira on 2026-11-25. Section 3 is the ticket text as written; sections 1 and 2 are summaries of it.</p>
+<div class="table-wrap"><table><thead><tr><th>#</th><th>Ticket</th><th>Pillar</th><th>Summary</th><th>Jira</th><th>Build state</th><th>Feasibility</th><th>Complexity</th><th>Estimate</th></tr></thead><tbody><tr><td>1</td><td><a href="#CAT-3346">CAT-3346</a></td><td>Buy Box</td><td>Featured Offer lost, at risk of being lost, or not currently won</td><td><span class="pill part">In Progress</span></td><td><span class="pill full">BUILT</span></td><td>Ready now</td><td>low</td><td>4h</td></tr><tr><td>2</td><td><a href="#CAT-3345">CAT-3345</a></td><td>Buy Box</td><td>Identify possible reasons and recommend corrective actions</td><td><span class="pill na">To Do</span></td><td><span class="pill part">PARTIAL</span></td><td>Ready now</td><td>medium</td><td>1d</td></tr><tr><td>3</td><td><a href="#CAT-3347">CAT-3347</a></td><td>Buy Box</td><td>Detect competitor price changes and pricing disadvantages</td><td><span class="pill na">To Do</span></td><td><span class="pill part">PARTIAL</span></td><td>Ready now</td><td>medium</td><td>1d 4h</td></tr><tr><td>4</td><td><a href="#CAT-3348">CAT-3348</a></td><td>Buy Box</td><td>Monitor Featured Offer eligibility and changes in competitive position</td><td><span class="pill na">To Do</span></td><td><span class="pill part">PARTIAL</span></td><td>Ready, needs history</td><td>medium</td><td>1d 4h</td></tr><tr><td>5</td><td><a href="#CAT-3363">CAT-3363</a></td><td>Pricing</td><td>Detect pricing errors, uncompetitive prices and unexpected price changes</td><td><span class="pill na">To Do</span></td><td><span class="pill part">PARTIAL</span></td><td>Ready now</td><td>medium</td><td>3d</td></tr><tr><td>6</td><td><a href="#CAT-3364">CAT-3364</a></td><td>Pricing</td><td>Identify potential margin erosion due to fees, costs or competitor pricing</td><td><span class="pill na">To Do</span></td><td><span class="pill part">PARTIAL</span></td><td>Needs seller input</td><td>medium</td><td>3d</td></tr><tr><td>7</td><td><a href="#CAT-3365">CAT-3365</a></td><td>Pricing</td><td>Flag pricing that may affect Featured Offer eligibility</td><td><span class="pill na">To Do</span></td><td><span class="pill part">PARTIAL</span></td><td>Ready now</td><td>low</td><td>2d</td></tr><tr><td>8</td><td><a href="#CAT-3366">CAT-3366</a></td><td>Pricing</td><td>Recommend pricing adjustments within seller-defined limits</td><td><span class="pill na">To Do</span></td><td><span class="pill na">NEW</span></td><td>Needs seller input</td><td>high</td><td>3d</td></tr></tbody></table></div>
+<p class="muted">Build state comes from "Current status &amp; notes" in each ticket, so CAT-3346 can be BUILT with work remaining.</p>
+<h2>2. Across the tickets</h2>
+<h3>2.1 Dependencies and prerequisites</h3>
+<div class="table-wrap"><table><thead><tr><th>Ticket</th><th>Needs</th><th>Type</th></tr></thead><tbody><tr><td><a href="#CAT-3347">CAT-3347</a></td><td>New price history table and a 90-day retention cron</td><td>Migration + cron</td></tr><tr><td><a href="#CAT-3348">CAT-3348</a></td><td>The competitor price history table (specified in <a href="#CAT-3347">CAT-3347</a>) and at least 1 week of stored history</td><td>Ticket dependency</td></tr><tr><td><a href="#CAT-3366">CAT-3366</a></td><td>Min / max price per SKU + marketplace</td><td>Migration</td></tr><tr><td><a href="#CAT-3366">CAT-3366</a></td><td>Min / max price, or minimum margin</td><td>Seller input</td></tr><tr><td><a href="#CAT-3364">CAT-3364</a></td><td>Product cost (supplier WAC)</td><td>Seller input</td></tr><tr><td><a href="#CAT-3364">CAT-3364</a></td><td>Finance and Accounting role, only for actual fees (later)</td><td>Amazon access</td></tr><tr><td><a href="#CAT-3363">CAT-3363</a></td><td>Supplier cost (WAC) for the below-cost check; skipped when missing</td><td>Seller input</td></tr></tbody></table></div>
+<h3>2.2 Where each ticket appears</h3>
+<div class="table-wrap"><table><thead><tr><th>Surface</th><th><a href="#CAT-3346">CAT-3346</a></th><th><a href="#CAT-3345">CAT-3345</a></th><th><a href="#CAT-3347">CAT-3347</a></th><th><a href="#CAT-3348">CAT-3348</a></th><th><a href="#CAT-3363">CAT-3363</a></th><th><a href="#CAT-3364">CAT-3364</a></th><th><a href="#CAT-3365">CAT-3365</a></th><th><a href="#CAT-3366">CAT-3366</a></th></tr></thead><tbody><tr><td>Action Center</td><td><b class="dot">●</b></td><td><b class="dot">●</b></td><td><b class="dot">●</b></td><td></td><td><b class="dot">●</b></td><td><b class="dot">●</b></td><td></td><td><b class="dot">●</b></td></tr><tr><td>Product overview</td><td><b class="dot">●</b></td><td><b class="dot">●</b></td><td><b class="dot">●</b></td><td><b class="dot">●</b></td><td></td><td></td><td></td><td></td></tr><tr><td>Product</td><td></td><td></td><td></td><td></td><td><b class="dot">●</b></td><td><b class="dot">●</b></td><td><b class="dot">●</b></td><td><b class="dot">●</b></td></tr><tr><td>Command Center</td><td><b class="dot">●</b></td><td></td><td></td><td><b class="dot">●</b></td><td></td><td><b class="dot">●</b></td><td></td><td></td></tr><tr><td>Bulk price edit</td><td></td><td></td><td></td><td></td><td></td><td></td><td><b class="dot">●</b></td><td></td></tr></tbody></table></div>
+<h3>2.3 Notifications to the seller</h3>
+<div class="table-wrap"><table><thead><tr><th>Ticket</th><th>In-app</th><th>Email</th></tr></thead><tbody><tr><td><a href="#CAT-3346">CAT-3346</a></td><td> when a winning listing loses the Buy Box or becomes ineligible
+
+<ul>
+	<li>Grouped per channel, max 1 per SKU per day</li>
+</ul>
+
+
+</td><td>none</td></tr><tr><td><a href="#CAT-3345">CAT-3345</a></td><td> none (covered by the Buy Box status alert)
+
+</td><td>none</td></tr><tr><td><a href="#CAT-3347">CAT-3347</a></td><td> when a competitor undercuts a winning SKU by more than the seller threshold
+
+<ul>
+	<li>Max 1 per SKU per day</li>
+</ul>
+
+
+</td><td>none</td></tr><tr><td><a href="#CAT-3348">CAT-3348</a></td><td> when eligibility flips to ineligible (part of the Buy Box status alert)
+
+</td><td>weekly summary line (win rate change)</td></tr><tr><td><a href="#CAT-3363">CAT-3363</a></td><td> when a published price is below cost or was changed outside Categra
+
+</td><td>none</td></tr><tr><td><a href="#CAT-3364">CAT-3364</a></td><td> when margin turns negative on a SKU with sales
+
+</td><td>none (weekly summary line)</td></tr><tr><td><a href="#CAT-3365">CAT-3365</a></td><td> none (inline only)
+
+</td><td>none</td></tr><tr><td><a href="#CAT-3366">CAT-3366</a></td><td> none
+
+</td><td>none</td></tr></tbody></table></div>
+<h3>2.4 Amazon APIs, notifications and reports</h3>
+<div class="table-wrap"><table><thead><tr><th>Source</th><th><a href="#CAT-3346">CAT-3346</a></th><th><a href="#CAT-3345">CAT-3345</a></th><th><a href="#CAT-3347">CAT-3347</a></th><th><a href="#CAT-3348">CAT-3348</a></th><th><a href="#CAT-3363">CAT-3363</a></th><th><a href="#CAT-3364">CAT-3364</a></th><th><a href="#CAT-3365">CAT-3365</a></th><th><a href="#CAT-3366">CAT-3366</a></th></tr></thead><tbody><tr><td><code>getCompetitiveSummary</code></td><td><b class="dot">●</b></td><td><b class="dot">●</b></td><td><b class="dot">●</b></td><td><b class="dot">●</b></td><td><b class="dot">●</b></td><td></td><td><b class="dot">●</b></td><td><b class="dot">●</b></td></tr><tr><td><code>PRICING_HEALTH</code></td><td><b class="dot">●</b></td><td><b class="dot">●</b></td><td></td><td><b class="dot">●</b></td><td><b class="dot">●</b></td><td></td><td><b class="dot">●</b></td><td></td></tr><tr><td><code>getFeaturedOfferExpectedPriceBatch</code></td><td><b class="dot">●</b></td><td><b class="dot">●</b></td><td></td><td></td><td></td><td></td><td><b class="dot">●</b></td><td><b class="dot">●</b></td></tr><tr><td><code>getListingOffersBatch</code></td><td><b class="dot">●</b></td><td><b class="dot">●</b></td><td></td><td><b class="dot">●</b></td><td></td><td></td><td></td><td></td></tr><tr><td><code>ANY_OFFER_CHANGED</code></td><td><b class="dot">●</b></td><td></td><td><b class="dot">●</b></td><td><b class="dot">●</b></td><td></td><td></td><td></td><td></td></tr><tr><td><code>getListingsItem</code></td><td></td><td></td><td></td><td></td><td><b class="dot">●</b></td><td></td><td></td><td></td></tr><tr><td><code>LISTINGS_ITEM_ISSUES_CHANGE</code></td><td></td><td></td><td></td><td></td><td><b class="dot">●</b></td><td></td><td></td><td></td></tr><tr><td><code>getMyFeesEstimates</code></td><td></td><td></td><td></td><td></td><td></td><td><b class="dot">●</b></td><td></td><td></td></tr><tr><td><code>getMyFeesEstimateForSKU</code></td><td></td><td></td><td></td><td></td><td></td><td><b class="dot">●</b></td><td></td><td></td></tr><tr><td><code>FEE_PROMOTION</code></td><td></td><td></td><td></td><td></td><td></td><td><b class="dot">●</b></td><td></td><td></td></tr><tr><td><code>listTransactions</code></td><td></td><td></td><td></td><td></td><td></td><td><b class="dot">●</b></td><td></td><td></td></tr><tr><td><code>GET_V2_SETTLEMENT_REPORT_DATA_FLAT_FILE_V2</code></td><td></td><td></td><td></td><td></td><td></td><td><b class="dot">●</b></td><td></td><td></td></tr><tr><td><code>patchListingsItem</code></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><b class="dot">●</b></td></tr><tr><td><code>JSON_LISTINGS_FEED</code></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><b class="dot">●</b></td></tr></tbody></table></div>
+<h2>3. Tickets</h2>
+<h3>3.1 Buy Box</h3>
+<article class="card" id="CAT-3346"><h4><a href="https://categra.atlassian.net/browse/CAT-3346">CAT-3346</a> Featured Offer lost, at risk of being lost, or not currently won</h4>
+<p class="meta"><span class="pill part">In Progress</span> <span class="pill full">BUILT</span> <span>Title prefix 0</span><span>Complexity low</span><span>Estimate 4h</span><span>Remaining 4h</span><span>Priority Medium</span><span>Reporter Sanket Talaviya</span></p>
+<div class="grid"><section class="wide"><h5>Feature</h5><p>Every published SKU + marketplace gets a status:</p>
+
+<ol>
+	<li>Winning</li>
+	<li>At risk</li>
+	<li>Not winning</li>
+	<li>Ineligible</li>
+	<li>Unavailable / Unknown</li>
+</ol>
+
+
+<ul>
+	<li>Lost / at risk / ineligible → opens a ticket → when that specific thing is resolved then the ticket will get cleared</li>
+	<li>Need to maintain a history of things related to compeition and featured offer</li>
+</ul>
+
+
+<p><b>Benefit:</b> most Amazon sales go through the Featured Offer, so the seller sees within minutes which listings stopped converting.</p></section><section class=""><h5>Where it appears in Categra</h5><p>Action Center</p>
+
+<ul>
+	<li>Buy Box lost / at risk / ineligible tickets</li>
+</ul>
+
+
+<p>Command Center</p>
+
+<ul>
+	<li>Attention cards</li>
+	<li>Pricing pulse card</li>
+</ul>
+
+
+<p>Product overview</p>
+
+<ul>
+	<li>Market pricing card</li>
+</ul>
+
+
+<p><b>In-app:</b> when a winning listing loses the Buy Box or becomes ineligible</p>
+
+<ul>
+	<li>Grouped per channel, max 1 per SKU per day</li>
+</ul>
+
+
+<p><b>Email:</b> none</p></section><section class=""><h5>Amazon API / report / notification</h5><p>APIs</p>
+
+<ul>
+	<li>getCompetitiveSummary</li>
+	<li>getListingOffersBatch</li>
+	<li>getFeaturedOfferExpectedPriceBatch</li>
+</ul>
+
+
+<p>Notifications</p>
+
+<ul>
+	<li>ANY_OFFER_CHANGED</li>
+	<li>PRICING_HEALTH</li>
+</ul></section><section class=""><h5>Feasibility</h5><p>Ready now</p></section><section class="wide"><h5>Current status &amp; notes</h5><p>BUILT</p>
+
+<ul>
+	<li>Hourly refreshBuyBoxData cron + offer / pricing notifications feed BUY_BOX_LOST / AT_RISK / INELIGIBLE tickets</li>
+	<li><b>Missing:</b> in-app notification on the winning → lost change</li>
+</ul>
+
+
+<p>Duration = remaining work (notification + throttle)</p></section></div>
+<footer><p><b>Complexity:</b> Low   <b>Estimate:</b> 4h</p>
+
+<p>Source: Amazon Signals &amp; Opportunities sheet, "Amazon Signals" tab, row 3 (Buy Box / Featured Offer Intelligence)</p><p>Labels: amazon-signals, buy-box, complexity-low</p></footer></article>
+<article class="card" id="CAT-3345"><h4><a href="https://categra.atlassian.net/browse/CAT-3345">CAT-3345</a> Identify possible reasons and recommend corrective actions</h4>
+<p class="meta"><span class="pill na">To Do</span> <span class="pill part">PARTIAL</span> <span>Title prefix 1</span><span>Complexity medium</span><span>Estimate 1d</span><span>Remaining 1d</span><span>Priority Medium</span><span>Reporter Sanket Talaviya</span></p>
+<div class="grid"><section class="wide"><h5>Feature</h5><p>Ranks the likely reasons against the current winner:</p>
+
+<ul>
+	<li>Price gap / above expected price</li>
+	<li>Fulfillment (FBA vs FBM) and Prime badge</li>
+	<li>Shipping time</li>
+	<li>Seller rating</li>
+	<li>Stock / listing issue</li>
+</ul>
+
+
+<p>Gives one concrete action per reason, e.g.:</p>
+
+<ul>
+	<li>"Lower price to 24.90"
+	<ul>
+		<li>"Fix listing issue"</li>
+		<li>"Restock"</li>
+	</ul>
+	</li>
+</ul>
+
+
+<p><b>Benefit:</b> turns a status into a fix the seller can apply in one step.</p></section><section class=""><h5>Where it appears in Categra</h5><p>Action Center</p>
+
+<ul>
+	<li>Buy Box ticket dialog (reasons + action)</li>
+</ul>
+
+
+<p>Product overview</p>
+
+<ul>
+	<li>Market pricing card</li>
+	<li>View competitors dialog</li>
+</ul>
+
+
+<p><b>In-app:</b> none (covered by the Buy Box status alert)</p>
+
+<p><b>Email:</b> none</p></section><section class=""><h5>Amazon API / report / notification</h5><p>APIs</p>
+
+<ul>
+	<li>getListingOffersBatch -&gt; Winner's fulfillment, Prime, shipping time, feedback</li>
+	<li>getFeaturedOfferExpectedPriceBatch</li>
+	<li>getCompetitiveSummary</li>
+</ul>
+
+
+<p>Notifications</p>
+
+<ul>
+	<li>PRICING_HEALTH</li>
+</ul></section><section class=""><h5>Feasibility</h5><p>Ready now</p></section><section class="wide"><h5>Current status &amp; notes</h5><p>PARTIAL</p>
+
+<ul>
+	<li><b>Built:</b> price reasons (PRICE_TOO_HIGH, ABOVE_EXPECTED_PRICE, COMPETITOR_UNDERCUT, NOT_FEATURED_MERCHANT, OFFER / ASIN_NOT_ELIGIBLE, NOT_BUYABLE, NO_PRICE) + guidance keys + Simulate price dialog</li>
+	<li><b>Missing:</b> non-price reasons compared with the winner</li>
+	<li>Amazon does not publish the Featured Offer algorithm → reasons must be labelled "likely"</li>
+</ul>
+
+
+<p>Duration = remaining work</p></section></div>
+<footer><p><b>Complexity:</b> Medium   <b>Estimate:</b> 1d</p>
+
+<p>Source: Amazon Signals &amp; Opportunities sheet, "Amazon Signals" tab, row 4 (Buy Box / Featured Offer Intelligence)</p><p>Labels: amazon-signals, buy-box, complexity-medium</p></footer></article>
+<article class="card" id="CAT-3347"><h4><a href="https://categra.atlassian.net/browse/CAT-3347">CAT-3347</a> Detect competitor price changes and pricing disadvantages</h4>
+<p class="meta"><span class="pill na">To Do</span> <span class="pill part">PARTIAL</span> <span>Title prefix 0</span><span>Complexity medium</span><span>Estimate 1d 4h</span><span>Remaining 1d 4h</span><span>Priority Medium</span><span>Reporter Sanket Talaviya</span></p>
+<div class="grid"><section class="wide"><h5>Feature</h5><p><b>Keeps a price history per ASIN:</b></p>
+
+<ul>
+	<li>Lowest landed price</li>
+	<li>Buy Box price</li>
+	<li>Offer count and top offers</li>
+</ul>
+
+
+<p><b>Flags undercuts:</b></p>
+
+<ul>
+	<li>A competitor drops below the seller by more than X%</li>
+	<li>A new lowest offer appears</li>
+</ul>
+
+
+<p><b>Shows a trend chart:</b> seller vs lowest vs Buy Box price</p>
+
+<ul>
+	<li>Definitely need to maintain a history of competitive offers and featured offer</li>
+</ul>
+
+
+<p><b>Benefit:</b> the seller reacts to competitor moves before sales drop.</p></section><section class=""><h5>Where it appears in Categra</h5><p>Product overview</p>
+
+<ul>
+	<li>Price trend chart in View competitors dialog</li>
+</ul>
+
+
+<p>Action Center</p>
+
+<ul>
+	<li>"Competitor undercut" reason on Buy Box at risk / lost tickets</li>
+</ul>
+
+
+<p><b>In-app:</b> when a competitor undercuts a winning SKU by more than the seller threshold</p>
+
+<ul>
+	<li>Max 1 per SKU per day</li>
+</ul>
+
+
+<p><b>Email:</b> none</p></section><section class=""><h5>Amazon API / report / notification</h5><p>Notifications</p>
+
+<ul>
+	<li>ANY_OFFER_CHANGED
+	<ul>
+		<li>Top 20 offers per ASIN + condition</li>
+	</ul>
+	</li>
+</ul>
+
+
+<p>APIs</p>
+
+<ul>
+	<li>getCompetitiveSummary (fallback poll)</li>
+</ul></section><section class=""><h5>Feasibility</h5><p>Ready now</p></section><section class="wide"><h5>Current status &amp; notes</h5><p>PARTIAL</p>
+
+<ul>
+	<li>tbl_amazon_market_offers keeps only the latest snapshot → no history</li>
+	<li><b>Needs:</b>
+	<ul>
+		<li>New price history table (db-migrations)</li>
+		<li>90-day retention cron</li>
+	</ul>
+	</li>
+	<li><b>Amazon limits:</b> ANY_OFFER_CHANGED fires only for ASINs the seller has an offer on, and lists at most 20 offers</li>
+</ul></section></div>
+<footer><p><b>Complexity:</b> Medium   <b>Estimate:</b> 1d 4h</p>
+
+<p>Source: Amazon Signals &amp; Opportunities sheet, "Amazon Signals" tab, row 5 (Buy Box / Featured Offer Intelligence)</p><p>Labels: amazon-signals, buy-box, complexity-medium</p></footer></article>
+<article class="card" id="CAT-3348"><h4><a href="https://categra.atlassian.net/browse/CAT-3348">CAT-3348</a> Monitor Featured Offer eligibility and changes in competitive position</h4>
+<p class="meta"><span class="pill na">To Do</span> <span class="pill part">PARTIAL</span> <span>Title prefix 1</span><span>Complexity medium</span><span>Estimate 1d 4h</span><span>Remaining 1d 4h</span><span>Priority Medium</span><span>Reporter Sanket Talaviya</span></p>
+<div class="grid"><section class="wide"><h5>Feature</h5><ul>
+	<li>Buy Box win rate per SKU over 7 / 30 days</li>
+	<li><b>Eligibility timeline:</b> eligible ↔ ineligible, with reason</li>
+	<li>Price rank among offers</li>
+	<li>Number of eligible competitors</li>
+</ul>
+
+
+<p><b>Benefit:</b> shows slow erosion of position, not only the current state.</p></section><section class=""><h5>Where it appears in Categra</h5><p>Product overview</p>
+
+<ul>
+	<li>Market pricing card (win rate %, eligibility timeline)</li>
+</ul>
+
+
+<p>Command Center</p>
+
+<ul>
+	<li>Pricing pulse card (account win rate trend)</li>
+</ul>
+
+
+<p><b>In-app:</b> when eligibility flips to ineligible (part of the Buy Box status alert)</p>
+
+<p><b>Email:</b> weekly summary line (win rate change)</p></section><section class=""><h5>Amazon API / report / notification</h5><p>APIs</p>
+
+<ul>
+	<li>getCompetitiveSummary</li>
+	<li>getListingOffersBatch</li>
+</ul>
+
+
+<p>Notifications</p>
+
+<ul>
+	<li>ANY_OFFER_CHANGED</li>
+	<li>PRICING_HEALTH</li>
+</ul></section><section class=""><h5>Feasibility</h5><p>Ready, needs history</p>
+
+<ul>
+	<li>At least 1 week of stored history</li>
+</ul></section><section class="wide"><h5>Current status &amp; notes</h5><p>PARTIAL</p>
+
+<ul>
+	<li>Current eligibility + eligible offer count are stored; no time series</li>
+	<li><b>Depends on:</b> competitor price history table</li>
+	<li>Win rate is Categra-observed, not Amazon's Featured Offer % metric</li>
+</ul></section></div>
+<footer><p><b>Complexity:</b> Medium   <b>Estimate:</b> 1d 4h</p>
+
+<p>Source: Amazon Signals &amp; Opportunities sheet, "Amazon Signals" tab, row 6 (Buy Box / Featured Offer Intelligence)</p><p>Labels: amazon-signals, buy-box, complexity-medium</p></footer></article>
+<h3>3.2 Pricing</h3>
+<article class="card" id="CAT-3363"><h4><a href="https://categra.atlassian.net/browse/CAT-3363">CAT-3363</a> Detect pricing errors, uncompetitive prices and unexpected price changes</h4>
+<p class="meta"><span class="pill na">To Do</span> <span class="pill part">PARTIAL</span> <span>Title prefix 1</span><span>Complexity medium</span><span>Estimate 3d</span><span>Remaining 3d</span><span>Priority Medium</span><span>Reporter Sanket Talaviya</span></p>
+<div class="grid"><section class="wide"><h5>Feature</h5><p><b>Flags:</b></p>
+
+<ol>
+	<li>Missing price</li>
+	<li>Likely pricing errors
+	<ul>
+		<li>Below cost</li>
+		<li>Far above / below the competitive and reference price</li>
+	</ul>
+	</li>
+	<li>Amazon "potential pricing error" deactivations</li>
+</ol>
+
+
+<p><b>Benefit:</b> stops selling at a loss and recovers listings Amazon deactivated for price.</p></section><section class=""><h5>Where it appears in Categra</h5><p>Action Center</p>
+
+<ul>
+	<li>Missing price ticket (built)</li>
+	<li>New "Price anomaly" ticket (High)</li>
+</ul>
+
+
+<p>Product</p>
+
+<ul>
+	<li>Pricing tab warning</li>
+</ul>
+
+
+<p><b>In-app:</b> when a published price is below cost or was changed outside Categra</p>
+
+<p><b>Email:</b> none</p></section><section class=""><h5>Amazon API / report / notification</h5><p>APIs</p>
+
+<ul>
+	<li>getListingsItem (purchasable_offer)</li>
+	<li>getCompetitiveSummary (reference + competitive price threshold)</li>
+</ul>
+
+
+<p>Notifications</p>
+
+<ul>
+	<li>PRICING_HEALTH</li>
+	<li>LISTINGS_ITEM_ISSUES_CHANGE (pricing error issues)</li>
+</ul></section><section class=""><h5>Feasibility</h5><p>Ready now</p>
+
+<ul>
+	<li>"Below cost" needs supplier cost (WAC)</li>
+</ul></section><section class="wide"><h5>Current status &amp; notes</h5><p>PARTIAL</p>
+
+<ul>
+	<li><b>Built:</b> MISSING_PRICE ticket, price sync baselines, competitive price threshold</li>
+	<li><b>Missing:</b> anomaly and outside-change detection</li>
+	<li>Below-cost check skipped when cost is missing</li>
+</ul></section></div>
+<footer><p><b>Complexity:</b> Medium   <b>Estimate:</b> 3d</p>
+
+<p>Source: Amazon Signals &amp; Opportunities sheet, "Amazon Signals" tab, row 24 (Pricing &amp; Profitability)</p><p>Labels: amazon-signals, complexity-medium, pricing</p></footer></article>
+<article class="card" id="CAT-3364"><h4><a href="https://categra.atlassian.net/browse/CAT-3364">CAT-3364</a> Identify potential margin erosion due to fees, costs or competitor pricing</h4>
+<p class="meta"><span class="pill na">To Do</span> <span class="pill part">PARTIAL</span> <span>Title prefix 0</span><span>Complexity medium</span><span>Estimate 3d</span><span>Remaining 3d</span><span>Priority Medium</span><span>Reporter Sanket Talaviya</span></p>
+<div class="grid"><section class="wide"><h5>Feature</h5><p>Estimated margin per SKU = price − Amazon fees (referral, FBA, closing) − product cost</p>
+
+<p><b>Flags:</b></p>
+
+<ul>
+	<li>Margin below the seller's floor</li>
+	<li>Negative margin</li>
+	<li>Drop of more than X points, caused by a fee change, cost change or price cut</li>
+</ul>
+
+
+<p><b>Benefit:</b> shows which listings sell but lose money.</p></section><section class=""><h5>Where it appears in Categra</h5><p>Product</p>
+
+<ul>
+	<li>Pricing tab margin breakdown</li>
+</ul>
+
+
+<p>Action Center</p>
+
+<ul>
+	<li>New "Low margin" ticket (Medium; High when negative)</li>
+</ul>
+
+
+<p>Command Center</p>
+
+<ul>
+	<li>Business pulse margin (built)</li>
+	<li>"Margin at risk" list</li>
+</ul>
+
+
+<p><b>In-app:</b> when margin turns negative on a SKU with sales</p>
+
+<p><b>Email:</b> none (weekly summary line)</p></section><section class=""><h5>Amazon API / report / notification</h5><p>APIs</p>
+
+<ul>
+	<li>getMyFeesEstimates / getMyFeesEstimateForSKU</li>
+</ul>
+
+
+<p>Notifications</p>
+
+<ul>
+	<li>FEE_PROMOTION</li>
+</ul>
+
+
+<p><b>Later:</b> actual fees</p>
+
+<ul>
+	<li>Finances API listTransactions</li>
+	<li>GET_V2_SETTLEMENT_REPORT_DATA_FLAT_FILE_V2</li>
+</ul></section><section class=""><h5>Feasibility</h5><p>Needs seller input</p>
+
+<ul>
+	<li>Product cost (supplier WAC)</li>
+</ul>
+
+
+<p><b>Access needed:</b></p>
+
+<ul>
+	<li>Finance and Accounting role
+	<ul>
+		<li>Only for actual fees (Finances API, settlement report)</li>
+	</ul>
+	</li>
+</ul></section><section class="wide"><h5>Current status &amp; notes</h5><p>PARTIAL</p>
+
+<ul>
+	<li>Fees per SKU stored (re-fetched on price change)</li>
+	<li>Business Pulse has a margin cost stack with current WAC</li>
+	<li><b>Missing:</b> per-SKU margin signal</li>
+</ul></section></div>
+<footer><p><b>Complexity:</b> Medium   <b>Estimate:</b> 3d</p>
+
+<p>Source: Amazon Signals &amp; Opportunities sheet, "Amazon Signals" tab, row 25 (Pricing &amp; Profitability)</p><p>Labels: amazon-signals, complexity-medium, pricing</p></footer></article>
+<article class="card" id="CAT-3365"><h4><a href="https://categra.atlassian.net/browse/CAT-3365">CAT-3365</a> Flag pricing that may affect Featured Offer eligibility</h4>
+<p class="meta"><span class="pill na">To Do</span> <span class="pill part">PARTIAL</span> <span>Title prefix 1</span><span>Complexity low</span><span>Estimate 2d</span><span>Remaining 2d</span><span>Priority Medium</span><span>Reporter Sanket Talaviya</span></p>
+<div class="grid"><section class="wide"><h5>Feature</h5><ul>
+	<li>Amazon's competitive price threshold, or</li>
+	<li>The Featured Offer expected price</li>
+</ul>
+
+
+<p>Pre-publish price check for products created by ASIN</p>
+
+<ul>
+	<li>The getCompetitivePrice, getCompetitiveSummary, and getItemOffers APIs support ASIN-based lookups. Instead of using getListingOffers, we can use getItemOffers to retrieve competitor offers directly using the ASIN.</li>
+</ul>
+
+
+<p>→ "Buy Box likely lost at this price"</p>
+
+<p><b>Benefit:</b> avoids losing the Buy Box through the seller's own price change.</p></section><section class=""><h5>Where it appears in Categra</h5><p>Product</p>
+
+<ul>
+	<li>Pricing tab inline warning</li>
+	<li>Simulate price dialog</li>
+</ul>
+
+
+<p>Bulk price edit</p>
+
+<ul>
+	<li>Warning column</li>
+</ul>
+
+
+<p><b>In-app:</b> none (inline only)</p>
+
+<p><b>Email:</b> none</p></section><section class=""><h5>Amazon API / report / notification</h5><p>APIs</p>
+
+<ul>
+	<li>getFeaturedOfferExpectedPriceBatch</li>
+	<li>getCompetitiveSummary (competitive price threshold)</li>
+</ul>
+
+
+<p>Notifications</p>
+
+<ul>
+	<li>PRICING_HEALTH</li>
+</ul></section><section class=""><h5>Feasibility</h5><p>Ready now</p></section><section class="wide"><h5>Current status &amp; notes</h5><p>PARTIAL</p>
+
+<ul>
+	<li>PRICE_TOO_HIGH / ABOVE_EXPECTED_PRICE reasons and the threshold are stored, shown only after the fact</li>
+	<li>Stale data (&gt;24h) → warning shows an "as of" date</li>
+</ul></section></div>
+<footer><p><b>Complexity:</b> Low   <b>Estimate:</b> 2d</p>
+
+<p>Source: Amazon Signals &amp; Opportunities sheet, "Amazon Signals" tab, row 26 (Pricing &amp; Profitability)</p><p>Labels: amazon-signals, complexity-low, pricing</p></footer></article>
+<article class="card" id="CAT-3366"><h4><a href="https://categra.atlassian.net/browse/CAT-3366">CAT-3366</a> Recommend pricing adjustments within seller-defined limits</h4>
+<p class="meta"><span class="pill na">To Do</span> <span class="pill na">NEW</span> <span>Title prefix 1</span><span>Complexity high</span><span>Estimate 3d</span><span>Remaining 3d</span><span>Priority Medium</span><span>Reporter Sanket Talaviya</span></p>
+<div class="grid"><section class="wide"><h5>Feature</h5><ol>
+	<li>Suggested price = Featured Offer expected price or through the categra algorithm</li>
+	<li>Kept between the seller's min / max price (or minimum margin), min/max can be overwritten by seller later</li>
+	<li>One-click apply from the ticket, with preview and confirmation</li>
+</ol>
+
+
+<ul>
+	<li>Min / max can also be sent to Amazon as the seller's allowed price range</li>
+</ul>
+
+
+<p><b>Benefit:</b> wins back the Buy Box without pricing below the seller's floor.</p></section><section class=""><h5>Where it appears in Categra</h5><p>Action Center</p>
+
+<ul>
+	<li>Buy Box ticket "Suggested price → Apply"</li>
+</ul>
+
+
+<p>Product</p>
+
+<ul>
+	<li>Pricing tab min / max price fields</li>
+	<li>Simulate price dialog</li>
+</ul>
+
+
+<p><b>In-app:</b> none</p>
+
+<p><b>Email:</b> none</p></section><section class=""><h5>Amazon API / report / notification</h5><p>APIs</p>
+
+<ul>
+	<li>getFeaturedOfferExpectedPriceBatch</li>
+	<li>getCompetitiveSummary</li>
+	<li>patchListingsItem / JSON_LISTINGS_FEED
+	<ul>
+		<li>Price, minimum / maximum seller allowed price</li>
+	</ul>
+	</li>
+</ul></section><section class=""><h5>Feasibility</h5><p>Needs seller input</p>
+
+<ul>
+	<li>Min / max price, or minimum margin</li>
+</ul></section><section class="wide"><h5>Current status &amp; notes</h5><p>NEW</p>
+
+<ul>
+	<li>Simulate price dialog exists; no limits, no apply</li>
+	<li><b>Needs:</b> min / max price per SKU + marketplace (db-migrations)</li>
+	<li>Uses the existing price publish flow</li>
+	<li>Automatic repricing stays out of scope</li>
+</ul></section></div>
+<footer><p><b>Complexity:</b> High   <b>Estimate:</b> 3d</p>
+
+<p>Source: Amazon Signals &amp; Opportunities sheet, "Amazon Signals" tab, row 27 (Pricing &amp; Profitability)</p><p>Labels: amazon-signals, complexity-high, pricing</p></footer></article>
+</main>
+</body>
+</html>
